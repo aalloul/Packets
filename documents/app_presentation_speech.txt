@@ -1,0 +1,14 @@
+
+
+I am working on an idea for start-up that will create a community around gift delivery that will make sending gifts to your relatives easy and safe. "Shippy" offers to connect you with trustworthy people who are travelling to where your relative lives and who have some space left for your gift. You meet together and agree on where and how to deliver the gift and that's it! With Shippy, you send at a much lower price and you are assured that your gift will be taken care of.
+how it works:
+	- say I am flying to Paris and have some space left in my hand luggage. I publish an annoucement on "Shippy"
+	- you connect to "Shippy" and find that my offer suits you best. You click on my name and call me.
+	- together we agree on a time and a place to meet. 
+	- when we meet, we agree on the details (where, how, to whom...) and you hand over to me your gift.
+	- when I arrive to Paris, I call the recipient and agree with him where to meet... maybe at the airport when I land! I give him the gift and everyone is happy
+
+Shippy, will require from you to:
+	- submit your ID to the system. when you meet with the transporter, you will be asked to confirm that the ID matches the person. The transporter will do the same.
+	- open your gift so the transporter knows what's inside. It's important for safety reasons but also to prevent problems. If you both agree on the content, there will be no problem.
+	- if you relative wishes, he can also use the app to confirm the receipt of the gift.

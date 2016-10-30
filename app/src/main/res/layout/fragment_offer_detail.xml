@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:ignore="RtlHardcoded">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center|top"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            android:layout_marginTop="@dimen/rage_comic_name_margin_top"
+            style="@style/TextAppearance.AppCompat.Title"/>
+
+        <ImageView
+            android:id="@+id/theimage"
+            android:src="@drawable/delivery"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/rage_comic_image_size"
+            android:layout_marginBottom="@dimen/rage_comic_image_margin_vertical"
+            android:layout_marginTop="@dimen/rage_comic_image_margin_vertical"
+            android:adjustViewBounds="true"
+            android:contentDescription="@null"
+            android:scaleType="centerCrop"/>
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/rage_comic_description_margin_bottom"
+            android:layout_marginLeft="@dimen/rage_comic_description_margin_left"
+            android:layout_marginRight="@dimen/rage_comic_description_margin_right"
+            android:layout_marginTop="0dp"
+            android:autoLink="web"
+            style="@style/TextAppearance.AppCompat.Body1"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center|center_vertical|bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+        <ImageButton
+            android:src="@drawable/message"
+            android:id="@+id/messageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginBottom="100dp"
+            android:layout_marginTop="10dp"
+            android:adjustViewBounds="true"
+            android:layout_gravity="left"
+            android:background="@drawable/backgroundstate"
+            android:clickable="true"
+            android:paddingRight="50dp" />
+        <ImageButton
+            android:src="@drawable/phone"
+            android:id="@+id/callButton"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginBottom="100dp"
+            android:layout_marginTop="10dp"
+            android:adjustViewBounds="true"
+            android:layout_gravity="right"
+            android:background="@drawable/backgroundstate" />
+    </LinearLayout>
+</RelativeLayout>

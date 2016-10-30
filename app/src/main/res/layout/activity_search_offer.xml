@@ -39,7 +39,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_marginTop="0dp"
-            android:id="@+id/tableLayoutSearch"
+            android:id="@+id/mysearchtable"
             android:orientation="vertical">
 
             <TableRow
@@ -112,9 +112,9 @@
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/tableLayoutSearch"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/mysearchtable">
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -150,7 +150,6 @@
             android:src="@drawable/confirm"
             android:layout_gravity="right|bottom"
             android:background="@drawable/backgroundstate"
-            android:backgroundTint="@android:color/white"
             app:backgroundTint="@android:color/white" />
 
         <android.support.design.widget.FloatingActionButton

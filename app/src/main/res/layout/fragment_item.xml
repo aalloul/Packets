@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp"
+    android:layout_marginBottom="5dp"
     android:elevation="5dp"
-    android:background="@color/cast_libraries_material_featurehighlight_text_body_color">
+    android:background="@android:color/white">
 
     <RelativeLayout
         android:id="@+id/layout_left_fragment_item"
@@ -22,14 +22,14 @@
             android:layout_height="wrap_content"
             android:id="@+id/first_name_sender"
             tools:text="First name"
-            android:layout_below="@+id/user_picture"
+            android:layout_below="@+id/transporter_picture"
             android:layout_centerHorizontal="true" />
 
         <ImageView
             android:layout_width="71dp"
             android:layout_height="79dp"
             app:srcCompat="@drawable/user"
-            android:id="@+id/user_picture"
+            android:id="@+id/transporter_picture"
             android:adjustViewBounds="false"
             android:cropToPadding="true" />
     </RelativeLayout>
@@ -59,22 +59,22 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/car"
+                app:srcCompat="@drawable/plane"
                 android:id="@+id/transport_method"
                 android:adjustViewBounds="true"
-                android:cropToPadding="false"
                 android:rotationX="0"
                 android:rotationY="0"
                 android:scaleType="fitXY"
-                android:scaleX="0.85"
-                android:scaleY="0.85"
+                android:scaleX="0.5"
+                android:scaleY="0.5"
                 android:padding="0dp"
                 android:layout_marginTop="@dimen/margin_top_car"
                 android:layout_marginStart="@dimen/margin_start_car"
                 android:layout_marginLeft="@dimen/margin_left_car"
                 android:paddingBottom="0dp"
                 android:layout_marginBottom="@dimen/margin_bottom_car"
-                android:layout_marginRight="@dimen/margin_right_car" />
+                android:layout_marginRight="@dimen/margin_right_car"
+                android:cropToPadding="false" />
 
             <TextView
                 android:text="city, country"
@@ -96,7 +96,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/sender_departure_date"
-                android:textSize="@dimen/text_size_item_list" />
+                android:textSize="@dimen/text_size_item_list"
+                android:layout_marginTop="5dp" />
         </TableRow>
 
         <TableRow

@@ -6,8 +6,8 @@
     android:name="com.example.aalloul.packets.ItemFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
+    android:layout_marginLeft="1dp"
+    android:layout_marginRight="1dp"
     app:layoutManager="LinearLayoutManager"
     tools:context="com.example.aalloul.packets.ItemFragment"
     tools:listitem="@layout/fragment_item" />

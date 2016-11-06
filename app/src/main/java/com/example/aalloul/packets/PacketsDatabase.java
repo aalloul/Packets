@@ -22,7 +22,7 @@ import android.util.Log;
  */
 class PacketsDatabase extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 5; // 04-Sep-2016 13:17
+    public static final int DATABASE_VERSION = 6; // 06-Nov-2016 15:25
     public static final String DATABASE_NAME = "Persons.db";
     private Context localContext;
     private static final String LOG_TAG = "PacketsDatabase";

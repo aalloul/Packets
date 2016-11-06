@@ -1,4 +1,6 @@
 package com.example.aalloul.packets;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
@@ -11,6 +13,11 @@ import java.util.HashMap;
 public final class Utilities {
     static HashMap<String, String> countries = new HashMap<>();
     final static String LOG_TAG = "Utilities";
+
+    public Bitmap getImage(byte[] theimage){
+        byte[] imgByte = theimage;
+        return BitmapFactory.decodeByteArray(imgByte, 0, imgByte.length);
+    }
 
     public static String CountryToCountryCode(String country){
         Log.i(LOG_TAG, "CountryToCountryCode - Start");

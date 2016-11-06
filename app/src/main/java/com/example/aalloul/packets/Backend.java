@@ -109,7 +109,7 @@ public class Backend {
                 "\"number_packages\": 1,"+
                 "\"packet_take_by_date\": 1471268191728,"+
                 "\"packet_deliver_by_date\": 1471354591728,"+
-                "\"package_transport_method\": \"Flying\""+
+                "\"package_transport_method\": \"Plane\""+
                 "},";
 
         mystr += "{"+
@@ -131,7 +131,7 @@ public class Backend {
                 "\"number_packages\": 1,"+
                 "\"packet_take_by_date\": 1471268191728,"+
                 "\"packet_deliver_by_date\": 1471354591728,"+
-                "\"package_transport_method\": \"Flying\""+
+                "\"package_transport_method\": \"Plane\""+
                 "},";
 
         mystr += "{"+
@@ -153,7 +153,7 @@ public class Backend {
                 "\"number_packages\": 1,"+
                 "\"packet_take_by_date\": 1471268191728,"+
                 "\"packet_deliver_by_date\": 1471354591728,"+
-                "\"package_transport_method\": \"Walking\""+
+                "\"package_transport_method\": \"Train\""+
                 "},";
 
 
@@ -176,7 +176,7 @@ public class Backend {
                 "\"number_packages\": 1,"+
                 "\"packet_take_by_date\": 1471268191728,"+
                 "\"packet_deliver_by_date\": 1471354591728,"+
-                "\"package_transport_method\": \"Flying\""+
+                "\"package_transport_method\": \"Plane\""+
                 "}";
 
         // End of mystr

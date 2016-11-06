@@ -1,11 +1,13 @@
 package com.example.aalloul.packets;
 
 import android.database.Cursor;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.aalloul.packets.ItemFragment.OnListFragmentInteractionListener;
@@ -28,6 +30,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
     private final ArrayList<String> phone_numbers = new ArrayList<>();
     private final ArrayList<String> thedates = new ArrayList<>();
     private final ArrayList<String> package_size = new ArrayList<>();
+    private final ArrayList<String> transport_method = new ArrayList<>();
     private final OnListFragmentInteractionListener mListener;
 
 
@@ -48,6 +51,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
             n_packets.add(cursor.getString(cursor.getColumnIndex("number_packages")));
             thedates.add(cursor.getString(cursor.getColumnIndex("packet_take_by_date")));
             package_size.add(cursor.getString(cursor.getColumnIndex("packet_size")));
+            transport_method.add(cursor.getString(cursor.getColumnIndex("package_transport_method")));
             cursor.moveToNext();
         }
         cursor.moveToFirst();
@@ -86,8 +90,25 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
                 Utilities.CountryToCountryCode(destination_country.get(position)) + ")";
         holder.destinationCityCountry.setText(temp);
         temp = thedates.get(position);
-        temp = Utilities.Epoch2DateStringMillis(temp,"yyyy-MM-d");
+        temp = Utilities.Epoch2DateStringMillis(temp,"dd MMM yyyy ");
         holder.departure_date.setText(temp);
+        temp = transport_method.get(position);
+
+        Log.d(LOG_TAG, "onBindViewHolder - Transport method = " + temp);
+        if (temp.equals("Car")) {
+            Log.d(LOG_TAG, "onBindViewHolder - Transport method = car");
+            holder.transport_icon.setImageResource(R.drawable.car);
+        } else if (temp.equals("Plane")) {
+            Log.d(LOG_TAG, "onBindViewHolder - Transport method = plane");
+            holder.transport_icon.setImageResource(R.drawable.plane);
+        } else if (temp.equals("Train")) {
+            Log.d(LOG_TAG, "onBindViewHolder - Transport method = train");
+            holder.transport_icon.setImageResource(R.drawable.train);
+        } else {
+            Log.d(LOG_TAG, "onBindViewHolder - Transport method unknown");
+            holder.transport_icon.setImageResource(R.drawable.car);
+        }
+
 
         final int thepos = position;
 
@@ -123,6 +144,8 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         public final TextView destinationCityCountry;
         public final TextView departure_date;
         public final TextView number_packages;
+        public final ImageView transport_icon;
+        public final ImageView transporter_pic;
 
         public ViewHolder(View view) {
             super(view);
@@ -133,6 +156,8 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
             destinationCityCountry = (TextView) view.findViewById(R.id.destination_city_country);
             departure_date = (TextView) view.findViewById(R.id.sender_departure_date);
             number_packages = (TextView) view.findViewById(R.id.sender_number_packages);
+            transport_icon = (ImageView) view.findViewById(R.id.transport_method);
+            transporter_pic = (ImageView) view.findViewById(R.id.transporter_picture);
 
             Log.i(LOG_TAG, "ViewHolder - Constructor End");
         }

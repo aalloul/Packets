@@ -5,6 +5,8 @@ To run the application:
 - Hit the button "play" (you may have to install many libraries for the play to work)
 
 # To do:
+- Add a splash screen and explanations about Shippy
+- Change theme of the app
 - Communication with Back-end
 - Add user registration screen (with picture & ID)
 - Add a button for "booking a person"

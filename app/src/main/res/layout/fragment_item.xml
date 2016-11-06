@@ -1,23 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
-    <TextView
-        android:id="@+id/id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?attr/textAppearanceListItem"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp" />
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:elevation="5dp"
+    android:background="@color/cast_libraries_material_featurehighlight_text_body_color">
 
-    <TextView
-        android:id="@+id/content"
+    <RelativeLayout
+        android:id="@+id/layout_left_fragment_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?attr/textAppearanceListItem"
-        android:textSize="13dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginTop="10dp"
-        android:paddingStart="60dp" />
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <TextView
+            android:text="TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/first_name_sender"
+            tools:text="First name"
+            android:layout_below="@+id/user_picture"
+            android:layout_centerHorizontal="true" />
+
+        <ImageView
+            android:layout_width="71dp"
+            android:layout_height="79dp"
+            app:srcCompat="@drawable/user"
+            android:id="@+id/user_picture"
+            android:adjustViewBounds="false"
+            android:cropToPadding="true" />
+    </RelativeLayout>
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/layout_left_fragment_item"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="0dp"
+        android:layout_centerVertical="false"
+        android:layout_marginTop="15dp">
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp">
+
+            <TextView
+                android:text="city, country"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/source_city_country"
+                android:layout_marginRight="40dp"
+                android:textSize="@dimen/text_size_item_list" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/car"
+                android:id="@+id/transport_method"
+                android:adjustViewBounds="true"
+                android:cropToPadding="false"
+                android:rotationX="0"
+                android:rotationY="0"
+                android:scaleType="fitXY"
+                android:scaleX="0.85"
+                android:scaleY="0.85"
+                android:padding="0dp"
+                android:layout_marginTop="@dimen/margin_top_car"
+                android:layout_marginStart="@dimen/margin_start_car"
+                android:layout_marginLeft="@dimen/margin_left_car"
+                android:paddingBottom="0dp"
+                android:layout_marginBottom="@dimen/margin_bottom_car"
+                android:layout_marginRight="@dimen/margin_right_car" />
+
+            <TextView
+                android:text="city, country"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/destination_city_country"
+                android:textSize="@dimen/text_size_item_list"
+                android:layout_marginLeft="5dp" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="5dp">
+
+            <TextView
+                android:text="Departure date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/sender_departure_date"
+                android:textSize="@dimen/text_size_item_list" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:text="Number packages"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/sender_number_packages"
+                android:textSize="@dimen/text_size_item_list"
+                android:layout_marginTop="5dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </TableLayout>
+
 </RelativeLayout>

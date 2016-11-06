@@ -7,6 +7,12 @@
     <dimen name="recycler_layout_spacing">4dp</dimen>
     <dimen name="recycler_item_footer_height_min">48dp</dimen>
     <dimen name="recycler_item_footer_padding">16dp</dimen>
+    <dimen name="text_size_item_list">11sp</dimen>
+    <dimen name="margin_left_car">0dp</dimen>
+    <dimen name="margin_right_car">0dp</dimen>
+    <dimen name="margin_start_car">-35dp</dimen>
+    <dimen name="margin_top_car">-15dp</dimen>
+    <dimen name="margin_bottom_car">-15dp</dimen>
 
     <!-- Rage comic detail -->
     <dimen name="rage_comic_image_size">200dp</dimen>

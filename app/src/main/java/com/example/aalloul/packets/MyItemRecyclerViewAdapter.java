@@ -8,12 +8,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.example.aalloul.packets.ItemFragment.OnListFragmentInteractionListener;
 import com.google.android.gms.vision.text.Text;
 
 import java.util.ArrayList;
+
+import static java.lang.Integer.parseInt;
 
 
 public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewAdapter.ViewHolder> {
@@ -31,6 +34,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
     private final ArrayList<String> thedates = new ArrayList<>();
     private final ArrayList<String> package_size = new ArrayList<>();
     private final ArrayList<String> transport_method = new ArrayList<>();
+    private final ArrayList<String> theArrivaldates = new ArrayList<>();
     private final OnListFragmentInteractionListener mListener;
 
 
@@ -50,6 +54,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
             source_country.add(cursor.getString(cursor.getColumnIndex("source_country")));
             n_packets.add(cursor.getString(cursor.getColumnIndex("number_packages")));
             thedates.add(cursor.getString(cursor.getColumnIndex("packet_take_by_date")));
+            theArrivaldates.add(cursor.getString(cursor.getColumnIndex("packet_deliver_by_date")));
             package_size.add(cursor.getString(cursor.getColumnIndex("packet_size")));
             transport_method.add(cursor.getString(cursor.getColumnIndex("package_transport_method")));
             cursor.moveToNext();
@@ -77,12 +82,33 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         Log.i(LOG_TAG, "onBindViewHolder - Start");
         holder.firstName.setText(nameAndFirstName.get(position));
         String temp =n_packets.get(position);
-        if (Integer.parseInt(n_packets.get(position)) > 1) {
-            temp = temp +" "+ package_size.get(position)+" packages";
-        } else {
-            temp = temp+" "+ package_size.get(position) + " package";
+//        if (Integer.parseInt(n_packets.get(position)) > 1) {
+//            temp = temp +" "+ package_size.get(position)+" packages";
+//        } else {
+//            temp = temp+" "+ package_size.get(position) + " package";
+//        }
+//        holder.number_packages.setText("1");
+        switch (Integer.parseInt(temp)) {
+            case 1:
+                holder.package_icon.setImageResource(R.drawable.packageicon1);
+                break;
+            case 2:
+                holder.package_icon.setImageResource(R.drawable.packageicon2);
+                break;
+            case 3:
+                holder.package_icon.setImageResource(R.drawable.packageicon3);
+                break;
+            case 4:
+                holder.package_icon.setImageResource(R.drawable.packageicon4);
+                break;
+            case 5:
+                holder.package_icon.setImageResource(R.drawable.packageicon5);
+                break;
+            default:
+                holder.package_icon.setImageResource(R.drawable.packageicon);
         }
-        holder.number_packages.setText(temp);
+
+        holder.package_icon.setImageResource(R.drawable.packageicon1);
         temp = source_city.get(position) +" ("+
                 Utilities.CountryToCountryCode(source_country.get(position)) + ")";
         holder.sourceCityCountry.setText(temp);
@@ -92,6 +118,9 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         temp = thedates.get(position);
         temp = Utilities.Epoch2DateStringMillis(temp,"dd MMM yyyy ");
         holder.departure_date.setText(temp);
+        temp = theArrivaldates.get(position);
+        temp = Utilities.Epoch2DateStringMillis(temp,"dd MMM yyyy ");
+        holder.arrivalToDestination.setText(temp);
         temp = transport_method.get(position);
 
         Log.d(LOG_TAG, "onBindViewHolder - Transport method = " + temp);
@@ -143,9 +172,11 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         public final TextView sourceCityCountry;
         public final TextView destinationCityCountry;
         public final TextView departure_date;
-        public final TextView number_packages;
+//        public final TextView number_packages;
         public final ImageView transport_icon;
         public final ImageView transporter_pic;
+        public final TextView arrivalToDestination;
+        public final ImageView package_icon;
 
         public ViewHolder(View view) {
             super(view);
@@ -155,9 +186,10 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
             sourceCityCountry = (TextView) view.findViewById(R.id.source_city_country);
             destinationCityCountry = (TextView) view.findViewById(R.id.destination_city_country);
             departure_date = (TextView) view.findViewById(R.id.sender_departure_date);
-            number_packages = (TextView) view.findViewById(R.id.sender_number_packages);
+            package_icon = (ImageView) view.findViewById(R.id.package_icom);
             transport_icon = (ImageView) view.findViewById(R.id.transport_method);
             transporter_pic = (ImageView) view.findViewById(R.id.transporter_picture);
+            arrivalToDestination = (TextView) view.findViewById(R.id.sender_arrival_date);
 
             Log.i(LOG_TAG, "ViewHolder - Constructor End");
         }

@@ -34,62 +34,38 @@
             android:cropToPadding="true" />
     </RelativeLayout>
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/plane"
+        android:id="@+id/transport_method"
+        android:adjustViewBounds="false"
+        android:rotationX="0"
+        android:rotationY="0"
+        android:scaleType="fitXY"
+        android:scaleX="0.85"
+        android:scaleY="0.85"
+        android:cropToPadding="false"
+        android:layout_gravity="bottom|right"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="false" />
+
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:id="@+id/table_layout_item"
+        android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/layout_left_fragment_item"
-        android:layout_marginLeft="10dp"
-        android:layout_marginBottom="0dp"
+        android:layout_toEndOf="@+id/layout_left_fragment_item"
         android:layout_centerVertical="false"
-        android:layout_marginTop="15dp">
-
-        <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp">
-
-            <TextView
-                android:text="city, country"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/source_city_country"
-                android:layout_marginRight="40dp"
-                android:textSize="@dimen/text_size_item_list" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/plane"
-                android:id="@+id/transport_method"
-                android:adjustViewBounds="true"
-                android:rotationX="0"
-                android:rotationY="0"
-                android:scaleType="fitXY"
-                android:scaleX="0.5"
-                android:scaleY="0.5"
-                android:padding="0dp"
-                android:layout_marginTop="@dimen/margin_top_car"
-                android:layout_marginStart="@dimen/margin_start_car"
-                android:layout_marginLeft="@dimen/margin_left_car"
-                android:paddingBottom="0dp"
-                android:layout_marginBottom="@dimen/margin_bottom_car"
-                android:layout_marginRight="@dimen/margin_right_car"
-                android:cropToPadding="false" />
-
-            <TextView
-                android:text="city, country"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/destination_city_country"
-                android:textSize="@dimen/text_size_item_list"
-                android:layout_marginLeft="5dp" />
-
-        </TableRow>
+        android:layout_centerInParent="false">
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="5dp">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp">
 
             <TextView
                 android:text="Departure date"
@@ -97,25 +73,80 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/sender_departure_date"
                 android:textSize="@dimen/text_size_item_list"
-                android:layout_marginTop="5dp" />
+                android:gravity="right"
+                android:layout_alignTop="@+id/table_layout_item"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="18dp"
+                android:layout_marginEnd="18dp" />
+
+            <TextView
+                android:text="city, country"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/source_city_country"
+                android:layout_marginRight="80dp"
+                android:textSize="@dimen/text_size_item_list" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="5dp">
+            <TextView
+                android:text="Departure date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/sender_arrival_date"
+                android:textSize="@dimen/text_size_item_list"
+                android:gravity="right"
+                android:layout_alignTop="@+id/table_layout_item"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="18dp"
+                android:layout_marginEnd="18dp" />
+
+            <TextView
+                android:text="city, country"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/destination_city_country"
+                android:textSize="@dimen/text_size_item_list" />
+
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
 
-            <TextView
-                android:text="Number packages"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/sender_number_packages"
-                android:textSize="@dimen/text_size_item_list"
-                android:layout_marginTop="5dp" />
         </TableRow>
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
     </TableLayout>
+
+<!--    <TextView
+        android:text="1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/sender_number_packages"
+        android:textSize="10sp"
+        android:layout_centerInParent="false"
+        android:layout_centerHorizontal="false"
+        android:layout_alignBottom="@+id/transport_method_icon"
+        android:layout_alignLeft="@+id/transport_method_icon"
+        android:layout_marginStart="7dp"
+        android:layout_marginBottom="-30dp" />-->
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/packageicon"
+        android:id="@+id/package_icom"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/transport_method"
+        android:layout_toStartOf="@+id/transport_method"
+        android:scaleType="fitXY"
+        android:scaleX="0.85"
+        android:scaleY="0.85" />
 
 </RelativeLayout>

@@ -120,7 +120,8 @@ class Postman extends Person {
                 Postmen.COLUMN_NAME_POSTMANCOMMENT,
                 Postmen.COLUMN_NAME_PHONENUMBER,
                 Postmen.COLUMN_NAME_SIZEPACKAGES,
-                Postmen.COLUMN_NAME_TRANSPORTMETHOD
+                Postmen.COLUMN_NAME_TRANSPORTMETHOD,
+                Postmen.COLUMN_NAME_DELIVERBYDATE,
         };
 
         // fromCity

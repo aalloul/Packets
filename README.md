@@ -16,3 +16,4 @@ To run the application:
 - Wrap every activity change and fragment change by a "try - catch" block
 - Add a feedback button via WhatsApp or email
 - Be careful that distances between the sender and the postman should be calculated between streets and not between cities
+- If search returns no result, suggest to invite friends.

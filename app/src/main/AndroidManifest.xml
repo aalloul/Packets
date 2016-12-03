@@ -46,6 +46,9 @@
             android:label="@string/title_activity_publish_offer"
             android:noHistory="true" />
 
+        <service
+            android:name=".BackendInteraction"
+            android:exported="false"></service>
     </application>
 
 </manifest>

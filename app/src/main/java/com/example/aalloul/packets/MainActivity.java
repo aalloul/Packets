@@ -38,9 +38,13 @@ OfferDetail.OnFragmentInteractionListener, buttonSearchOffer.onSearchButtonInter
     private Location userLastLocation;
     private LatLng userLocation;
     private View mLayout;
-    private Fragment mySearchButtonFragment = buttonSearchOffer.newInstance();
+
+    // Interaction with Backend
+    protected static HashMap<String, String> buffered_delayed_data = new HashMap();
+    private Backend backend = new Backend();
 
     //Interaction with the offer search activity
+    private Fragment mySearchButtonFragment = buttonSearchOffer.newInstance();
     private Intent searchIntent, searchPerformAction;
     public final static String SEARCH_SOURCE_CITY_EXTRA = "com.example.aalloul.packets.SEARCHCITY";
     public final static String SEARCH_SOURCE_COUNTRY_EXTRA = "com.example.aalloul.packets.SEARCHCOUNTRY";

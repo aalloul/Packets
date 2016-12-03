@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Packets</string>
+    <string name="app_name">Shippy</string>
     <string name="title_activity_find_someone">Shippy</string>
     <string name="title_activity_find_someone_List">Shippy</string>
     <string name="permission_position_explanation">Hey! can we know where you are?</string>
@@ -7,19 +7,10 @@
     <string name="explain_usage_search">Please use the search bar to find deliverers.</string>
     <string name="sendfromtext">Send From</string>
     <string name="sendtotext">Send To</string>
-    <string-array name="Planets">
-        <item>Sun</item>
-        <item>Mercury</item>
-        <item>Venus</item>
-        <item>Earth</item>
-        <item>Mars</item>
-        <item>Jupiter</item>
-        <item>Saturn</item>
-        <item>Uranus</item>
-        <item>Neptune</item>
-    </string-array>
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="title_activity_the_search">Search for available offers</string>
     <string name="title_activity_publish_offer">Publish a new offer</string>
+    <string name="backend_url">www.google.com</string>
+    <string name="search_end_point">querytheengine</string>
+    <string name="usage_end_point">usageendpoint</string>
+    <string name="postoffer_end_point">postoffer</string>
 </resources>

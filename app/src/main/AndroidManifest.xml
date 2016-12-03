@@ -40,11 +40,12 @@
         <activity
             android:name=".SearchOffer"
             android:label="@string/title_activity_the_search"
-            android:noHistory="true"/>
+            android:noHistory="true" />
         <activity
             android:name=".PublishOffer"
             android:label="@string/title_activity_publish_offer"
-            android:noHistory="true"/>
+            android:noHistory="true" />
+
     </application>
 
 </manifest>

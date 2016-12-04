@@ -31,6 +31,19 @@ public class PublishOffer extends AppCompatActivity implements DatePickerFragmen
 
     // Communication to MainActivity (canceling search)
     private Intent toMainActivityIntent;
+    public final static String POST_SOURCE_CITY_EXTRA =
+            "com.example.aalloul.packets.POSTOffer.POSTSOURCECITY";
+    public final static String POST_SOURCE_COUNTRY_EXTRA =
+            "com.example.aalloul.packets.POSTOffer.POSTSOURCECOUNTRY";
+    public final static String POST_DESTINATION_CITY_EXTRA =
+            "com.example.aalloul.packets.POSTOffer.POSTDESTINATIONCITY";
+    public final static String POST_DESTINATION_COUNTRY_EXTRA =
+            "com.example.aalloul.packets.POSTOffer.POSTDESTINATIONCOUNTRY";
+    public final static String POST_DATE_EXTRA =
+            "com.example.aalloul.packets.POSTOffer.POSTDATE";
+    public final static String POST_PERFORM_POST_ACTION =
+            "com.example.aalloul.packets.POSTOffer.PERFORMPOSTACTION";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +101,13 @@ public class PublishOffer extends AppCompatActivity implements DatePickerFragmen
     private void onConfirmNewOffer() {
         Log.i(LOG_TAG, "onConfirmNewOffer - start");
         toMainActivityIntent = new Intent(this, MainActivity.class);
+        toMainActivityIntent.putExtra(POST_SOURCE_CITY_EXTRA,sendingFromCity.getText().toString());
+        toMainActivityIntent.putExtra(POST_DESTINATION_CITY_EXTRA,sendingToCity.getText().toString());
+        toMainActivityIntent.putExtra(POST_SOURCE_COUNTRY_EXTRA,sendingFromCountry.getText().toString());
+        toMainActivityIntent.putExtra(POST_DESTINATION_COUNTRY_EXTRA,sendingToCountry.getText().toString());
+        toMainActivityIntent.putExtra(POST_DATE_EXTRA,dateForPublication);
+        toMainActivityIntent.putExtra(POST_PERFORM_POST_ACTION,true);
+
         startActivity(toMainActivityIntent);
         Log.i(LOG_TAG, "onConfirmNewOffer - End");
     }

@@ -10,6 +10,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     tools:context="com.example.aalloul.packets.SearchOffer"
     android:orientation="vertical">
 
@@ -131,6 +133,7 @@
                 android:id="@+id/date_picker"
                 android:text="pick the date"
                 android:onClick="showDatePickerDialog"
+                android:focusable="true"
                 android:background="@drawable/backgroundstate"
                 style="@style/Widget.AppCompat.Button"
                 android:paddingRight="0dp"
@@ -139,9 +142,13 @@
         </TableRow>
     </TableLayout>
     </RelativeLayout>
+
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
         <android.support.design.widget.FloatingActionButton
             android:layout_width="wrap_content"

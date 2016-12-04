@@ -1,11 +1,15 @@
 package com.example.aalloul.packets;
 
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.support.annotation.NonNull;
@@ -50,7 +54,7 @@ OfferDetail.OnFragmentInteractionListener, buttonSearchOffer.onSearchButtonInter
     public final static String SEARCH_SOURCE_COUNTRY_EXTRA = "com.example.aalloul.packets.SEARCHCOUNTRY";
 
     // Interaction with the new offer publishing
-    private Intent postIntent, postPerformAction;
+    private Intent postIntent;
     public final static String OFFER_SOURCE_CITY_EXTRA =  "com.example.aalloul.packets.OFFERCITY";
     public final static String OFFER_SOURCE_COUNTRY_EXTRA = "com.example.aalloul.packets.OFFERCOUNTRY";
 
@@ -64,9 +68,16 @@ OfferDetail.OnFragmentInteractionListener, buttonSearchOffer.onSearchButtonInter
         setContentView(R.layout.main_activity_listview);
         searchPerformAction = getIntent();
 
+        // if this activity is called from the search activity
         if (searchPerformAction.hasExtra(SearchOffer.SEARCH_PERFORM_SEARCH_ACTION)) {
             requestUpdateFromBackend(searchPerformAction);
         }
+
+        // if this activity is called from the new offer activity
+        if (searchPerformAction.hasExtra(PublishOffer.POST_PERFORM_POST_ACTION)) {
+            postNewOfferToBackend(searchPerformAction);
+        }
+
 
         // Create an instance of GoogleAPIClient.
         if (mGoogleApiClient == null) {
@@ -80,9 +91,7 @@ OfferDetail.OnFragmentInteractionListener, buttonSearchOffer.onSearchButtonInter
             Log.i(LOG_TAG, "onCreate - mGoogleApiClient is not null");
         }
 
-        // Insert ListView fragment
-
-
+        // Load the fragments
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
@@ -92,7 +101,47 @@ OfferDetail.OnFragmentInteractionListener, buttonSearchOffer.onSearchButtonInter
         }
 
 
+        BroadcastReceiver receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String queryResult = intent.getStringExtra("queryResult");
+                handleNetworkResult(queryResult);
+            }
+        };
+
+        LocalBroadcastManager.getInstance(this)
+                .registerReceiver(receiver, new IntentFilter("newDataHasArrived"));
+
         Log.i(LOG_TAG, "OnCreate - Exit");
+    }
+
+    private void postNewOfferToBackend(Intent searchPerformAction) {
+        Log.i(LOG_TAG, "postNewOfferToBackend - start");
+        Backend backend = new Backend();
+        HashMap<String, String> qparams = new HashMap();
+
+        qparams.put("city_to",searchPerformAction
+                .getStringExtra(PublishOffer.POST_DESTINATION_CITY_EXTRA));
+        qparams.put("country_to",searchPerformAction
+                .getStringExtra(PublishOffer.POST_DESTINATION_COUNTRY_EXTRA));
+        qparams.put("city_from",searchPerformAction
+                .getStringExtra(PublishOffer.POST_SOURCE_CITY_EXTRA));
+        qparams.put("country_from",searchPerformAction
+                .getStringExtra(PublishOffer.POST_SOURCE_COUNTRY_EXTRA));
+        qparams.put("ts_from",searchPerformAction
+                .getStringExtra(PublishOffer.POST_DATE_EXTRA));
+
+        BackendInteraction.startActionQueryDB(this, qparams, "POST");
+
+        Log.i(LOG_TAG, "postNewOfferToBackend - exit");
+    }
+
+    private void handleNetworkResult(String queryResult) {
+        if (queryResult.equals("ok")) {
+            ItemFragment.myItemRecyclerViewAdapter.notifyDataSetChanged();
+        } else {
+            // TODO display error
+        }
     }
 
 
@@ -145,8 +194,8 @@ OfferDetail.OnFragmentInteractionListener, buttonSearchOffer.onSearchButtonInter
 
     // Handle the permission request result
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String permissions[],
+                                           int[] grantResults) {
         Log.i(LOG_TAG, "onRequestPermissionsResult - Enter");
         switch (requestCode) {
             case MAP_PERMISSION: {
@@ -203,31 +252,29 @@ OfferDetail.OnFragmentInteractionListener, buttonSearchOffer.onSearchButtonInter
 //    }
 
 
-    public void startSearchOffer(View view) {
-        Log.i(LOG_TAG, "startSearchOffer - start");
-        Log.i(LOG_TAG, "startSearchOffer - exit");
-
-    }
-
     public void requestUpdateFromBackend(Intent searchPerformAction){
         Log.i(LOG_TAG, "requestUpdateFromBackend - start");
         Backend backend = new Backend();
         HashMap<String, String> qparams = new HashMap();
 
-        qparams.put("destinationCity",searchPerformAction
+        qparams.put("city_to",searchPerformAction
                 .getStringExtra(SearchOffer.SEARCH_DESTINATION_CITY_EXTRA));
-        qparams.put("destinationCountry",searchPerformAction
+        qparams.put("country_to",searchPerformAction
                 .getStringExtra(SearchOffer.SEARCH_DESTINATION_COUNTRY_EXTRA));
-        qparams.put("sourceCity",searchPerformAction
+        qparams.put("city_from",searchPerformAction
                 .getStringExtra(SearchOffer.SEARCH_SOURCE_CITY_EXTRA));
-        qparams.put("sourceCountry",searchPerformAction
+        qparams.put("country_from",searchPerformAction
                 .getStringExtra(SearchOffer.SEARCH_SOURCE_COUNTRY_EXTRA));
-        backend.requestUpdate(qparams);
+        qparams.put("ts_from",searchPerformAction
+                .getStringExtra(SearchOffer.SEARCH_DATE_EXTRA));
+
+        BackendInteraction.startActionQueryDB(this, qparams, "GET");
 
         Log.i(LOG_TAG, "requestUpdateFromBackend - exit");
     }
-    // ************************************************************
-    // Required by implement
+
+
+
     @Override
     public void onStart() {
         Log.i(LOG_TAG, "onStart - Enter");

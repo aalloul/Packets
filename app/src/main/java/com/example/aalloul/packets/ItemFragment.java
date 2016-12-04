@@ -30,6 +30,7 @@ public class ItemFragment extends Fragment {
     Cursor theCursor;
     private final static String LOG_TAG = ItemFragment.class.getSimpleName();
     private Postman postman;
+    public static MyItemRecyclerViewAdapter myItemRecyclerViewAdapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -91,7 +92,9 @@ public class ItemFragment extends Fragment {
             postman = new Postman(context, queryParams);
             theCursor = postman.get_Data_For_ListView(queryParams);
             Log.i(LOG_TAG, "The query returned " + theCursor.getCount() + " elements");
-            recyclerView.setAdapter(new MyItemRecyclerViewAdapter(theCursor, mListener));
+            myItemRecyclerViewAdapter =
+                    new MyItemRecyclerViewAdapter(theCursor, mListener);
+            recyclerView.setAdapter(myItemRecyclerViewAdapter);
         } else {
             Log.i(LOG_TAG, "view is not instance of recyclerView");
         }

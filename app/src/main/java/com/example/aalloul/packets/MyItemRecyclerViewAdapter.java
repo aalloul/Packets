@@ -82,12 +82,8 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         Log.i(LOG_TAG, "onBindViewHolder - Start");
         holder.firstName.setText(nameAndFirstName.get(position));
         String temp =n_packets.get(position);
-//        if (Integer.parseInt(n_packets.get(position)) > 1) {
-//            temp = temp +" "+ package_size.get(position)+" packages";
-//        } else {
-//            temp = temp+" "+ package_size.get(position) + " package";
-//        }
-//        holder.number_packages.setText("1");
+
+
         switch (Integer.parseInt(temp)) {
             case 1:
                 holder.package_icon.setImageResource(R.drawable.packageicon1);

@@ -1,12 +1,18 @@
 package com.example.aalloul.packets;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -41,6 +47,8 @@ public class SearchOffer extends AppCompatActivity implements DatePickerFragment
             "com.example.aalloul.packets.SearchOffer.SEARCHDESTINATIONCITY";
     public final static String SEARCH_DESTINATION_COUNTRY_EXTRA =
             "com.example.aalloul.packets.SearchOffer.SEARCHDESTINATIONCOUNTRY";
+    public final static String SEARCH_DATE_EXTRA =
+            "com.example.aalloul.packets.SearchOffer.SEARCHDATE";
     public final static String SEARCH_PERFORM_SEARCH_ACTION =
             "com.example.aalloul.packets.SearchOffer.PERFORMSEARCHACTION";
 
@@ -109,15 +117,39 @@ public class SearchOffer extends AppCompatActivity implements DatePickerFragment
                 destCountry.getText());
         Log.i(LOG_TAG, "onConfirmSearch - thedate = "+dateForSearch);
 
-        toMainActivityIntent = new Intent(this, MainActivity.class);
-        toMainActivityIntent.putExtra(SEARCH_SOURCE_CITY_EXTRA, srcCity.getText());
-        toMainActivityIntent.putExtra(SEARCH_SOURCE_COUNTRY_EXTRA, srcCountry.getText());
-        toMainActivityIntent.putExtra(SEARCH_DESTINATION_CITY_EXTRA, destCity.getText());
-        toMainActivityIntent.putExtra(SEARCH_DESTINATION_COUNTRY_EXTRA, destCity.getText());
-        toMainActivityIntent.putExtra(SEARCH_PERFORM_SEARCH_ACTION, true);
-        startActivity(toMainActivityIntent);
+        if (isNetworkOk()) {
+            toMainActivityIntent = new Intent(this, MainActivity.class);
+            toMainActivityIntent.putExtra(SEARCH_SOURCE_CITY_EXTRA, srcCity.getText().toString());
+            toMainActivityIntent.putExtra(SEARCH_SOURCE_COUNTRY_EXTRA,
+                    srcCountry.getText().toString());
+            toMainActivityIntent.putExtra(SEARCH_DESTINATION_CITY_EXTRA,
+                    destCity.getText().toString());
+            toMainActivityIntent.putExtra(SEARCH_DESTINATION_COUNTRY_EXTRA,
+                    destCity.getText().toString());
+            toMainActivityIntent.putExtra(SEARCH_DATE_EXTRA,
+                    dateForSearch.toString());
+            toMainActivityIntent.putExtra(SEARCH_PERFORM_SEARCH_ACTION, true);
+            startActivity(toMainActivityIntent);
+        } else {
+            Log.w(LOG_TAG, "onConfirmSearch - No network connection found");
+        }
         Log.i(LOG_TAG, "onConfirmSearch - End");
 
+    }
+
+    private boolean isNetworkOk() {
+        Log.i(LOG_TAG, "isNetworkOk - Enter");
+
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            Log.i(LOG_TAG, "isNetworkOk - Network available");
+            return true;
+        } else {
+            Log.w(LOG_TAG, "isNetworkOk - Network not available");
+            return false;
+        }
     }
 
     private void onCancelSearch() {
@@ -133,8 +165,22 @@ public class SearchOffer extends AppCompatActivity implements DatePickerFragment
     public void returnDate(String date) {
         Log.i(LOG_TAG, "returnDate - start");
         dateForSearch = date;
+
+        // Clears the focus out of the various input fields
+        srcCity.clearFocus();
+        destCity.clearFocus();
+        srcCountry.clearFocus();
+        destCountry.clearFocus();
+
+        // Hides the goddamn keyboard
+        InputMethodManager imm = (InputMethodManager) getSystemService(
+                Activity.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+
+        // Set the date as the content of the button
         date_picker_button.setText(dateForSearch);
         Log.i(LOG_TAG, "returnDate - dateForSearch = " + dateForSearch);
+
         Log.i(LOG_TAG, "returnDate - End");
 
     }

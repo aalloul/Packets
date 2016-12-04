@@ -1,7 +1,13 @@
 package com.example.aalloul.packets;
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,6 +25,7 @@ public final class Utilities {
         return BitmapFactory.decodeByteArray(imgByte, 0, imgByte.length);
     }
 
+    // Maps country name to its code
     public static String CountryToCountryCode(String country){
         Log.i(LOG_TAG, "CountryToCountryCode - Start");
         countries.put("Afghanistan","AF");
@@ -281,6 +288,7 @@ public final class Utilities {
 
     }
 
+    // Epoch to date
     public static String Epoch2DateStringSeconds(long epochSeconds, String formatString) {
         Date updatedate = new Date(epochSeconds * 1000);
         SimpleDateFormat format = new SimpleDateFormat(formatString);
@@ -302,6 +310,17 @@ public final class Utilities {
         Date updatedate = new Date(epochSeconds2);
         SimpleDateFormat format = new SimpleDateFormat(formatString);
         return format.format(updatedate);
+    }
+
+    // Gets the current time in ms
+    public static long CurrentTimeMS() {
+        return System.currentTimeMillis();
+    }
+
+    // Hide the keyboard
+    public static void hideKeyboardFrom(Context context, View view) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
 }

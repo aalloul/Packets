@@ -10,7 +10,7 @@ The class is created but is pending a real backend to test it against. More spec
 - Need to check that the payload can be added 
 - Need to update the database with results
 - Need to handle network errors
-
+- check whether input was provided (search and new offer) and if not display message
 ## Add a splash screen and explanations about Shippy
 
 ## Change theme of the app

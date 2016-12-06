@@ -1,12 +1,18 @@
 package com.example.aalloul.packets;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -100,18 +106,102 @@ public class PublishOffer extends AppCompatActivity implements DatePickerFragmen
 
     private void onConfirmNewOffer() {
         Log.i(LOG_TAG, "onConfirmNewOffer - start");
-        toMainActivityIntent = new Intent(this, MainActivity.class);
-        toMainActivityIntent.putExtra(POST_SOURCE_CITY_EXTRA,sendingFromCity.getText().toString());
-        toMainActivityIntent.putExtra(POST_DESTINATION_CITY_EXTRA,sendingToCity.getText().toString());
-        toMainActivityIntent.putExtra(POST_SOURCE_COUNTRY_EXTRA,sendingFromCountry.getText().toString());
-        toMainActivityIntent.putExtra(POST_DESTINATION_COUNTRY_EXTRA,sendingToCountry.getText().toString());
-        toMainActivityIntent.putExtra(POST_DATE_EXTRA,dateForPublication);
-        toMainActivityIntent.putExtra(POST_PERFORM_POST_ACTION,true);
 
-        startActivity(toMainActivityIntent);
-        Log.i(LOG_TAG, "onConfirmNewOffer - End");
+        if (dateForPublication == null) {
+            Log.i(LOG_TAG, "dateForSearch not set");
+            Utilities.makeThesnack(findViewById(R.id.activity_publish_offer),
+                    getResources().getString(R.string.date_send_not_set),
+                    getResources().getString(R.string.okay));
+            return;
+        }
+
+        if (sendingFromCity == null || sendingFromCity.getText().toString().equals("")) {
+            Log.i(LOG_TAG, "sendingFromCity not set");
+            Utilities.makeThesnack(findViewById(R.id.activity_publish_offer),
+                    getResources().getString(R.string.send_source_city),
+                    getResources().getString(R.string.okay));
+            return;
+        }
+
+        if (sendingFromCountry == null || sendingFromCountry.getText().toString().equals("")) {
+            Log.i(LOG_TAG, "sendingFromCountry not set");
+            Utilities.makeThesnack(findViewById(R.id.activity_publish_offer),
+                    getResources().getString(R.string.send_source_country),
+                    getResources().getString(R.string.okay));
+            return;
+        }
+
+        if (sendingToCity == null || sendingToCity.getText().toString().equals("")) {
+            Log.i(LOG_TAG, "sendingToCity not set");
+            Utilities.makeThesnack(findViewById(R.id.activity_publish_offer),
+                    getResources().getString(R.string.send_destination_city),
+                    getResources().getString(R.string.okay));
+            return;
+        }
+
+        if (sendingToCountry == null || sendingToCountry.getText().toString().equals("")) {
+            Log.i(LOG_TAG, "sendingToCity not set");
+            Utilities.makeThesnack(findViewById(R.id.activity_publish_offer),
+                    getResources().getString(R.string.send_destination_country),
+                    getResources().getString(R.string.okay));
+            return;
+        }
+
+        // Start the intent now everything's okay
+        if (isNetworkOk()) {
+            toMainActivityIntent = new Intent(this, MainActivity.class);
+            toMainActivityIntent.putExtra(POST_SOURCE_CITY_EXTRA, sendingFromCity.getText().toString());
+            toMainActivityIntent.putExtra(POST_DESTINATION_CITY_EXTRA, sendingToCity.getText().toString());
+            toMainActivityIntent.putExtra(POST_SOURCE_COUNTRY_EXTRA, sendingFromCountry.getText().toString());
+            toMainActivityIntent.putExtra(POST_DESTINATION_COUNTRY_EXTRA, sendingToCountry.getText().toString());
+            toMainActivityIntent.putExtra(POST_DATE_EXTRA, dateForPublication);
+            toMainActivityIntent.putExtra(POST_PERFORM_POST_ACTION, true);
+            Log.i(LOG_TAG, "onConfirmNewOffer - End");
+            startActivity(toMainActivityIntent);
+        } else {
+            Log.w(LOG_TAG, "onConfirmNewOffer - No network connection found");
+
+            final Snackbar snackbar = Snackbar.make(findViewById(R.id.activity_publish_offer),
+                    getResources().getString(R.string.no_network_connectivity),
+                    Snackbar.LENGTH_INDEFINITE);
+
+            snackbar.setAction(R.string.okay, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    goToSettings(PublishOffer.this);
+                }
+            });
+            snackbar.show();
+        }
     }
 
+    // Tries to open the settings
+    public void goToSettings(AppCompatActivity activity) {
+        try {
+            Intent gpsOptionsIntent = new Intent(Intent.ACTION_MAIN);
+            gpsOptionsIntent.setClassName("com.android.phone", "com.android.phone.Settings");
+            startActivity(gpsOptionsIntent);
+        } catch (Exception e) {
+            Log.w(LOG_TAG,"goToSettings - could not go to Settings");
+        } finally {
+            return;
+        }
+    }
+
+    private boolean isNetworkOk() {
+        Log.i(LOG_TAG, "isNetworkOk - Enter");
+
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            Log.i(LOG_TAG, "isNetworkOk - Network available");
+            return true;
+        } else {
+            Log.w(LOG_TAG, "isNetworkOk - Network not available");
+            return false;
+        }
+    }
     public void newOffershowDatePickerDialog(View v) {
         Log.i(LOG_TAG, "showDatePickerDialog - start");
         DialogFragment newFragment = new DatePickerFragment();
@@ -121,7 +211,23 @@ public class PublishOffer extends AppCompatActivity implements DatePickerFragmen
 
     @Override
     public void returnDate(String date) {
+        // Most important stuff first
         dateForPublication = date;
         date_picker_button.setText(dateForPublication);
+
+        // Clears the focus out of the various input fields
+        sendingFromCity.clearFocus();
+        sendingToCity.clearFocus();
+        sendingToCountry.clearFocus();
+        sendingFromCountry.clearFocus();
+
+        // Hides the goddamn keyboard
+        // TODO this might not work depending on 'recommendations' i.e. if destCity and destCity
+        // are set by default
+        if (!sendingToCity.getText().toString().equals("")) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(
+                    Activity.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+        }
     }
 }

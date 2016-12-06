@@ -6,7 +6,10 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -117,6 +120,48 @@ public class SearchOffer extends AppCompatActivity implements DatePickerFragment
                 destCountry.getText());
         Log.i(LOG_TAG, "onConfirmSearch - thedate = "+dateForSearch);
 
+
+        if (dateForSearch == null ) {
+            Log.i(LOG_TAG,"dateForSearch not set");
+            Utilities.makeThesnack(findViewById(R.id.activity_search_offer),
+                    getResources().getString(R.string.date_send_not_set),
+                    getResources().getString(R.string.okay));
+            return;
+        }
+
+        if (srcCity == null || srcCity.getText().toString().equals("")) {
+            Log.i(LOG_TAG,"srcCity not set");
+            Utilities.makeThesnack(findViewById(R.id.activity_search_offer),
+                    getResources().getString(R.string.send_source_city),
+                    getResources().getString(R.string.okay));
+            return;
+        }
+
+        if (srcCountry == null || srcCountry.getText().toString().equals("")) {
+            Log.i(LOG_TAG,"srcCountry not set");
+            Utilities.makeThesnack(findViewById(R.id.activity_search_offer),
+                    getResources().getString(R.string.send_source_country),
+                    getResources().getString(R.string.okay));
+            return;
+        }
+
+        if (destCity == null || destCity.getText().toString().equals("")) {
+            Log.i(LOG_TAG,"destCity not set");
+            Utilities.makeThesnack(findViewById(R.id.activity_search_offer),
+                    getResources().getString(R.string.send_destination_city),
+                    getResources().getString(R.string.okay));
+            return;
+        }
+
+        if (destCountry == null || destCountry.getText().toString().equals("")) {
+            Log.i(LOG_TAG,"destCountry not set");
+            Utilities.makeThesnack(findViewById(R.id.activity_search_offer),
+                    getResources().getString(R.string.send_destination_country),
+                    getResources().getString(R.string.okay));
+            return;
+        }
+
+        // Start the intent now everything's okay
         if (isNetworkOk()) {
             toMainActivityIntent = new Intent(this, MainActivity.class);
             toMainActivityIntent.putExtra(SEARCH_SOURCE_CITY_EXTRA, srcCity.getText().toString());
@@ -132,9 +177,34 @@ public class SearchOffer extends AppCompatActivity implements DatePickerFragment
             startActivity(toMainActivityIntent);
         } else {
             Log.w(LOG_TAG, "onConfirmSearch - No network connection found");
+
+            final Snackbar snackbar = Snackbar.make(findViewById(R.id.activity_search_offer),
+                    getResources().getString(R.string.no_network_connectivity),
+                    Snackbar.LENGTH_INDEFINITE);
+
+            snackbar.setAction(R.string.okay, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    goToSettings(SearchOffer.this);
+                }
+            });
+            snackbar.show();
         }
         Log.i(LOG_TAG, "onConfirmSearch - End");
 
+    }
+
+    // Tries to open the settings
+    public void goToSettings(AppCompatActivity activity) {
+        try {
+            Intent gpsOptionsIntent = new Intent(Intent.ACTION_MAIN);
+            gpsOptionsIntent.setClassName("com.android.phone", "com.android.phone.Settings");
+            startActivity(gpsOptionsIntent);
+        } catch (Exception e) {
+            Log.w(LOG_TAG,"goToSettings - could not go to Settings");
+        } finally {
+            return;
+        }
     }
 
     private boolean isNetworkOk() {
@@ -142,6 +212,7 @@ public class SearchOffer extends AppCompatActivity implements DatePickerFragment
 
         ConnectivityManager connMgr = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
+
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
             Log.i(LOG_TAG, "isNetworkOk - Network available");
@@ -173,10 +244,13 @@ public class SearchOffer extends AppCompatActivity implements DatePickerFragment
         destCountry.clearFocus();
 
         // Hides the goddamn keyboard
-        InputMethodManager imm = (InputMethodManager) getSystemService(
-                Activity.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-
+        // TODO this might not work depending on 'recommendations' i.e. if destCity and destCity
+        // are set by default
+        if (!destCity.getText().toString().equals("")) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(
+                    Activity.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+        }
         // Set the date as the content of the button
         date_picker_button.setText(dateForSearch);
         Log.i(LOG_TAG, "returnDate - dateForSearch = " + dateForSearch);
@@ -185,3 +259,5 @@ public class SearchOffer extends AppCompatActivity implements DatePickerFragment
 
     }
 }
+
+

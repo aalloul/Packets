@@ -384,7 +384,7 @@ public class BackendInteraction extends IntentService {
             conn.setRequestMethod(operation);
             Log.w(LOG_TAG, "doTheNetworkOperation - setRequestMethod");
             conn.connect();
-            // TODO add the payload
+            // TODO add the payload the data
 //            writeToOutputStream(payload);
 //            Log.w(LOG_TAG, "doTheNetworkOperation - writeToOutputStream done");
 

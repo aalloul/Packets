@@ -21,6 +21,6 @@ The class is created but is pending a real backend to test it against. More spec
 ## Add a screen for security measures
 ## Refactor the "offer" detail page
 ## Wrap every activity change and fragment change by a "try - catch" block
-## Add a feedback button via WhatsApp or email
+## Add a feedback button via WhatsApp or email -- or check integration with freshdesk
 ## Be careful that distances between the sender and the postman should be calculated between streets and not between cities
 ## If search returns no result, suggest to invite friends.

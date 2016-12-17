@@ -2,11 +2,24 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="5dp"
-    android:elevation="5dp"
+    android:elevation="8dp"
     android:background="@android:color/white">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/dot"
+        android:id="@+id/dotfrom"
+        android:scaleX="0.5"
+        android:scaleY="0.5"
+        android:cropToPadding="true"
+        android:scaleType="centerCrop"
+        android:adjustViewBounds="true"
+        android:layout_toRightOf="@+id/layout_left_fragment_item"
+        android:layout_marginRight="10dp" />
 
     <RelativeLayout
         android:id="@+id/layout_left_fragment_item"
@@ -14,7 +27,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_marginRight="10dp">
 
         <TextView
             android:text="TextView"
@@ -31,122 +45,101 @@
             app:srcCompat="@drawable/user"
             android:id="@+id/transporter_picture"
             android:adjustViewBounds="false"
-            android:cropToPadding="true" />
+            android:cropToPadding="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
     </RelativeLayout>
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/plane"
-        android:id="@+id/transport_method"
-        android:adjustViewBounds="false"
-        android:rotationX="0"
-        android:rotationY="0"
-        android:scaleType="fitXY"
-        android:scaleX="0.85"
-        android:scaleY="0.85"
-        android:cropToPadding="false"
-        android:layout_gravity="bottom|right"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="false" />
-
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:id="@+id/table_layout_item"
-        android:layout_alignParentTop="true"
+        app:srcCompat="@drawable/bar"
+        android:id="@+id/bar"
+        android:rotation="90"
         android:layout_toRightOf="@+id/layout_left_fragment_item"
-        android:layout_toEndOf="@+id/layout_left_fragment_item"
-        android:layout_centerVertical="false"
-        android:layout_centerInParent="false">
+        android:layout_marginTop="35dp"
+        android:layout_marginRight="10dp" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp">
-
-            <TextView
-                android:text="Departure date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/sender_departure_date"
-                android:textSize="@dimen/text_size_item_list"
-                android:gravity="right"
-                android:layout_alignTop="@+id/table_layout_item"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginRight="18dp"
-                android:layout_marginEnd="18dp" />
-
-            <TextView
-                android:text="city, country"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/source_city_country"
-                android:layout_marginRight="80dp"
-                android:textSize="@dimen/text_size_item_list" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="5dp">
-            <TextView
-                android:text="Departure date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/sender_arrival_date"
-                android:textSize="@dimen/text_size_item_list"
-                android:gravity="right"
-                android:layout_alignTop="@+id/table_layout_item"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginRight="18dp"
-                android:layout_marginEnd="18dp" />
-
-            <TextView
-                android:text="city, country"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/destination_city_country"
-                android:textSize="@dimen/text_size_item_list" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-
-        </TableRow>
-
-    </TableLayout>
-
-<!--    <TextView
-        android:text="1"
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/sender_number_packages"
-        android:textSize="10sp"
+        app:srcCompat="@drawable/dot"
+        android:id="@+id/dotTo"
+        android:scaleX="0.5"
+        android:scaleY="0.5"
+        android:layout_toRightOf="@+id/layout_left_fragment_item"
+        android:layout_marginTop="69dp"
+        android:layout_marginRight="10dp" />
+
+    <TextView
+        android:text="thecity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/source_city_country"
+        android:layout_toRightOf="@+id/dotfrom"
+        android:layout_marginTop="13dp"
+        android:textSize="14sp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/car"
+        android:id="@+id/transport_method"
+        android:layout_toRightOf="@+id/bar"
+        android:layout_marginTop="35dp" />
+
+    <TextView
+        android:text="theotherCity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/destination_city_country"
+        android:layout_toRightOf="@+id/dotTo"
+        android:layout_marginTop="83dp"
         android:layout_centerInParent="false"
-        android:layout_centerHorizontal="false"
-        android:layout_alignBottom="@+id/transport_method_icon"
-        android:layout_alignLeft="@+id/transport_method_icon"
-        android:layout_marginStart="7dp"
-        android:layout_marginBottom="-30dp" />-->
+        android:layout_centerVertical="false"
+        android:textSize="14sp" />
+
+    <TextView
+        android:text="Sep 10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/sender_departure_date"
+        android:background="@android:color/holo_green_light"
+        android:textColor="@color/cast_expanded_controller_progress_text_color"
+        android:textAllCaps="false"
+        android:textStyle="normal|bold"
+        android:padding="4dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:textSize="14sp" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/packageicon"
         android:id="@+id/package_icom"
-        android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@+id/transport_method"
-        android:layout_toStartOf="@+id/transport_method"
-        android:scaleType="fitXY"
-        android:scaleX="0.85"
-        android:scaleY="0.85" />
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="70dp" />
+
+    <!--    <TextView
+            android:text="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/sender_number_packages"
+            android:textSize="10sp"
+            android:layout_centerInParent="false"
+            android:layout_centerHorizontal="false"
+            android:layout_alignBottom="@+id/transport_method_icon"
+            android:layout_alignLeft="@+id/transport_method_icon"
+            android:layout_marginStart="7dp"
+            android:layout_marginBottom="-30dp" />-->
 
 </RelativeLayout>

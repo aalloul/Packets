@@ -105,18 +105,19 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         }
 
         holder.package_icon.setImageResource(R.drawable.packageicon1);
-        temp = source_city.get(position) +" ("+
-                Utilities.CountryToCountryCode(source_country.get(position)) + ")";
+//        temp = source_city.get(position) +" ("+
+//                Utilities.CountryToCountryCode(source_country.get(position)) + ")";
+        temp = source_city.get(position);
         holder.sourceCityCountry.setText(temp);
         temp = destination_city.get(position) +" ("+
                 Utilities.CountryToCountryCode(destination_country.get(position)) + ")";
         holder.destinationCityCountry.setText(temp);
         temp = thedates.get(position);
-        temp = Utilities.Epoch2DateStringMillis(temp,"dd MMM yyyy ");
+        temp = Utilities.Epoch2DateStringMillis(temp,"dd MMM");
         holder.departure_date.setText(temp);
         temp = theArrivaldates.get(position);
-        temp = Utilities.Epoch2DateStringMillis(temp,"dd MMM yyyy ");
-        holder.arrivalToDestination.setText(temp);
+        temp = Utilities.Epoch2DateStringMillis(temp,"dd MMM");
+//        holder.arrivalToDestination.setText(temp);
         temp = transport_method.get(position);
 
         Log.d(LOG_TAG, "onBindViewHolder - Transport method = " + temp);
@@ -171,7 +172,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
 //        public final TextView number_packages;
         public final ImageView transport_icon;
         public final ImageView transporter_pic;
-        public final TextView arrivalToDestination;
+//        public final TextView arrivalToDestination;
         public final ImageView package_icon;
 
         public ViewHolder(View view) {
@@ -185,7 +186,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
             package_icon = (ImageView) view.findViewById(R.id.package_icom);
             transport_icon = (ImageView) view.findViewById(R.id.transport_method);
             transporter_pic = (ImageView) view.findViewById(R.id.transporter_picture);
-            arrivalToDestination = (TextView) view.findViewById(R.id.sender_arrival_date);
+//            arrivalToDestination = (TextView) view.findViewById(R.id.sender_arrival_date);
 
             Log.i(LOG_TAG, "ViewHolder - Constructor End");
         }

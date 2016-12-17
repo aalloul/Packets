@@ -19,7 +19,7 @@ import android.widget.ImageButton;
  * Use the {@link buttonSearchOffer#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class buttonSearchOffer extends Fragment {
+class buttonSearchOffer extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     private FloatingActionButton button_search_offer,button_publish_new_offer;
     private onSearchButtonInteractionListener mListener;

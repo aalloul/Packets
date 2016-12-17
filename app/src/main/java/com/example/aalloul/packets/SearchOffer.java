@@ -20,7 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-public class SearchOffer extends AppCompatActivity implements DatePickerFragment.TheListener{
+class SearchOffer extends AppCompatActivity implements DatePickerFragment.TheListener{
     // Logging
     private final static String LOG_TAG = SearchOffer.class.getSimpleName();
 

@@ -20,7 +20,7 @@ import java.util.HashMap;
 /**
  * Created by aalloul on 02/07/16.
  */
-public final class Utilities {
+final class Utilities {
     static HashMap<String, String> countries = new HashMap<>();
     final static String LOG_TAG = "Utilities";
 
@@ -30,7 +30,7 @@ public final class Utilities {
     }
 
     // Maps country name to its code
-    public static String CountryToCountryCode(String country){
+    static String CountryToCountryCode(String country){
         Log.i(LOG_TAG, "CountryToCountryCode - Start");
         countries.put("Afghanistan","AF");
         countries.put("Åland Islands","AX");
@@ -293,23 +293,23 @@ public final class Utilities {
     }
 
     // Epoch to date
-    public static String Epoch2DateStringSeconds(long epochSeconds, String formatString) {
+    static String Epoch2DateStringSeconds(long epochSeconds, String formatString) {
         Date updatedate = new Date(epochSeconds * 1000);
         SimpleDateFormat format = new SimpleDateFormat(formatString);
         return format.format(updatedate);
     }
-    public static String Epoch2DateStringSeconds(String epochSeconds, String formatString) {
+    static String Epoch2DateStringSeconds(String epochSeconds, String formatString) {
         Long epochSeconds2 = Long.parseLong(epochSeconds);
         Date updatedate = new Date(epochSeconds2 * 1000);
         SimpleDateFormat format = new SimpleDateFormat(formatString);
         return format.format(updatedate);
     }
-    public static String Epoch2DateStringMillis(long epochSeconds, String formatString) {
+    static String Epoch2DateStringMillis(long epochSeconds, String formatString) {
         Date updatedate = new Date(epochSeconds);
         SimpleDateFormat format = new SimpleDateFormat(formatString);
         return format.format(updatedate);
     }
-    public static String Epoch2DateStringMillis(String epochSeconds, String formatString) {
+    static String Epoch2DateStringMillis(String epochSeconds, String formatString) {
         Long epochSeconds2 = Long.parseLong(epochSeconds);
         Date updatedate = new Date(epochSeconds2);
         SimpleDateFormat format = new SimpleDateFormat(formatString);
@@ -317,18 +317,18 @@ public final class Utilities {
     }
 
     // Gets the current time in ms
-    public static long CurrentTimeMS() {
+    static long CurrentTimeMS() {
         return System.currentTimeMillis();
     }
 
     // Hide the keyboard
-    public static void hideKeyboardFrom(Context context, View view) {
+    static void hideKeyboardFrom(Context context, View view) {
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     // The snackbar
-    public static void makeThesnack(View theview, String the_message, String action_message) {
+    static void makeThesnack(View theview, String the_message, String action_message) {
         final Snackbar snackbar = Snackbar.make(theview, the_message, Snackbar.LENGTH_INDEFINITE);
         snackbar.setAction(action_message, new View.OnClickListener() {
             @Override

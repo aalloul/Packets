@@ -31,7 +31,7 @@ import java.util.HashMap;
 /**
  * Created by aalloul on 03/07/16.
  */
-public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
+class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, ItemFragment.OnListFragmentInteractionListener,
 OfferDetail.OnFragmentInteractionListener, buttonSearchOffer.onSearchButtonInteractionListener{
 

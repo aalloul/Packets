@@ -8,8 +8,20 @@ android {
         applicationId "com.example.aalloul.packets"
         minSdkVersion 15
         targetSdkVersion 23
+        multiDexEnabled true
         versionCode 1
         versionName "1.0"
+    }
+    productFlavors {
+        dev {
+            // Enable pre-dexing to produce an APK that can be tested on
+            // Android 5.0+ without the time-consuming DEX build processes.
+            minSdkVersion 21
+        }
+        prod {
+            // The actual minSdkVersion for the production version.
+            minSdkVersion 15
+        }
     }
     buildTypes {
         release {
@@ -29,4 +41,5 @@ dependencies {
     compile 'com.google.code.gson:gson:2.8.0'
     testCompile 'junit:junit:4.12'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta3'
+    compile 'com.android.support:multidex:1.0.1'
 }

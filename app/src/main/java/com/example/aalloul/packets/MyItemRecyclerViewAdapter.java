@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import static java.lang.Integer.parseInt;
 
 
-public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewAdapter.ViewHolder> {
+class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewAdapter.ViewHolder> {
 
     private final static String LOG_TAG = MyItemRecyclerViewAdapter.class.getSimpleName();
     private Cursor cursor;

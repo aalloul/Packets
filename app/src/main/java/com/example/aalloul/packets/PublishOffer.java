@@ -17,7 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-public class PublishOffer extends AppCompatActivity implements DatePickerFragment.TheListener{
+class PublishOffer extends AppCompatActivity implements DatePickerFragment.TheListener{
 
     //Logging
     private final static String LOG_TAG = PublishOffer.class.getSimpleName();

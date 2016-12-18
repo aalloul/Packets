@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.location.Geocoder;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -25,24 +26,36 @@ import android.view.View;
 import android.widget.Spinner;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.identity.intents.Address;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by aalloul on 03/07/16.
  */
-class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, ItemFragment.OnListFragmentInteractionListener,
 OfferDetail.OnFragmentInteractionListener, MainFragment.OnFragmentInteractionListener,
         DatePickerFragment.TheListener{
 
     // Map permission -- make sure 1 is always for position permission
     protected final int MAP_PERMISSION = 1;
+    protected final int DROP_OFF_LOCATION_REQUEST = 2;
+    protected final int PICK_UP_LOCATION_REQUEST = 3;
+
     protected boolean MAP_PERMISSION_GRANTED = false;
     private GoogleApiClient mGoogleApiClient;
     private Location userLastLocation;
@@ -58,6 +71,7 @@ OfferDetail.OnFragmentInteractionListener, MainFragment.OnFragmentInteractionLis
     private Intent searchIntent, searchPerformAction;
     public final static String SEARCH_SOURCE_CITY_EXTRA = "com.example.aalloul.packets.SEARCHCITY";
     public final static String SEARCH_SOURCE_COUNTRY_EXTRA = "com.example.aalloul.packets.SEARCHCOUNTRY";
+
 
     // Interaction with the new offer publishing
     private Intent postIntent;
@@ -447,5 +461,93 @@ OfferDetail.OnFragmentInteractionListener, MainFragment.OnFragmentInteractionLis
         mainFragment.setDate(date);
     }
 
+    @Override
+    public void onPickUpLocationPressed() {
+        Log.i(LOG_TAG, "onPickUpLocationPressed - Enter");
+        launchTheRequest(PICK_UP_LOCATION_REQUEST);
+    }
+    
+    @Override
+    public void onDropOffLocationPressed() {
+        Log.i(LOG_TAG, "onDropOffLocationPressed - Enter");
+        launchTheRequest(DROP_OFF_LOCATION_REQUEST);
+    }
 
+    protected void launchTheRequest(int reqCode) {
+        try {
+            Intent intent =
+                    new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
+                            .build(this);
+            startActivityForResult(intent, reqCode);
+        } catch (GooglePlayServicesRepairableException e) {
+            Log.e(LOG_TAG, "GooglePlayServicesRepairableException Exception");
+        } catch (GooglePlayServicesNotAvailableException e) {
+            Log.e(LOG_TAG, "GooglePlayServicesNotAvailableException Exception");
+        }
+    }
+
+    protected ArrayList<String> getParsedLocation(LatLng latlong) throws IOException {
+        Geocoder geocoder;
+        List<android.location.Address> addresses;
+        geocoder = new Geocoder(this, Locale.getDefault());
+
+        // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+        addresses = geocoder.getFromLocation(latlong.latitude, latlong.longitude, 1);
+
+        // If any additional address line present than only, check with max available address lines
+        // by getMaxAddressLineIndex()
+        String address = addresses.get(0).getAddressLine(0);
+        String city = addresses.get(0).getLocality();
+        String state = addresses.get(0).getAdminArea();
+        String country = addresses.get(0).getCountryName();
+        String postalCode = addresses.get(0).getPostalCode();
+
+        return new ArrayList<>(Arrays.asList(city, postalCode, country));
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == DROP_OFF_LOCATION_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlaceAutocomplete.getPlace(this, data);
+                Log.i(LOG_TAG, "Place: " + place.getName());
+                if (mainFragment != null ) {
+                    try {
+                        mainFragment.setDrop_off_location(getParsedLocation(place.getLatLng()));
+                    } catch (IOException e) {
+                        Log.e(LOG_TAG, "onActivityResult - IOException from drop off location geocoder");
+                        Log.e(LOG_TAG, e.toString());
+                    }
+                }
+            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+                Status status = PlaceAutocomplete.getStatus(this, data);
+                // TODO: Handle the error.
+                Log.i(LOG_TAG, status.getStatusMessage());
+
+            } else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation.
+            }
+
+        } else if (requestCode == PICK_UP_LOCATION_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlaceAutocomplete.getPlace(this, data);
+                Log.i(LOG_TAG, "Place: " + place.getName());
+                if (mainFragment != null ) {
+                    try {
+                        mainFragment.setPickup_location(getParsedLocation(place.getLatLng()));
+                    } catch (IOException e) {
+                        Log.e(LOG_TAG, "onActivityResult - IOException from pick up location geocoder");
+                        Log.e(LOG_TAG, e.toString());
+                    }
+                    Log.i(LOG_TAG, "get Address" + place.getAddress());
+                }
+            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+                Status status = PlaceAutocomplete.getStatus(this, data);
+                // TODO: Handle the error.
+                Log.i(LOG_TAG, status.getStatusMessage());
+
+            } else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation.
+            }
+        }
+    }
 }

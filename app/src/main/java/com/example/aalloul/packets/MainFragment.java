@@ -2,6 +2,7 @@ package com.example.aalloul.packets;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -17,16 +18,26 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.identity.intents.Address;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.vision.text.Text;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 
 public class MainFragment extends Fragment {
     private static final String ARG_LATLNG = "latlng";
     private Button searchButton, postButton, pickup_date;
     private Spinner number_packages, size_package;
-    private EditText pickup_location, drop_off_location;
-    private TextView pickupdate, numberpackages;
+    private TextView pickupdate, numberpackages, drop_off_location, pickup_location;
     static String dateForPickUp;
+    ArrayList<String> parsedPickupLocation, parsedDropOffLocation;
     private final String LOG_TAG = MainFragment.class.getName();
     private FragmentActivity myContext;
 
@@ -76,6 +87,7 @@ public class MainFragment extends Fragment {
             }
         });
 
+
         postButton= (Button) view.findViewById(R.id.postbutton_main_activity);
         postButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,10 +123,21 @@ public class MainFragment extends Fragment {
         size_package.setAdapter(adapterSizePackage);
 
         // Drop-off and pick up location
-        drop_off_location = (EditText) view.findViewById(R.id.dropofflocation_mainactivity);
-        pickup_location = (EditText) view.findViewById(R.id.pickuplocation_main_activity);
-        pickup_location.setText(null);
+        drop_off_location = (TextView) view.findViewById(R.id.dropofflocation_mainactivity);
+        drop_off_location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onDropOffLocationPressed();
+            }
+        });
 
+        pickup_location = (TextView) view.findViewById(R.id.pickuplocation_main_activity);
+        pickup_location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onPickUpLocationPressed();
+            }
+        });
         return view;
     }
 
@@ -180,6 +203,21 @@ public class MainFragment extends Fragment {
         }
         return size_package.getSelectedItem().toString();
     }
+
+    public void setDrop_off_location(ArrayList<String> locationAddress){
+        String tmp = locationAddress.get(0) +", "+locationAddress.get(1);
+        drop_off_location.setText(tmp);
+        return;
+    }
+
+    public void setPickup_location(ArrayList<String> locationAddress){
+        String tmp = locationAddress.get(0) +", "+locationAddress.get(1);
+        pickup_location.setText(tmp);
+        return;
+    }
+
+
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -194,5 +232,7 @@ public class MainFragment extends Fragment {
         // TODO: Update argument type and name
         void onSearchButtonPressed();
         void onPostButtonPressed();
+        void onDropOffLocationPressed();
+        void onPickUpLocationPressed();
     }
 }

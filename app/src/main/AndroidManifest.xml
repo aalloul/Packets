@@ -32,11 +32,11 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
+            android:value="@string/google_key" />
 
         <activity
             android:name=".MainActivity"
-            android:label="@string/title_activity_find_someone_List">
+            android:label="@string/mainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

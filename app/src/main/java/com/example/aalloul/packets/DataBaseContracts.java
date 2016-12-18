@@ -9,7 +9,7 @@ final class DataBaseContracts {
     // This is a helper class, it allows to define in one single place the datbase and its tables
     // Here each table is a subclass of DatabaseContracts. None of them can be instantiated
     // and they only have ``public static final'' variables.
-    private DataBaseContracts() {};
+    private DataBaseContracts() {}
 
     // types and separators
     public static final String COMMA_SEP = ",";

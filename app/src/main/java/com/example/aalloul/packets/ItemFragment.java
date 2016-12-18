@@ -21,7 +21,7 @@ import java.util.HashMap;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-class ItemFragment extends Fragment {
+public class ItemFragment extends Fragment {
 
     private static final String ARG_COLUMN_COUNT = "1";
     private int mColumnCount = 1;

@@ -1,15 +1,18 @@
 package com.example.aalloul.packets;
 
 
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.support.annotation.NonNull;
@@ -19,21 +22,24 @@ import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.widget.Spinner;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
-
 
 /**
  * Created by aalloul on 03/07/16.
  */
 class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, ItemFragment.OnListFragmentInteractionListener,
-OfferDetail.OnFragmentInteractionListener, buttonSearchOffer.onSearchButtonInteractionListener{
+OfferDetail.OnFragmentInteractionListener, MainFragment.OnFragmentInteractionListener,
+        DatePickerFragment.TheListener{
 
     // Map permission -- make sure 1 is always for position permission
     protected final int MAP_PERMISSION = 1;
@@ -42,13 +48,13 @@ OfferDetail.OnFragmentInteractionListener, buttonSearchOffer.onSearchButtonInter
     private Location userLastLocation;
     private LatLng userLocation;
     private View mLayout;
+    private MainFragment mainFragment;
 
     // Interaction with Backend
     protected static HashMap<String, String> buffered_delayed_data = new HashMap();
     private Backend backend = new Backend();
 
     //Interaction with the offer search activity
-    private Fragment mySearchButtonFragment = buttonSearchOffer.newInstance();
     private Intent searchIntent, searchPerformAction;
     public final static String SEARCH_SOURCE_CITY_EXTRA = "com.example.aalloul.packets.SEARCHCITY";
     public final static String SEARCH_SOURCE_COUNTRY_EXTRA = "com.example.aalloul.packets.SEARCHCOUNTRY";
@@ -68,17 +74,6 @@ OfferDetail.OnFragmentInteractionListener, buttonSearchOffer.onSearchButtonInter
         setContentView(R.layout.main_activity_listview);
         searchPerformAction = getIntent();
 
-        // if this activity is called from the search activity
-        if (searchPerformAction.hasExtra(SearchOffer.SEARCH_PERFORM_SEARCH_ACTION)) {
-            requestUpdateFromBackend(searchPerformAction);
-        }
-
-        // if this activity is called from the new offer activity
-        if (searchPerformAction.hasExtra(PublishOffer.POST_PERFORM_POST_ACTION)) {
-            postNewOfferToBackend(searchPerformAction);
-        }
-
-
         // Create an instance of GoogleAPIClient.
         if (mGoogleApiClient == null) {
             Log.i(LOG_TAG, "onCreate - mGoogleApiClient is null");
@@ -91,12 +86,13 @@ OfferDetail.OnFragmentInteractionListener, buttonSearchOffer.onSearchButtonInter
             Log.i(LOG_TAG, "onCreate - mGoogleApiClient is not null");
         }
 
+
         // Load the fragments
+        mainFragment = MainFragment.newInstance("23423");
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.mainActivity_ListView, ItemFragment.newInstance(1), "Offers")
-                    .add(R.id.mainActivity_SearchButton, mySearchButtonFragment, "search")
+                    .add(R.id.fragmentMain,mainFragment, "MainFragment")
                     .commit();
         }
 
@@ -119,17 +115,6 @@ OfferDetail.OnFragmentInteractionListener, buttonSearchOffer.onSearchButtonInter
         Log.i(LOG_TAG, "postNewOfferToBackend - start");
         Backend backend = new Backend();
         HashMap<String, String> qparams = new HashMap();
-
-        qparams.put("city_to",searchPerformAction
-                .getStringExtra(PublishOffer.POST_DESTINATION_CITY_EXTRA));
-        qparams.put("country_to",searchPerformAction
-                .getStringExtra(PublishOffer.POST_DESTINATION_COUNTRY_EXTRA));
-        qparams.put("city_from",searchPerformAction
-                .getStringExtra(PublishOffer.POST_SOURCE_CITY_EXTRA));
-        qparams.put("country_from",searchPerformAction
-                .getStringExtra(PublishOffer.POST_SOURCE_COUNTRY_EXTRA));
-        qparams.put("ts_from",searchPerformAction
-                .getStringExtra(PublishOffer.POST_DATE_EXTRA));
 
         BackendInteraction.startActionQueryDB(this, qparams, "POST");
 
@@ -256,18 +241,6 @@ OfferDetail.OnFragmentInteractionListener, buttonSearchOffer.onSearchButtonInter
         Log.i(LOG_TAG, "requestUpdateFromBackend - start");
         Backend backend = new Backend();
         HashMap<String, String> qparams = new HashMap();
-
-        qparams.put("city_to",searchPerformAction
-                .getStringExtra(SearchOffer.SEARCH_DESTINATION_CITY_EXTRA));
-        qparams.put("country_to",searchPerformAction
-                .getStringExtra(SearchOffer.SEARCH_DESTINATION_COUNTRY_EXTRA));
-        qparams.put("city_from",searchPerformAction
-                .getStringExtra(SearchOffer.SEARCH_SOURCE_CITY_EXTRA));
-        qparams.put("country_from",searchPerformAction
-                .getStringExtra(SearchOffer.SEARCH_SOURCE_COUNTRY_EXTRA));
-        qparams.put("ts_from",searchPerformAction
-                .getStringExtra(SearchOffer.SEARCH_DATE_EXTRA));
-
         BackendInteraction.startActionQueryDB(this, qparams, "GET");
 
         Log.i(LOG_TAG, "requestUpdateFromBackend - exit");
@@ -320,7 +293,6 @@ OfferDetail.OnFragmentInteractionListener, buttonSearchOffer.onSearchButtonInter
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.mainActivity_ListView, detailsFragment, "rageComicDetails")
-                .remove(mySearchButtonFragment)
                 .addToBackStack(null)
                 .commit();
 
@@ -348,26 +320,132 @@ OfferDetail.OnFragmentInteractionListener, buttonSearchOffer.onSearchButtonInter
         Log.i(LOG_TAG, "onMessageButtonPress - Exit");
     }
 
+    private boolean isNetworkOk() {
+        Log.i(LOG_TAG, "isNetworkOk - Enter");
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            Log.i(LOG_TAG, "isNetworkOk - Network available");
+            return true;
+        } else {
+            Log.w(LOG_TAG, "isNetworkOk - Network not available");
+            return false;
+        }
+    }
+
+    // Tries to open the settings 
+    public void goToSettings(AppCompatActivity activity) {
+        try {
+            Intent gpsOptionsIntent = new Intent(Intent.ACTION_MAIN);
+            gpsOptionsIntent.setClassName("com.android.phone", "com.android.phone.Settings");
+            startActivity(gpsOptionsIntent);
+        } catch (Exception e) {
+            Log.w(LOG_TAG, "goToSettings - could not go to Settings");
+        }
+    }
+
+    // Checks the inputs from the Main Activity
+    boolean checkInputs() {
+        if (!isNetworkOk()) {
+            final Snackbar snackbar = Snackbar.make(findViewById(R.id.mainActivity_ListView),
+                    getResources().getString(R.string.no_network_connectivity),
+                    Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction(R.string.okay, new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    goToSettings(MainActivity.this);
+                }
+            });
+            snackbar.show();
+            return false ;
+        }
+
+        String pickuplocation = mainFragment.getPickupLocation();
+        if (pickuplocation == null || pickuplocation.equals("")) {
+            Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
+                    getResources().getString(R.string.pickup_location_not_set),
+                    getResources().getString(R.string.okay)
+            );
+            return false ;
+        }
+
+        Log.i(LOG_TAG, "pick up location = "+ pickuplocation);
+
+        String dateforpickup = mainFragment.getDateForPickUp();
+        if ( dateforpickup == null) {
+            Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
+                    getResources().getString(R.string.date_send_not_set),
+                    getResources().getString(R.string.okay)
+            );
+            return false ;
+        }
+        Log.i(LOG_TAG, "date of pickup= "+ dateforpickup);
+
+        String numberPackages = mainFragment.getNumberPackages();
+        if ( numberPackages == null) {
+            Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
+                    getResources().getString(R.string.size_packages_not_set),
+                    getResources().getString(R.string.okay)
+            );
+            return false ;
+        }
+        Log.i(LOG_TAG, "Number of Pakcages = "+ numberPackages);
+
+        String sizePackages = mainFragment.getSizePackage();
+        if ( sizePackages == null) {
+            Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
+                    getResources().getString(R.string.number_packages_not_set),
+                    getResources().getString(R.string.okay)
+            );
+            return false ;
+        }
+        Log.i(LOG_TAG, "Number of Pakcages = "+ numberPackages);
+
+
+        String dropOffLocation = mainFragment.getDropOffLocation();
+        if ( dropOffLocation == null || dropOffLocation.equals("")) {
+            Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
+                    getResources().getString(R.string.dropoff_location_not_set),
+                    getResources().getString(R.string.okay)
+            );
+            return false ;
+        }
+        Log.i(LOG_TAG, "Drop off location = "+ dropOffLocation);
+
+
+
+        return true;
+    }
+
     // Method for search_button
     @Override
     public void onSearchButtonPressed() {
         Log.i(LOG_TAG, "onSearchButtonPressed - start");
-        searchIntent = new Intent(this, SearchOffer.class);
-        searchIntent.putExtra(SEARCH_SOURCE_CITY_EXTRA, "AMSTERDAM");
-        searchIntent.putExtra(SEARCH_SOURCE_COUNTRY_EXTRA, "NETHERLANDS");
-        startActivity(searchIntent);
+
+        if (checkInputs()) {
+            // TODO launch the search
+        }
+
 
         Log.i(LOG_TAG, "onSearchButtonPressed - exit");
     }
 
-    // Method for post new offer button
-    public void onPostNewOfferPressed() {
+    // Method for publish offer
+    @Override
+    public void onPostButtonPressed() {
         Log.i(LOG_TAG, "onPostNewOfferPressed - start");
-        postIntent = new Intent(this, PublishOffer.class);
-        postIntent.putExtra(OFFER_SOURCE_CITY_EXTRA, "AMSTERDAM");
-        postIntent.putExtra(OFFER_SOURCE_COUNTRY_EXTRA, "NETHERLANDS");
-        startActivity(postIntent);
-
+        if (checkInputs()) {
+            // TODO launch the search
+        }
         Log.i(LOG_TAG, "onPostNewOfferPressed - exit");
     }
+
+
+    @Override
+    public void returnDate(String date) {
+        Log.i(LOG_TAG, "returnDate - called");
+        mainFragment.setDate(date);
+    }
+
+
 }

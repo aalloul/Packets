@@ -421,7 +421,7 @@ class BackendInteraction extends IntentService {
     }
 
     // Read the input stream and output the encoded string
-    private String readIt(InputStream stream, int len) throws IOException, UnsupportedEncodingException {
+    private String readIt(InputStream stream, int len) throws IOException {
         Reader reader;
         reader = new InputStreamReader(stream, "UTF-8");
         char[] buffer = new char[len];

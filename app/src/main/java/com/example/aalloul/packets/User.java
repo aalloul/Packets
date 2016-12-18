@@ -51,5 +51,5 @@ class User extends Person{
 
     protected void postUpdate(){
 
-    };
+    }
 }

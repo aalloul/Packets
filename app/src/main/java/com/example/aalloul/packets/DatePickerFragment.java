@@ -9,6 +9,7 @@ import android.app.DatePickerDialog;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -18,7 +19,7 @@ import java.util.Calendar;
  * Created by adamalloul on 16/10/2016.
  */
 
-class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener{
 
     // create a local variable for identifying the class where the log statements come from
     private final static String LOG_TAG = DatePickerFragment.class.getSimpleName();

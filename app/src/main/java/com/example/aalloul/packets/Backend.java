@@ -29,7 +29,7 @@ class Backend {
     public static final int POST_DATA_CODE=2;
 
     // first time_stamp
-    public static long time_stamp = System.currentTimeMillis();;
+    public static long time_stamp = System.currentTimeMillis();
 
 
     public Backend() {

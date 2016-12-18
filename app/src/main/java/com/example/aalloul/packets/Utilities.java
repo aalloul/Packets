@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -314,6 +315,18 @@ final class Utilities {
         Date updatedate = new Date(epochSeconds2);
         SimpleDateFormat format = new SimpleDateFormat(formatString);
         return format.format(updatedate);
+    }
+
+    static String DateToDate(String date, String inputFormat,String outputFormat) {
+        SimpleDateFormat input = new SimpleDateFormat(inputFormat);
+        SimpleDateFormat output = new SimpleDateFormat(outputFormat);
+        String resu = "";
+        try {
+            resu = output.format(input.parse(date));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return resu;
     }
 
     // Gets the current time in ms

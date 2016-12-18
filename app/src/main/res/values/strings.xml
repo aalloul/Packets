@@ -9,15 +9,26 @@
     <string name="sendtotext">Send To</string>
     <string name="title_activity_the_search">Search for available offers</string>
     <string name="title_activity_publish_offer">Publish a new offer</string>
-    <string name="date_send_not_set">Please provide the sending date</string>
+    <string name="date_send_not_set">Please provide the pick-up date</string>
     <string name="date_receive_not_set">Please provide the reception date</string>
-    <string name="send_destination_city">Please provide the destination city</string>
-    <string name="send_destination_country">Please provide the destination country</string>
-    <string name="send_source_city">Please provide the source city</string>
-    <string name="send_source_country">Please provide the source country</string>
+    <string name="dropoff_location_not_set">Please provide the drop-off location</string>
+    <string name="pickup_location_not_set">Please provide the pick-up location</string>
     <string name="no_network_connectivity">Please enable data communication</string>
+    <string name="number_packages_not_set">Please provide the number of packages</string>
+    <string name="size_packages_not_set">Please provide the size of the packages</string>
+
     <!--This okay is displayed when input is missing when searching/posting offers -->
     <string name="okay">Ok</string>
+    <string name="explanation_main_activity">From here, you can publish or search for available offers</string>
+    <string name="enter_pickup_location">Pick-up location</string>
+    <string name="enter_dropoff_location">Drop-off location</string>
+    <string name="searchbutton_main_activity">Search</string>
+    <string name="postbutton_main_activity">Publish</string>
+    <string-array name="package_size">
+        <item>Small</item>
+        <item>Medium</item>
+        <item>Large</item>
+    </string-array>
 
 
     <!-- ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~  -->
@@ -35,4 +46,18 @@
     <string name="search_end_point">querytheengine</string>
     <string name="usage_end_point">usageendpoint</string>
     <string name="postoffer_end_point">postoffer</string>
+    <!-- Number Of Packages -->
+    <string-array name="number_packages_array">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+    </string-array>
 </resources>

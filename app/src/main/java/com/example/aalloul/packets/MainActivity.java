@@ -1,7 +1,6 @@
 package com.example.aalloul.packets;
 
 
-import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,8 +11,9 @@ import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.support.annotation.NonNull;
@@ -23,14 +23,12 @@ import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
-import android.widget.Spinner;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.identity.intents.Address;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
@@ -49,12 +47,13 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, ItemFragment.OnListFragmentInteractionListener,
 OfferDetail.OnFragmentInteractionListener, MainFragment.OnFragmentInteractionListener,
-        DatePickerFragment.TheListener{
+        DatePickerFragment.TheListener, RegistrationFragment.RegistrationFragmentListener{
 
     // Map permission -- make sure 1 is always for position permission
     protected final int MAP_PERMISSION = 1;
     protected final int DROP_OFF_LOCATION_REQUEST = 2;
     protected final int PICK_UP_LOCATION_REQUEST = 3;
+    protected final int USER_LOCATION_REQUEST = 4;
 
     protected boolean MAP_PERMISSION_GRANTED = false;
     private GoogleApiClient mGoogleApiClient;
@@ -62,6 +61,7 @@ OfferDetail.OnFragmentInteractionListener, MainFragment.OnFragmentInteractionLis
     private LatLng userLocation;
     private View mLayout;
     private MainFragment mainFragment;
+    private RegistrationFragment registrationFragment;
 
     // Interaction with Backend
     protected static HashMap<String, String> buffered_delayed_data = new HashMap();
@@ -100,14 +100,19 @@ OfferDetail.OnFragmentInteractionListener, MainFragment.OnFragmentInteractionLis
             Log.i(LOG_TAG, "onCreate - mGoogleApiClient is not null");
         }
 
-
-        // Load the fragments
-        mainFragment = MainFragment.newInstance("23423");
         if (savedInstanceState == null) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.fragmentMain,mainFragment, "MainFragment")
-                    .commit();
+            Log.i(LOG_TAG,"onCreate - savedInstanceState is null");
+            FragmentTransaction fmg = getSupportFragmentManager().beginTransaction();
+            mainFragment = MainFragment.newInstance("23423");
+            registrationFragment = RegistrationFragment.newInstance(new LatLng(1.0,2.0));
+            if (isAlreadyRegistered()) {
+                Log.i(LOG_TAG, "onCreate - user already registered");
+                fmg.add(R.id.mainActivity_ListView,  mainFragment, "mainFragment");
+            } else {
+                Log.i(LOG_TAG, "onCreate - user not registered");
+                fmg.add(R.id.mainActivity_ListView, registrationFragment, "MainFragment");
+            }
+            fmg.commit();
         }
 
 
@@ -123,6 +128,11 @@ OfferDetail.OnFragmentInteractionListener, MainFragment.OnFragmentInteractionLis
                 .registerReceiver(receiver, new IntentFilter("newDataHasArrived"));
 
         Log.i(LOG_TAG, "OnCreate - Exit");
+    }
+
+    private boolean isAlreadyRegistered() {
+        Log.i(LOG_TAG, "isAlreadyRegistered - Enter");
+        return false;
     }
 
     private void postNewOfferToBackend(Intent searchPerformAction) {
@@ -306,7 +316,7 @@ OfferDetail.OnFragmentInteractionListener, MainFragment.OnFragmentInteractionLis
                         phone_number, comments);
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.mainActivity_ListView, detailsFragment, "rageComicDetails")
+                .replace(R.id.mainActivity_ListView, detailsFragment, "OfferDetail")
                 .addToBackStack(null)
                 .commit();
 
@@ -473,7 +483,9 @@ OfferDetail.OnFragmentInteractionListener, MainFragment.OnFragmentInteractionLis
         launchTheRequest(DROP_OFF_LOCATION_REQUEST);
     }
 
+    // Launches the request to Google
     protected void launchTheRequest(int reqCode) {
+        // TODO better handle the exception - e.g. accept input or check internet connectivity
         try {
             Intent intent =
                     new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
@@ -486,6 +498,7 @@ OfferDetail.OnFragmentInteractionListener, MainFragment.OnFragmentInteractionLis
         }
     }
 
+    // Calls geo coder to get the city and country
     protected ArrayList<String> getParsedLocation(LatLng latlong) throws IOException {
         Geocoder geocoder;
         List<android.location.Address> addresses;
@@ -549,5 +562,26 @@ OfferDetail.OnFragmentInteractionListener, MainFragment.OnFragmentInteractionLis
                 // The user canceled the operation.
             }
         }
+    }
+
+    @Override
+    public void onUserPicturePressed() {
+
+    }
+
+    @Override
+    public void onUserLocationPressed() {
+        Log.i(LOG_TAG, "onDropOffLocationPressed - Enter");
+        launchTheRequest(USER_LOCATION_REQUEST);
+    }
+
+    @Override
+    public void onRegisterMePressed() {
+
+    }
+
+    @Override
+    public void onRegisterLaterPressed() {
+
     }
 }

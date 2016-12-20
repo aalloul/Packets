@@ -11,7 +11,6 @@ import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -33,10 +32,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.model.LatLng;
-
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -103,13 +99,13 @@ OfferDetail.OnFragmentInteractionListener, MainFragment.OnFragmentInteractionLis
         if (savedInstanceState == null) {
             Log.i(LOG_TAG,"onCreate - savedInstanceState is null");
             FragmentTransaction fmg = getSupportFragmentManager().beginTransaction();
-            mainFragment = MainFragment.newInstance("23423");
-            registrationFragment = RegistrationFragment.newInstance(new LatLng(1.0,2.0));
             if (isAlreadyRegistered()) {
                 Log.i(LOG_TAG, "onCreate - user already registered");
+                mainFragment = MainFragment.newInstance("23423");
                 fmg.add(R.id.mainActivity_ListView,  mainFragment, "mainFragment");
             } else {
                 Log.i(LOG_TAG, "onCreate - user not registered");
+                registrationFragment = RegistrationFragment.newInstance(new LatLng(1.0,2.0));
                 fmg.add(R.id.mainActivity_ListView, registrationFragment, "MainFragment");
             }
             fmg.commit();
@@ -132,7 +128,16 @@ OfferDetail.OnFragmentInteractionListener, MainFragment.OnFragmentInteractionLis
 
     private boolean isAlreadyRegistered() {
         Log.i(LOG_TAG, "isAlreadyRegistered - Enter");
+        //TODO check whether user file already exists
         return false;
+    }
+
+    private void storeUserDetails() {
+        //TODO store the user details
+    }
+    
+    private void retrieveUserDetails() {
+        //TODO retrieve user details to pass on to MainFragment
     }
 
     private void postNewOfferToBackend(Intent searchPerformAction) {
@@ -157,19 +162,39 @@ OfferDetail.OnFragmentInteractionListener, MainFragment.OnFragmentInteractionLis
     @Override
     public void onConnected(Bundle connectionHint) {
         Log.i(LOG_TAG, "onConnected - Enter ");
-        checkPermission();
+        HashMap<String, String> tmp;
+        LatLng latLng;
+
+        if (checkPermission()) {
+            userLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                    mGoogleApiClient);
+            if (userLocation == null) {
+                Log.i(LOG_TAG, "onConnected - Location not available yet");
+                return;
+            }
+            if (registrationFragment != null) {
+
+                latLng= new LatLng(userLastLocation.getLatitude(), userLastLocation.getLongitude());
+                try {
+                    tmp = getParsedLocation(latLng);
+                    registrationFragment.set_user_detailed_location(tmp);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         Log.i(LOG_TAG, "onConnected - Exit ");
     }
 
-    protected void checkPermission() {
-        // TODO better handling of permissions
+    protected boolean checkPermission() {
         Log.i(LOG_TAG, "Start checking permissions");
 
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Log.i(LOG_TAG, "Permission not granted");
 
             // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    android.Manifest.permission.ACCESS_FINE_LOCATION)) {
                 Log.i(LOG_TAG, "Apparently we should show an explanation");
                 Snackbar.make(findViewById(R.id.mainActivity_ListView), R.string.permission_position_explanation,
                         Snackbar.LENGTH_INDEFINITE)
@@ -183,8 +208,6 @@ OfferDetail.OnFragmentInteractionListener, MainFragment.OnFragmentInteractionLis
                         })
                         .show();
                 Log.i(LOG_TAG, "explanation displayed");
-                if (MAP_PERMISSION_GRANTED) userLastLocation = LocationServices.FusedLocationApi
-                        .getLastLocation(mGoogleApiClient);
 
             } else {
                 // No explanation needed, we can request the permission.
@@ -192,13 +215,13 @@ OfferDetail.OnFragmentInteractionListener, MainFragment.OnFragmentInteractionLis
                 ActivityCompat.requestPermissions(this,
                         new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                         MAP_PERMISSION);
-                if (MAP_PERMISSION_GRANTED) userLastLocation = LocationServices.FusedLocationApi
-                        .getLastLocation(mGoogleApiClient);
             }
+            return false;
+        } else {
+            Log.i(LOG_TAG, "Permission already granted");
+            MAP_PERMISSION_GRANTED = true;
+            return true;
         }
-        Log.i(LOG_TAG, "Permission already granted");
-        MAP_PERMISSION_GRANTED = true;
-        userLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
     }
 
     // Handle the permission request result
@@ -212,53 +235,18 @@ OfferDetail.OnFragmentInteractionListener, MainFragment.OnFragmentInteractionLis
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.i(LOG_TAG, "onRequestPermissionsResult - Position permission granted");
-
                     // permission was granted, yay! Do your thing mama!
-                    MAP_PERMISSION_GRANTED = true;
+
                 } else {
                     Log.i(LOG_TAG, "onRequestPermissionsResult - Position permission denied");
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                    Snackbar.make(findViewById(R.id.map), R.string.explain_usage_search,
-                            Snackbar.LENGTH_INDEFINITE)
-                            .setAction("Ok", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {//don't don anything
-                                }
-                            })
-                            .show();
-                    MAP_PERMISSION_GRANTED = false;
+                    // permission denied, boo!
                 }
                 return;
             }
 
-            // other 'case' lines to check for other
-            // permissions this app might request
         }
         Log.i(LOG_TAG, "onRequestPermissionsResult - Exit");
     }
-
-//
-//    protected void updatePosition(){
-//        if (! MAP_PERMISSION_GRANTED) return;
-//
-//        Log.i(LOG_TAG, "updatePosition - Enter");
-//
-//        if (mGoogleApiClient != null) {
-//            Log.i(LOG_TAG, "updatePosition - mGoogleApiClient is not null");
-//            userLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-//                    mGoogleApiClient);
-//        } else {
-//            Log.i(LOG_TAG, "updatePosition - mGoogleApiClient is null");
-//        }
-//
-//        if (userLastLocation != null) {
-//            Log.i(LOG_TAG, "updatePosition - mLastLocation not null");
-//            userLocation = new LatLng(userLastLocation.getLatitude(), userLastLocation.getLongitude());
-//        } else {
-//            Log.i(LOG_TAG,"updatePosition - userLocation is null");
-//        }
-//    }
 
 
     public void requestUpdateFromBackend(Intent searchPerformAction){
@@ -369,7 +357,7 @@ OfferDetail.OnFragmentInteractionListener, MainFragment.OnFragmentInteractionLis
     }
 
     // Checks the inputs from the Main Activity
-    boolean checkInputs() {
+    boolean checkMainFragmentInputs() {
         if (!isNetworkOk()) {
             final Snackbar snackbar = Snackbar.make(findViewById(R.id.mainActivity_ListView),
                     getResources().getString(R.string.no_network_connectivity),
@@ -446,7 +434,7 @@ OfferDetail.OnFragmentInteractionListener, MainFragment.OnFragmentInteractionLis
     public void onSearchButtonPressed() {
         Log.i(LOG_TAG, "onSearchButtonPressed - start");
 
-        if (checkInputs()) {
+        if (checkMainFragmentInputs()) {
             // TODO launch the search
         }
 
@@ -458,7 +446,7 @@ OfferDetail.OnFragmentInteractionListener, MainFragment.OnFragmentInteractionLis
     @Override
     public void onPostButtonPressed() {
         Log.i(LOG_TAG, "onPostNewOfferPressed - start");
-        if (checkInputs()) {
+        if (checkMainFragmentInputs()) {
             // TODO launch the search
         }
         Log.i(LOG_TAG, "onPostNewOfferPressed - exit");
@@ -474,17 +462,17 @@ OfferDetail.OnFragmentInteractionListener, MainFragment.OnFragmentInteractionLis
     @Override
     public void onPickUpLocationPressed() {
         Log.i(LOG_TAG, "onPickUpLocationPressed - Enter");
-        launchTheRequest(PICK_UP_LOCATION_REQUEST);
+        launchPlaceAutoCompleteRequest(PICK_UP_LOCATION_REQUEST);
     }
     
     @Override
     public void onDropOffLocationPressed() {
         Log.i(LOG_TAG, "onDropOffLocationPressed - Enter");
-        launchTheRequest(DROP_OFF_LOCATION_REQUEST);
+        launchPlaceAutoCompleteRequest(DROP_OFF_LOCATION_REQUEST);
     }
 
-    // Launches the request to Google
-    protected void launchTheRequest(int reqCode) {
+    // Launches the request to Google Places
+    protected void launchPlaceAutoCompleteRequest(int reqCode) {
         // TODO better handle the exception - e.g. accept input or check internet connectivity
         try {
             Intent intent =
@@ -499,7 +487,7 @@ OfferDetail.OnFragmentInteractionListener, MainFragment.OnFragmentInteractionLis
     }
 
     // Calls geo coder to get the city and country
-    protected ArrayList<String> getParsedLocation(LatLng latlong) throws IOException {
+    protected HashMap<String, String> getParsedLocation(LatLng latlong) throws IOException {
         Geocoder geocoder;
         List<android.location.Address> addresses;
         geocoder = new Geocoder(this, Locale.getDefault());
@@ -509,79 +497,136 @@ OfferDetail.OnFragmentInteractionListener, MainFragment.OnFragmentInteractionLis
 
         // If any additional address line present than only, check with max available address lines
         // by getMaxAddressLineIndex()
-        String address = addresses.get(0).getAddressLine(0);
-        String city = addresses.get(0).getLocality();
-        String state = addresses.get(0).getAdminArea();
-        String country = addresses.get(0).getCountryName();
-        String postalCode = addresses.get(0).getPostalCode();
+        HashMap<String, String> tmp = new HashMap<>();
+        tmp.put("address",addresses.get(0).getAddressLine(0));
+        tmp.put("city", addresses.get(0).getLocality());
+        tmp.put("state",addresses.get(0).getAdminArea());
+        tmp.put("country", addresses.get(0).getCountryName());
+        tmp.put("postalCode", addresses.get(0).getPostalCode());
 
-        return new ArrayList<>(Arrays.asList(city, postalCode, country));
+        return tmp;
     }
+
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == DROP_OFF_LOCATION_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                Place place = PlaceAutocomplete.getPlace(this, data);
-                Log.i(LOG_TAG, "Place: " + place.getName());
-                if (mainFragment != null ) {
-                    try {
-                        mainFragment.setDrop_off_location(getParsedLocation(place.getLatLng()));
-                    } catch (IOException e) {
-                        Log.e(LOG_TAG, "onActivityResult - IOException from drop off location geocoder");
-                        Log.e(LOG_TAG, e.toString());
+        switch (requestCode) {
+            case DROP_OFF_LOCATION_REQUEST:
+                if (resultCode == RESULT_OK) {
+                    Place place = PlaceAutocomplete.getPlace(this, data);
+                    Log.i(LOG_TAG, "Place: " + place.getName());
+                    if (mainFragment != null) {
+                        try {
+                            mainFragment.setDrop_off_location(getParsedLocation(place.getLatLng()));
+                        } catch (IOException e) {
+                            Log.e(LOG_TAG, "onActivityResult - IOException from drop off location geocoder");
+                            Log.e(LOG_TAG, e.toString());
+                        }
                     }
+                } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+                    Status status = PlaceAutocomplete.getStatus(this, data);
+                    // TODO: Handle the error.
+                    Log.i(LOG_TAG, status.getStatusMessage());
+
+                } else if (resultCode == RESULT_CANCELED) {
+                    // The user canceled the operation.
                 }
-            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
-                Status status = PlaceAutocomplete.getStatus(this, data);
-                // TODO: Handle the error.
-                Log.i(LOG_TAG, status.getStatusMessage());
+                break;
 
-            } else if (resultCode == RESULT_CANCELED) {
-                // The user canceled the operation.
-            }
-
-        } else if (requestCode == PICK_UP_LOCATION_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                Place place = PlaceAutocomplete.getPlace(this, data);
-                Log.i(LOG_TAG, "Place: " + place.getName());
-                if (mainFragment != null ) {
-                    try {
-                        mainFragment.setPickup_location(getParsedLocation(place.getLatLng()));
-                    } catch (IOException e) {
-                        Log.e(LOG_TAG, "onActivityResult - IOException from pick up location geocoder");
-                        Log.e(LOG_TAG, e.toString());
+            case PICK_UP_LOCATION_REQUEST:
+                if (resultCode == RESULT_OK) {
+                    Place place = PlaceAutocomplete.getPlace(this, data);
+                    Log.i(LOG_TAG, "Place: " + place.getName());
+                    if (mainFragment != null) {
+                        try {
+                            mainFragment.setPickup_location(getParsedLocation(place.getLatLng()));
+                        } catch (IOException e) {
+                            Log.e(LOG_TAG, "onActivityResult - IOException from pick up location geocoder");
+                            Log.e(LOG_TAG, e.toString());
+                        }
+                        Log.i(LOG_TAG, "get Address" + place.getAddress());
                     }
-                    Log.i(LOG_TAG, "get Address" + place.getAddress());
-                }
-            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
-                Status status = PlaceAutocomplete.getStatus(this, data);
-                // TODO: Handle the error.
-                Log.i(LOG_TAG, status.getStatusMessage());
+                } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+                    Status status = PlaceAutocomplete.getStatus(this, data);
+                    // TODO: Handle the error.
+                    Log.i(LOG_TAG, status.getStatusMessage());
 
-            } else if (resultCode == RESULT_CANCELED) {
-                // The user canceled the operation.
-            }
+                } else if (resultCode == RESULT_CANCELED) {
+                    // The user canceled the operation.
+                }
+                break;
+
+            case USER_LOCATION_REQUEST:
+                if (resultCode == RESULT_OK) {
+                    Place place = PlaceAutocomplete.getPlace(this, data);
+                    Log.i(LOG_TAG, "Place: " + place.getName());
+                    if (registrationFragment != null) {
+                        try {
+                            registrationFragment.set_user_detailed_location(
+                                    getParsedLocation(place.getLatLng()));
+                        } catch (IOException e) {
+                            Log.e(LOG_TAG, "onActivityResult - IOException from pick up location " +
+                                    "geocoder");
+                            Log.e(LOG_TAG, e.toString());
+                        }
+                        Log.i(LOG_TAG, "get Address" + place.getAddress());
+                    }
+                } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+                    Status status = PlaceAutocomplete.getStatus(this, data);
+                    // TODO: Handle the error.
+                    Log.i(LOG_TAG, status.getStatusMessage());
+
+                } else if (resultCode == RESULT_CANCELED) {
+                    // The user canceled the operation.
+                }
+                break;
         }
     }
 
+
     @Override
     public void onUserPicturePressed() {
+        // TODO handle user providing picture
 
     }
 
     @Override
     public void onUserLocationPressed() {
         Log.i(LOG_TAG, "onDropOffLocationPressed - Enter");
-        launchTheRequest(USER_LOCATION_REQUEST);
+        launchPlaceAutoCompleteRequest(USER_LOCATION_REQUEST);
     }
 
     @Override
     public void onRegisterMePressed() {
-
+        Log.i(LOG_TAG, "onRegisterMePressed - Enter");
+        if (!registrationFragment.isInputOk()) {
+            Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
+                    getResources().getString(R.string.registration_input_incomplete),
+                    getResources().getString(R.string.okay));
+            return;
+        }
+        storeUserDetails();
+        if (mainFragment == null) {
+            // TODO pass on the user data
+            mainFragment = MainFragment.newInstance("");
+        }
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.mainActivity_ListView, mainFragment, "MainFragment")
+                .addToBackStack(null)
+                .commit();
     }
 
     @Override
     public void onRegisterLaterPressed() {
-
+        if (mainFragment == null) {
+            mainFragment = MainFragment.newInstance("");
+        }
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.mainActivity_ListView, mainFragment, "MainFragment")
+                .addToBackStack(null)
+                .commit();
     }
 }

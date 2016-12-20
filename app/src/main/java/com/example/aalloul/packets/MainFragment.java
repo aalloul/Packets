@@ -27,6 +27,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.vision.text.Text;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -40,6 +41,7 @@ public class MainFragment extends Fragment {
     ArrayList<String> parsedPickupLocation, parsedDropOffLocation;
     private final String LOG_TAG = MainFragment.class.getName();
     private FragmentActivity myContext;
+    private HashMap<String, String> drop_off_detailed_location, pick_up_detailed_location;
 
     // TODO: Rename and change types of parameters
     private String mLatLng;
@@ -204,20 +206,27 @@ public class MainFragment extends Fragment {
         return size_package.getSelectedItem().toString();
     }
 
-    public void setDrop_off_location(ArrayList<String> locationAddress){
-        String tmp = locationAddress.get(0) +", "+locationAddress.get(1);
+    public void setDrop_off_location(HashMap<String, String> locationAddress){
+        drop_off_detailed_location = locationAddress;
+        String tmp = locationAddress.get("city") +", "+locationAddress.get("postalCode");
         drop_off_location.setText(tmp);
         return;
     }
 
-    public void setPickup_location(ArrayList<String> locationAddress){
-        String tmp = locationAddress.get(0) +", "+locationAddress.get(1);
+    public void setPickup_location(HashMap<String, String> locationAddress){
+        pick_up_detailed_location = locationAddress;
+        String tmp = locationAddress.get("city") +", "+locationAddress.get("postalCode");
         pickup_location.setText(tmp);
         return;
     }
 
+    public HashMap<String, String> getDrop_off_detailed_location(){
+        return drop_off_detailed_location;
+    }
 
-
+    public HashMap<String, String> getPick_up_detailed_location() {
+        return pick_up_detailed_location;
+    }
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated

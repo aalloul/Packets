@@ -24,6 +24,7 @@
     <string name="user_current_city">Enter current city</string>
     <string name="register_me">Register!</string>
     <string name="register_not_now">Later</string>
+    <string name="registration_input_incomplete">Please fill in all the blanks for the registration</string>
 
     <!--This okay is displayed when input is missing when searching/posting offers -->
     <string name="okay">Ok</string>

@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class RegistrationFragment extends Fragment {
@@ -29,6 +30,7 @@ public class RegistrationFragment extends Fragment {
     private EditText firstname, surname, phone_number;
     private TextView location;
     private Button registerMe, registerLater;
+    private HashMap<String, String> user_detailed_location = new HashMap<>();
 
     private RegistrationFragmentListener mListener;
 
@@ -43,7 +45,6 @@ public class RegistrationFragment extends Fragment {
      * @param latlng Parameter 1.
      * @return A new instance of fragment RegistrationPage.
      */
-    // TODO: Rename and change types and number of parameters
     public static RegistrationFragment newInstance(LatLng latlng) {
         RegistrationFragment fragment = new RegistrationFragment();
         Bundle args = new Bundle();
@@ -135,14 +136,18 @@ public class RegistrationFragment extends Fragment {
         mListener = null;
     }
 
-    public void set_user_location(ArrayList<String> locationAddress){
-        String tmp = locationAddress.get(0) +", "+locationAddress.get(1);
+    public void set_user_detailed_location(HashMap<String, String> details) {
+        user_detailed_location = details;
+        String tmp = details.get("city") +", "+details.get("postalCode");
         location.setText(tmp);
-        return;
     }
 
-    public String get_user_lcation() {
+    public String get_user_location() {
         return location.getText().toString();
+    }
+
+    public HashMap<String, String> get_user_detailed_location() {
+        return user_detailed_location;
     }
 
     public String get_user_phone_number() {
@@ -159,6 +164,15 @@ public class RegistrationFragment extends Fragment {
 
     public String get_user_picture() {
         return "erw";
+    }
+
+    public boolean isInputOk() {
+        if (firstname.getText() == null || get_user_firstname().equals("")) return false;
+        if (surname.getText() == null|| get_user_surname().equals("")) return false;
+        if (phone_number.getText() == null || get_user_phone_number().equals("")) return false;
+        if (location.getText() == null || get_user_location().equals("")) return false;
+
+        return true;
     }
 
     /**

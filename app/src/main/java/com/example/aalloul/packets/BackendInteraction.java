@@ -26,7 +26,7 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 
 
-class BackendInteraction extends IntentService {
+public class BackendInteraction extends IntentService {
 
     // Logger for this class
     // create a local variable for identifying the class where the log statements come from

@@ -166,13 +166,13 @@ public class RegistrationFragment extends Fragment {
         return "erw";
     }
 
-    public boolean isInputOk() {
-        if (firstname.getText() == null || get_user_firstname().equals("")) return false;
-        if (surname.getText() == null|| get_user_surname().equals("")) return false;
-        if (phone_number.getText() == null || get_user_phone_number().equals("")) return false;
-        if (location.getText() == null || get_user_location().equals("")) return false;
+    public int isInputOk() {
+        if (firstname.getText() == null || get_user_firstname().equals("")) return 0;
+        if (surname.getText() == null|| get_user_surname().equals("")) return 0;
+        if (phone_number.getText() == null || get_user_phone_number().equals("")) return 0;
+        if (location.getText() == null || get_user_location().equals("")) return 1;
 
-        return true;
+        return 2;
     }
 
     /**

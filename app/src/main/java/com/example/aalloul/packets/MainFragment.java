@@ -47,6 +47,7 @@ public class MainFragment extends Fragment {
         Bundle args = new Bundle();
 
         Log.i("MainFragment","newInstsance - "+ inlocation.toString());
+        if (inlocation == null ) return fragment;
         args.putSerializable(ARG_CITY_STATE, inlocation);
         fragment.setArguments(args);
         return fragment;
@@ -198,9 +199,11 @@ public class MainFragment extends Fragment {
     }
 
     public void setDrop_off_location(HashMap<String, String> locationAddress){
+        if (locationAddress == null) return;
+        if (locationAddress.get(getString(R.string.saved_user_city)) == null) return;
         drop_off_detailed_location = locationAddress;
         String tmp = locationAddress.get(getString(R.string.saved_user_city));
-        if (locationAddress.get(getString(R.string.saved_user_state)).equals("")) {
+        if (locationAddress.get(getString(R.string.saved_user_state)).equals("") ) {
             tmp += " ("+Utilities.CountryToCountryCode(
                     locationAddress.get(getString(R.string.saved_user_country))) +")";
         } else {

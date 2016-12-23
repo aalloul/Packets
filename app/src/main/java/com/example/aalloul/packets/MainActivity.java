@@ -154,6 +154,41 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         Log.i(LOG_TAG, "storeUserDetails - Exit");
     }
 
+    private void storeUserDetails(HashMap<String, String> details) {
+        int n_prompts = sharedPref.getInt(getString(R.string.saved_user_npromptstoregister), 0);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(getString(R.string.saved_user_firstname),
+                getString(R.string.saved_user_firstname));
+
+        editor.putString(getString(R.string.saved_user_surname),
+                details.get(R.string.saved_user_surname));
+        editor.putString(getString(R.string.saved_user_picture),
+                details.get(R.string.saved_user_picture));
+
+        editor.putString(getString(R.string.saved_user_phonenumber),
+                details.get(R.string.saved_user_phonenumber));
+
+        editor.putString(getString(R.string.saved_user_picture),
+                details.get(R.string.saved_user_picture));
+        editor.putInt(getString(R.string.saved_user_npromptstoregister), n_prompts+1);
+
+        editor.putString(getString(R.string.saved_user_address),
+                details.get(getString(R.string.saved_user_address)));
+        editor.putString(getString(R.string.saved_user_city),
+                details.get(getString(R.string.saved_user_city)));
+        editor.putString(getString(R.string.saved_user_state),
+                details.get(getString(R.string.saved_user_state)));
+        editor.putString(getString(R.string.saved_user_country),
+                details.get(getString(R.string.saved_user_country)));
+        editor.putString(getString(R.string.saved_user_postalcode),
+                details.get(getString(R.string.saved_user_postalcode)));
+        editor.putString(getString(R.string.saved_user_latitude),
+                details.get(getString(R.string.saved_user_latitude)));
+        editor.putString(getString(R.string.saved_user_longitude),
+                details.get(getString(R.string.saved_user_longitude)));
+
+        editor.commit();
+    }
     private void updateStoredLocation(Location location) {
         HashMap<String, String> tmp = new HashMap<>();
         SharedPreferences.Editor  editor = sharedPref.edit();
@@ -424,6 +459,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         return dets;
 
+    }
+
+    protected boolean checkConfirmInputs() {
+        return true;
     }
 
     /* ***************** ***************** ***************** *****************
@@ -842,8 +881,22 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onConfirmPublish() {
         Log.i(LOG_TAG, "onConfirmPublish - Publishing new offer");
-        Log.i(LOG_TAG, "onConfirmPublish - confirmPublish " +
-                confirmPublish.getAllDetails().toString());
+        if (!checkConfirmInputs()) {
+            Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
+                    getResources().getString(R.string.registration_input_incomplete),
+                    getResources().getString(R.string.okay)
+            );
+        }
+        HashMap<String, String> tmp = confirmPublish.getAllDetails();
+        /** This might need a bit more thinking -- For example, the user is temporarily in another
+         * city/country but doesn't us to consider this place as his new home.
+        **/
+        storeUserDetails(tmp);
+
+        //TODO post to backend
+        Log.i(LOG_TAG, "onConfirmPublish - confirmPublish " + tmp.toString());
+
+
     }
 
 }

@@ -42,6 +42,10 @@
         <item>Large</item>
     </string-array>
 
+    <string name="publish">Publish</string>
+    <string name="please_confirm">Please confirm the following information</string>
+    <string name="please_register">Please provide us with the following information</string>
+
 
     <!-- ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~  -->
     <!--                       Parameters that don't need to be localized                        -->
@@ -87,9 +91,18 @@
     <string name="saved_user_country">userCountry</string>
     <string name="saved_user_postalcode">userPostalCode</string>
     <string name="saved_user_npromptstoregister">userNPromptsToRegister</string>
+    <string name="date_for_pickup">date_for_pickup</string>
+    <string name="number_packages">number_packages</string>
+    <string name="size_packages">size_packages</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="drop_off_latitude">drop_off_latitude</string>
+    <string name="drop_off_longitude">drop_off_longitude</string>
+    <string name="drop_off_address">drop_off_address</string>
+    <string name="drop_off_city">drop_off_city</string>
+    <string name="drop_off_state">drop_off_state</string>
+    <string name="drop_off_country">drop_off_country</string>
+    <string name="drop_off_postalcode">drop_off_postalcode</string>
+
 
 
 </resources>

@@ -29,7 +29,6 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.FusedLocationProviderApi;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -49,7 +48,8 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener, ItemFragment.OnListFragmentInteractionListener,
         OfferDetail.OnFragmentInteractionListener, MainFragment.OnFragmentInteractionListener,
-        DatePickerFragment.TheListener, RegistrationFragment.RegistrationFragmentListener {
+        DatePickerFragment.TheListener, RegistrationFragment.RegistrationFragmentListener,
+        ConfirmPublish.OnCofirmPublishListener {
 
     // Map permission -- make sure 1 is always for position permission
     protected final int MAP_PERMISSION = 1;
@@ -63,10 +63,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private Location userLastLocation;
     private MainFragment mainFragment;
     private RegistrationFragment registrationFragment;
+    private ConfirmPublish confirmPublish;
 
     // Interaction with Backend
     protected static HashMap<String, String> buffered_delayed_data = new HashMap();
-    private Backend backend = new Backend();
+    private BackendInteraction backend = new BackendInteraction();
 
     //Interaction with the offer search activity
     private Intent searchIntent, searchPerformAction;
@@ -81,6 +82,353 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     // create a local variable for identifying the class where the log statements come from
     private final static String LOG_TAG = MainActivity.class.getSimpleName();
+
+    private boolean isAlreadyRegistered() {
+        Log.i(LOG_TAG, "isAlreadyRegistered - Enter");
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+
+        if (sharedPref.getString(getString(R.string.saved_user_firstname), "").equals("")) {
+            Log.i(LOG_TAG,"isAlreadyRegistered - User first name not found so not registered");
+            return false;
+        }
+        return false;
+    }
+
+    protected HashMap<String, String> getUserDetailedLocation() {
+        Log.i(LOG_TAG, "getUserDetailedLocation - Enter");
+        HashMap<String, String> tmp = new HashMap<>();
+        sharedPref = getPreferences(Context.MODE_PRIVATE);
+
+        tmp.put(getString(R.string.saved_user_postalcode),
+                sharedPref.getString(getString(R.string.saved_user_postalcode), ""));
+        tmp.put(getString(R.string.saved_user_city),
+                sharedPref.getString(getString(R.string.saved_user_city), "Updating"));
+
+        if (tmp.get(getString(R.string.saved_user_city)).equals("Updating")) {
+
+        }
+        tmp.put(getString(R.string.saved_user_country),
+                sharedPref.getString(getString(R.string.saved_user_country), ""));
+        tmp.put(getString(R.string.saved_user_state),
+                sharedPref.getString(getString(R.string.saved_user_state), ""));
+        tmp.put(getString(R.string.saved_user_address),
+                sharedPref.getString(getString(R.string.saved_user_address), ""));
+        tmp.put(getString(R.string.saved_user_latitude),
+                sharedPref.getString(getString(R.string.saved_user_latitude), ""));
+        tmp.put(getString(R.string.saved_user_longitude),
+                sharedPref.getString(getString(R.string.saved_user_longitude), ""));
+        Log.i(LOG_TAG, "getUserDetailedLocation - Exit");
+        return tmp;
+    }
+
+    private void storeUserDetails() {
+        Log.i(LOG_TAG, "storeUserDetails - Enter");
+        // This will allow us to know how long before the user decides to register
+        int n_prompts = sharedPref.getInt(getString(R.string.saved_user_npromptstoregister), 0);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(getString(R.string.saved_user_firstname),
+                registrationFragment.get_user_firstname());
+        editor.putString(getString(R.string.saved_user_surname),
+                registrationFragment.get_user_surname());
+        editor.putString(getString(R.string.saved_user_picture),
+                registrationFragment.get_user_picture());
+        editor.putString(getString(R.string.saved_user_phonenumber),
+                registrationFragment.get_user_phone_number());
+        editor.putString(getString(R.string.saved_user_phonenumber),
+                registrationFragment.get_user_phone_number());
+        editor.putInt(getString(R.string.saved_user_npromptstoregister), n_prompts+1);
+        // Location data
+        HashMap<String, String> tmp = registrationFragment.get_user_detailed_location();
+        editor.putString(getString(R.string.saved_user_address),   tmp.get(getString(R.string.saved_user_address)));
+        editor.putString(getString(R.string.saved_user_city),      tmp.get(getString(R.string.saved_user_city)));
+        editor.putString(getString(R.string.saved_user_state),     tmp.get(getString(R.string.saved_user_state)));
+        editor.putString(getString(R.string.saved_user_country),   tmp.get(getString(R.string.saved_user_country)));
+        editor.putString(getString(R.string.saved_user_postalcode),tmp.get(getString(R.string.saved_user_postalcode)));
+        editor.putString(getString(R.string.saved_user_latitude),
+                tmp.get(getString(R.string.saved_user_latitude)));
+        editor.putString(getString(R.string.saved_user_longitude),
+                tmp.get(getString(R.string.saved_user_longitude)));
+
+        editor.commit();
+
+        Log.i(LOG_TAG, "storeUserDetails - Exit");
+    }
+
+    private void updateStoredLocation(Location location) {
+        HashMap<String, String> tmp = new HashMap<>();
+        SharedPreferences.Editor  editor = sharedPref.edit();
+        try {
+            tmp = getParsedLocation(new LatLng(location.getLatitude(), location.getLongitude()));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+        editor.putString(getString(R.string.saved_user_address),
+                tmp.get(getString(R.string.saved_user_address)));
+        editor.putString(getString(R.string.saved_user_city),
+                tmp.get(getString(R.string.saved_user_city)));
+        editor.putString(getString(R.string.saved_user_state),
+                tmp.get(getString(R.string.saved_user_state)));
+        editor.putString(getString(R.string.saved_user_country),
+                tmp.get(getString(R.string.saved_user_country)));
+        editor.putString(getString(R.string.saved_user_postalcode),
+                tmp.get(getString(R.string.saved_user_postalcode)));
+    }
+
+    private void handleNetworkResult(String queryResult) {
+        if (queryResult.equals("ok")) {
+            ItemFragment.myItemRecyclerViewAdapter.notifyDataSetChanged();
+        } else {
+            // TODO display error
+        }
+    }
+
+    private boolean isNetworkOk() {
+        Log.i(LOG_TAG, "isNetworkOk - Enter");
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            Log.i(LOG_TAG, "isNetworkOk - Network available");
+            return true;
+        } else {
+            Log.w(LOG_TAG, "isNetworkOk - Network not available");
+            return false;
+        }
+    }
+
+    protected void updateUserDetails(Location location) {
+        // Called from the wrong place?
+        if (registrationFragment == null) {
+            Log.i(LOG_TAG, "updateUserDetails - This call is weird as registrationFragment is null");
+            return;
+        }
+
+        // Location already known
+        if (registrationFragment.get_user_location() != "") {
+            Log.i(LOG_TAG, "updateUserDetails - User location is already known. Do nothing");
+            return;
+        }
+        // Okay now we can use this new location
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        try {
+            HashMap<String, String> tmp = getParsedLocation(latLng);
+            registrationFragment.set_user_detailed_location(tmp);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected boolean checkPermission() {
+        Log.i(LOG_TAG, "Start checking permissions");
+        boolean b = ContextCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED;
+        if (b) {
+            Log.i(LOG_TAG, "Permission already granted");
+            MAP_PERMISSION_GRANTED = true;
+            return true;
+        }
+
+        Log.i(LOG_TAG, "Permission not granted");
+        // Should we show an explanation?
+        b = ActivityCompat.shouldShowRequestPermissionRationale(this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION);
+        if (!b) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, MAP_PERMISSION);
+            return false;
+        }
+
+        Log.i(LOG_TAG, "Apparently we should show an explanation");
+        Snackbar.make(findViewById(R.id.mainActivity_ListView),
+                R.string.permission_position_explanation,
+                Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.permission_position_explanation_ok, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ActivityCompat.requestPermissions(MainActivity.this,
+                                new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                                MAP_PERMISSION);
+                    }
+                }).show();
+        Log.i(LOG_TAG, "explanation displayed");
+
+        return false;
+    }
+
+    public void requestUpdateFromBackend(Intent searchPerformAction){
+        Log.i(LOG_TAG, "requestUpdateFromBackend - start");
+        Backend backend = new Backend();
+        HashMap<String, String> qparams = new HashMap();
+        BackendInteraction.startActionQueryDB(this, qparams, "GET");
+
+        Log.i(LOG_TAG, "requestUpdateFromBackend - exit");
+    }
+
+    protected void stopLocationUpdates() {
+        if (mGoogleApiClient == null) return;
+
+        if (!mGoogleApiClient.isConnected()) return;
+        LocationServices.FusedLocationApi.removeLocationUpdates(
+                mGoogleApiClient, this);
+    }
+
+    // Tries to open the settings 
+    public void goToSettings(AppCompatActivity activity) {
+        try {
+            Intent gpsOptionsIntent = new Intent(Intent.ACTION_MAIN);
+            gpsOptionsIntent.setClassName("com.android.phone", "com.android.phone.Settings");
+            startActivity(gpsOptionsIntent);
+        } catch (Exception e) {
+            Log.w(LOG_TAG, "goToSettings - could not go to Settings");
+        }
+    }
+
+    // Checks the inputs from the Main Activity
+    boolean checkMainFragmentInputs() {
+        if (!isNetworkOk()) {
+            final Snackbar snackbar = Snackbar.make(findViewById(R.id.mainActivity_ListView),
+                    getResources().getString(R.string.no_network_connectivity),
+                    Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction(R.string.okay, new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    goToSettings(MainActivity.this);
+                }
+            });
+            snackbar.show();
+            return false ;
+        }
+
+        HashMap<String, String> pickuplocation = mainFragment.getPickupLocation();
+
+        if (pickuplocation == null ||
+                !pickuplocation.containsKey(getString(R.string.saved_user_city))) {
+            Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
+                    getResources().getString(R.string.pickup_location_not_set),
+                    getResources().getString(R.string.okay)
+            );
+            return false ;
+        }
+
+        Log.i(LOG_TAG, "checkMainFragmentInputs- pick up location = "+ pickuplocation);
+
+        String dateforpickup = mainFragment.getDateForPickUp();
+        if ( dateforpickup == null) {
+            Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
+                    getResources().getString(R.string.date_send_not_set),
+                    getResources().getString(R.string.okay)
+            );
+            return false ;
+        }
+        Log.i(LOG_TAG, "checkMainFragmentInputs- date of pickup= "+ dateforpickup);
+
+        String numberPackages = mainFragment.getNumberPackages();
+        if ( numberPackages == null) {
+            Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
+                    getResources().getString(R.string.size_packages_not_set),
+                    getResources().getString(R.string.okay)
+            );
+            return false ;
+        }
+        Log.i(LOG_TAG, "checkMainFragmentInputs- Number of Pakcages = "+ numberPackages);
+
+        String sizePackages = mainFragment.getSizePackage();
+        if (sizePackages == null) {
+            Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
+                    getResources().getString(R.string.number_packages_not_set),
+                    getResources().getString(R.string.okay)
+            );
+            return false ;
+        }
+        Log.i(LOG_TAG, "checkMainFragmentInputs- Number of sizePackages = "+ sizePackages);
+
+
+        HashMap<String, String> dropOffLocation = mainFragment.getDropOffLocation();
+
+        if ( dropOffLocation == null ||
+                !dropOffLocation.containsKey(getString(R.string.saved_user_city)) ) {
+            Log.i(LOG_TAG, "checkMainFragmentInputs- Unbelievable!");
+            Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
+                    getResources().getString(R.string.dropoff_location_not_set),
+                    getResources().getString(R.string.okay)
+            );
+            return false ;
+        }
+        Log.i(LOG_TAG, "checkMainFragmentInputs- Drop off location = "+ dropOffLocation);
+
+
+
+        return true;
+    }
+
+    // Launches the request to Google Places
+    protected void launchPlaceAutoCompleteRequest(int reqCode) {
+        // TODO better handle the exception - e.g. accept input or check internet connectivity
+        try {
+            // Only show addresses
+            AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
+                    .setTypeFilter(AutocompleteFilter.TYPE_FILTER_ADDRESS)
+                    .build();
+
+            Intent intent =
+                    new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
+                            .setFilter(typeFilter)
+                            .build(this);
+            startActivityForResult(intent, reqCode);
+        } catch (GooglePlayServicesRepairableException e) {
+            Log.e(LOG_TAG, "GooglePlayServicesRepairableException Exception");
+        } catch (GooglePlayServicesNotAvailableException e) {
+            Log.e(LOG_TAG, "GooglePlayServicesNotAvailableException Exception");
+        }
+    }
+
+    // Calls geo coder to get the city and country
+    protected HashMap<String, String> getParsedLocation(LatLng latlong) throws IOException {
+        Geocoder geocoder;
+        List<android.location.Address> addresses;
+        geocoder = new Geocoder(this, Locale.getDefault());
+
+        // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+        addresses = geocoder.getFromLocation(latlong.latitude, latlong.longitude, 1);
+
+        // If any additional address line present than only, check with max available address lines
+        // by getMaxAddressLineIndex()
+        HashMap<String, String> tmp = new HashMap<>();
+        tmp.put(getString(R.string.saved_user_address),addresses.get(0).getAddressLine(0));
+        tmp.put(getString(R.string.saved_user_city), addresses.get(0).getLocality());
+        tmp.put(getString(R.string.saved_user_state),addresses.get(0).getAdminArea());
+        tmp.put(getString(R.string.saved_user_country), addresses.get(0).getCountryName());
+        tmp.put(getString(R.string.saved_user_postalcode), addresses.get(0).getPostalCode());
+        tmp.put(getString(R.string.saved_user_latitude),
+                Double.toString(addresses.get(0).getLatitude()));
+        tmp.put(getString(R.string.saved_user_longitude),
+                Double.toString(addresses.get(0).getLongitude()));
+
+        return tmp;
+    }
+
+    // Returns user personal details
+    protected HashMap<String, String> getUserPersonalDetails() {
+        HashMap<String, String> dets = new HashMap<>();
+        sharedPref = getPreferences(Context.MODE_PRIVATE);
+
+        dets.put(getString(R.string.saved_user_firstname),
+                sharedPref.getString(getString(R.string.saved_user_firstname), ""));
+        dets.put(getString(R.string.saved_user_surname),
+                sharedPref.getString(getString(R.string.saved_user_surname), ""));
+        dets.put(getString(R.string.saved_user_phonenumber),
+                sharedPref.getString(getString(R.string.saved_user_phonenumber), ""));
+        dets.put(getString(R.string.saved_user_picture),
+                sharedPref.getString(getString(R.string.saved_user_picture), ""));
+
+        return dets;
+
+    }
+
+    /* ***************** ***************** ***************** *****************
+                        Override section
+       ***************** ***************** ***************** ***************** */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,115 +483,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         Log.i(LOG_TAG, "OnCreate - Exit");
     }
 
-    private boolean isAlreadyRegistered() {
-        Log.i(LOG_TAG, "isAlreadyRegistered - Enter");
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-
-        if (sharedPref.getString(getString(R.string.saved_user_firstname), "").equals("")) {
-            Log.i(LOG_TAG,"isAlreadyRegistered - User first name not found so not registered");
-            return false;
-        }
-        return true;
-    }
-
-    protected HashMap<String, String> getUserDetailedLocation() {
-        Log.i(LOG_TAG, "getUserDetailedLocation - Enter");
-        HashMap<String, String> tmp = new HashMap<>();
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-
-        tmp.put(getString(R.string.saved_user_postalcode),
-                sharedPref.getString(getString(R.string.saved_user_postalcode), ""));
-        tmp.put(getString(R.string.saved_user_city),
-                sharedPref.getString(getString(R.string.saved_user_city), "Updating"));
-
-        if (tmp.get(getString(R.string.saved_user_city)).equals("Updating")) {
-
-        }
-        tmp.put(getString(R.string.saved_user_country),
-                sharedPref.getString(getString(R.string.saved_user_country), ""));
-        tmp.put(getString(R.string.saved_user_state),
-                sharedPref.getString(getString(R.string.saved_user_state), ""));
-        tmp.put(getString(R.string.saved_user_address),
-                sharedPref.getString(getString(R.string.saved_user_address), ""));
-        tmp.put(getString(R.string.saved_user_latitude),
-                sharedPref.getString(getString(R.string.saved_user_latitude), ""));
-        tmp.put(getString(R.string.saved_user_longitude),
-                sharedPref.getString(getString(R.string.saved_user_longitude), ""));
-        Log.i(LOG_TAG, "getUserDetailedLocation - Exit");
-        return tmp;
-    }
-
-    private void storeUserDetails() {
-        Log.i(LOG_TAG, "storeUserDetails - Enter");
-        // This will allow us to know how long before the user decides to register
-        int n_prompts = sharedPref.getInt(getString(R.string.saved_user_npromptstoregister), 0);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(getString(R.string.saved_user_firstname),
-                registrationFragment.get_user_firstname());
-        editor.putString(getString(R.string.saved_user_picture),
-                registrationFragment.get_user_picture());
-        editor.putString(getString(R.string.saved_user_phonenumber),
-                registrationFragment.get_user_phone_number());
-        editor.putString(getString(R.string.saved_user_phonenumber),
-                registrationFragment.get_user_phone_number());
-        editor.putInt(getString(R.string.saved_user_npromptstoregister), n_prompts+1);
-        // Location data
-        HashMap<String, String> tmp = registrationFragment.get_user_detailed_location();
-        editor.putString(getString(R.string.saved_user_address),   tmp.get(getString(R.string.saved_user_address)));
-        editor.putString(getString(R.string.saved_user_city),      tmp.get(getString(R.string.saved_user_city)));
-        editor.putString(getString(R.string.saved_user_state),     tmp.get(getString(R.string.saved_user_state)));
-        editor.putString(getString(R.string.saved_user_country),   tmp.get(getString(R.string.saved_user_country)));
-        editor.putString(getString(R.string.saved_user_postalcode),tmp.get(getString(R.string.saved_user_postalcode)));
-
-        editor.commit();
-
-        Log.i(LOG_TAG, "storeUserDetails - Exit");
-    }
-
-    private void updateStoredLocation(Location location) {
-        HashMap<String, String> tmp = new HashMap<>();
-        SharedPreferences.Editor  editor = sharedPref.edit();
-        try {
-            tmp = getParsedLocation(new LatLng(location.getLatitude(), location.getLongitude()));
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
-        editor.putString(getString(R.string.saved_user_address),
-                tmp.get(getString(R.string.saved_user_address)));
-        editor.putString(getString(R.string.saved_user_city),
-                tmp.get(getString(R.string.saved_user_city)));
-        editor.putString(getString(R.string.saved_user_state),
-                tmp.get(getString(R.string.saved_user_state)));
-        editor.putString(getString(R.string.saved_user_country),
-                tmp.get(getString(R.string.saved_user_country)));
-        editor.putString(getString(R.string.saved_user_postalcode),
-                tmp.get(getString(R.string.saved_user_postalcode)));
-    }
-
-    private void retrieveUserDetails() {
-        //TODO retrieve user details to pass on to MainFragment
-    }
-
-    private void postNewOfferToBackend(Intent searchPerformAction) {
-        Log.i(LOG_TAG, "postNewOfferToBackend - start");
-        Backend backend = new Backend();
-        HashMap<String, String> qparams = new HashMap();
-
-        BackendInteraction.startActionQueryDB(this, qparams, "POST");
-
-        Log.i(LOG_TAG, "postNewOfferToBackend - exit");
-    }
-
-    private void handleNetworkResult(String queryResult) {
-        if (queryResult.equals("ok")) {
-            ItemFragment.myItemRecyclerViewAdapter.notifyDataSetChanged();
-        } else {
-            // TODO display error
-        }
-    }
-
-
     @Override
     public void onConnected(Bundle connectionHint) {
         Log.i(LOG_TAG, "onConnected - Enter ");
@@ -279,45 +518,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         Log.i(LOG_TAG, "onConnected - Exit ");
     }
 
-
-    protected boolean checkPermission() {
-        Log.i(LOG_TAG, "Start checking permissions");
-        boolean b = ContextCompat.checkSelfPermission(this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION) ==
-                PackageManager.PERMISSION_GRANTED;
-        if (b) {
-            Log.i(LOG_TAG, "Permission already granted");
-            MAP_PERMISSION_GRANTED = true;
-            return true;
-        }
-
-        Log.i(LOG_TAG, "Permission not granted");
-        // Should we show an explanation?
-        b = ActivityCompat.shouldShowRequestPermissionRationale(this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION);
-        if (!b) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, MAP_PERMISSION);
-            return false;
-        }
-
-        Log.i(LOG_TAG, "Apparently we should show an explanation");
-        Snackbar.make(findViewById(R.id.mainActivity_ListView),
-                R.string.permission_position_explanation,
-                Snackbar.LENGTH_INDEFINITE)
-                .setAction(R.string.permission_position_explanation_ok, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        ActivityCompat.requestPermissions(MainActivity.this,
-                                new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                                MAP_PERMISSION);
-                    }
-                }).show();
-                Log.i(LOG_TAG, "explanation displayed");
-
-        return false;
-    }
-
     // Handle the permission request result
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[],
@@ -342,18 +542,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
         Log.i(LOG_TAG, "onRequestPermissionsResult - Exit");
     }
-
-
-    public void requestUpdateFromBackend(Intent searchPerformAction){
-        Log.i(LOG_TAG, "requestUpdateFromBackend - start");
-        Backend backend = new Backend();
-        HashMap<String, String> qparams = new HashMap();
-        BackendInteraction.startActionQueryDB(this, qparams, "GET");
-
-        Log.i(LOG_TAG, "requestUpdateFromBackend - exit");
-    }
-
-
 
     @Override
     public void onStart() {
@@ -381,14 +569,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         Log.i(LOG_TAG, "onPause - Exit");
     }
 
-    protected void stopLocationUpdates() {
-        if (mGoogleApiClient == null) return;
-
-        if (!mGoogleApiClient.isConnected()) return;
-        LocationServices.FusedLocationApi.removeLocationUpdates(
-                mGoogleApiClient, this);
-    }
-
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.i(LOG_TAG, "onConnectionFailed - Enter");
@@ -396,11 +576,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     }
 
+    @Override
     public void onConnectionSuspended(int i) {
         Log.i(LOG_TAG, "onConnectionSuspended - Enter");
         Log.i(LOG_TAG, "onConnectionSuspended - Exit");
     }
-
 
     @Override
     public void onListFragmentInteraction(String nameAndFirstName, String source_city,
@@ -445,105 +625,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         Log.i(LOG_TAG, "onMessageButtonPress - Exit");
     }
 
-    private boolean isNetworkOk() {
-        Log.i(LOG_TAG, "isNetworkOk - Enter");
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
-            Log.i(LOG_TAG, "isNetworkOk - Network available");
-            return true;
-        } else {
-            Log.w(LOG_TAG, "isNetworkOk - Network not available");
-            return false;
-        }
-    }
-
-    // Tries to open the settings 
-    public void goToSettings(AppCompatActivity activity) {
-        try {
-            Intent gpsOptionsIntent = new Intent(Intent.ACTION_MAIN);
-            gpsOptionsIntent.setClassName("com.android.phone", "com.android.phone.Settings");
-            startActivity(gpsOptionsIntent);
-        } catch (Exception e) {
-            Log.w(LOG_TAG, "goToSettings - could not go to Settings");
-        }
-    }
-
-    // Checks the inputs from the Main Activity
-    boolean checkMainFragmentInputs() {
-        if (!isNetworkOk()) {
-            final Snackbar snackbar = Snackbar.make(findViewById(R.id.mainActivity_ListView),
-                    getResources().getString(R.string.no_network_connectivity),
-                    Snackbar.LENGTH_INDEFINITE);
-            snackbar.setAction(R.string.okay, new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-                    goToSettings(MainActivity.this);
-                }
-            });
-            snackbar.show();
-            return false ;
-        }
-
-        HashMap<String, String> pickuplocation = mainFragment.getPickupLocation();
-
-        if (pickuplocation == null ||
-                !pickuplocation.containsKey(getString(R.string.saved_user_city))) {
-            Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
-                    getResources().getString(R.string.pickup_location_not_set),
-                    getResources().getString(R.string.okay)
-            );
-            return false ;
-        }
-
-        Log.i(LOG_TAG, "pick up location = "+ pickuplocation);
-
-        String dateforpickup = mainFragment.getDateForPickUp();
-        if ( dateforpickup == null) {
-            Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
-                    getResources().getString(R.string.date_send_not_set),
-                    getResources().getString(R.string.okay)
-            );
-            return false ;
-        }
-        Log.i(LOG_TAG, "date of pickup= "+ dateforpickup);
-
-        String numberPackages = mainFragment.getNumberPackages();
-        if ( numberPackages == null) {
-            Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
-                    getResources().getString(R.string.size_packages_not_set),
-                    getResources().getString(R.string.okay)
-            );
-            return false ;
-        }
-        Log.i(LOG_TAG, "Number of Pakcages = "+ numberPackages);
-
-        String sizePackages = mainFragment.getSizePackage();
-        if ( sizePackages == null) {
-            Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
-                    getResources().getString(R.string.number_packages_not_set),
-                    getResources().getString(R.string.okay)
-            );
-            return false ;
-        }
-        Log.i(LOG_TAG, "Number of Pakcages = "+ numberPackages);
-
-
-        HashMap<String, String> dropOffLocation = mainFragment.getDropOffLocation();
-        if ( dropOffLocation == null || dropOffLocation.containsKey(R.string.saved_user_address)) {
-            Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
-                    getResources().getString(R.string.dropoff_location_not_set),
-                    getResources().getString(R.string.okay)
-            );
-            return false ;
-        }
-        Log.i(LOG_TAG, "Drop off location = "+ dropOffLocation);
-
-
-
-        return true;
-    }
-
     // Method for search_button
     @Override
     public void onSearchButtonPressed() {
@@ -560,13 +641,20 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     // Method for publish offer
     @Override
     public void onPostButtonPressed() {
-        Log.i(LOG_TAG, "onPostNewOfferPressed - start");
+        Log.i(LOG_TAG, "onPostButtonPressed - start");
         if (checkMainFragmentInputs()) {
-            // TODO launch the search
+            HashMap<String, String> userDetails = getUserPersonalDetails();
+            Log.i(LOG_TAG, "onPostButtonPressed - userDetails = " + userDetails);
+            confirmPublish = ConfirmPublish.newInstance(userDetails,
+                    mainFragment.getTripDetails());
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.mainActivity_ListView, confirmPublish, "confirmPublish")
+                    .addToBackStack("MainFragmentToConfirmPublish")
+                    .commit();
         }
-        Log.i(LOG_TAG, "onPostNewOfferPressed - exit");
+        Log.i(LOG_TAG, "onPostButtonPressed - exit");
     }
-
 
     @Override
     public void returnDate(String date) {
@@ -585,50 +673,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         Log.i(LOG_TAG, "onDropOffLocationPressed - Enter");
         launchPlaceAutoCompleteRequest(DROP_OFF_LOCATION_REQUEST);
     }
-
-    // Launches the request to Google Places
-    protected void launchPlaceAutoCompleteRequest(int reqCode) {
-        // TODO better handle the exception - e.g. accept input or check internet connectivity
-        try {
-            // Only show addresses
-            AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
-                    .setTypeFilter(AutocompleteFilter.TYPE_FILTER_ADDRESS)
-                    .build();
-
-            Intent intent =
-                    new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
-                            .setFilter(typeFilter)
-                            .build(this);
-            startActivityForResult(intent, reqCode);
-        } catch (GooglePlayServicesRepairableException e) {
-            Log.e(LOG_TAG, "GooglePlayServicesRepairableException Exception");
-        } catch (GooglePlayServicesNotAvailableException e) {
-            Log.e(LOG_TAG, "GooglePlayServicesNotAvailableException Exception");
-        }
-    }
-
-    // Calls geo coder to get the city and country
-    protected HashMap<String, String> getParsedLocation(LatLng latlong) throws IOException {
-        Geocoder geocoder;
-        List<android.location.Address> addresses;
-        geocoder = new Geocoder(this, Locale.getDefault());
-
-        // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-        addresses = geocoder.getFromLocation(latlong.latitude, latlong.longitude, 1);
-
-        // If any additional address line present than only, check with max available address lines
-        // by getMaxAddressLineIndex()
-        HashMap<String, String> tmp = new HashMap<>();
-        tmp.put(getString(R.string.saved_user_address),addresses.get(0).getAddressLine(0));
-        tmp.put(getString(R.string.saved_user_city), addresses.get(0).getLocality());
-        tmp.put(getString(R.string.saved_user_state),addresses.get(0).getAdminArea());
-        tmp.put(getString(R.string.saved_user_country), addresses.get(0).getCountryName());
-        tmp.put(getString(R.string.saved_user_postalcode), addresses.get(0).getPostalCode());
-
-        return tmp;
-    }
-
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -704,7 +748,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 break;
         }
     }
-
 
     @Override
     public void onUserPicturePressed() {
@@ -796,25 +839,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
     }
 
-    protected void updateUserDetails(Location location) {
-        // Called from the wrong place?
-        if (registrationFragment == null) {
-            Log.i(LOG_TAG, "updateUserDetails - This call is weird as registrationFragment is null");
-            return;
-        }
-
-        // Location already known
-        if (registrationFragment.get_user_location() != "") {
-            Log.i(LOG_TAG, "updateUserDetails - User location is already known. Do nothing");
-            return;
-        }
-        // Okay now we can use this new location
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        try {
-            HashMap<String, String> tmp = getParsedLocation(latLng);
-            registrationFragment.set_user_detailed_location(tmp);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    @Override
+    public void onConfirmPublish() {
+        Log.i(LOG_TAG, "onConfirmPublish - Publishing new offer");
+        Log.i(LOG_TAG, "onConfirmPublish - confirmPublish " +
+                confirmPublish.getAllDetails().toString());
     }
+
 }

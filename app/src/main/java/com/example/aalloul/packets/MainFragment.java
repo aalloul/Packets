@@ -3,7 +3,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -113,16 +112,6 @@ public class MainFragment extends Fragment {
         adapterSizePackage.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         size_package.setAdapter(adapterSizePackage);
 
-        // Drop-off and pick up location
-        drop_off_location = (TextView) view.findViewById(R.id.dropofflocation_mainactivity);
-        drop_off_location.setText("Amsterdam (NL)");
-        drop_off_location.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onDropOffLocationPressed();
-            }
-        });
-
         pickup_location = (TextView) view.findViewById(R.id.pickuplocation_main_activity);
         _setPickup_location();
         Log.i(LOG_TAG, "pickup_location = "+pickup_location.getText().toString());
@@ -130,6 +119,16 @@ public class MainFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 mListener.onPickUpLocationPressed();
+            }
+        });
+
+        // Drop-off and pick up location
+        drop_off_location = (TextView) view.findViewById(R.id.dropofflocation_mainactivity);
+        setDrop_off_location(pick_up_detailed_location);
+        drop_off_location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onDropOffLocationPressed();
             }
         });
         return view;
@@ -201,7 +200,12 @@ public class MainFragment extends Fragment {
     public void setDrop_off_location(HashMap<String, String> locationAddress){
         drop_off_detailed_location = locationAddress;
         String tmp = locationAddress.get(getString(R.string.saved_user_city));
-        tmp += " ("+locationAddress.get(getString(R.string.saved_user_state)) +")";
+        if (locationAddress.get(getString(R.string.saved_user_state)).equals("")) {
+            tmp += " ("+Utilities.CountryToCountryCode(
+                    locationAddress.get(getString(R.string.saved_user_country))) +")";
+        } else {
+            tmp += " (" + locationAddress.get(getString(R.string.saved_user_state)) + ")";
+        }
         drop_off_location.setText(tmp);
         return;
     }
@@ -237,13 +241,29 @@ public class MainFragment extends Fragment {
         this._setPickup_location();
     }
 
-    public HashMap<String, String> getDrop_off_detailed_location(){
-        return drop_off_detailed_location;
+    public HashMap<String, String> getTripDetails() {
+        HashMap<String, String> out = new HashMap<>();
+        out.put(getString(R.string.date_for_pickup), getDateForPickUp());
+        out.put(getString(R.string.number_packages), getNumberPackages());
+        out.put(getString(R.string.size_packages), getSizePackage());
+        HashMap<String, String> t = getDropOffLocation();
+        out.put(getString(R.string.drop_off_latitude),
+                t.get(getString(R.string.saved_user_latitude)));
+        out.put(getString(R.string.drop_off_longitude),
+                t.get(getString(R.string.saved_user_longitude)));
+        out.put(getString(R.string.drop_off_address),
+                t.get(getString(R.string.saved_user_address)));
+        out.put(getString(R.string.drop_off_city), t.get(getString(R.string.saved_user_city)));
+        out.put(getString(R.string.drop_off_country),
+                t.get(getString(R.string.saved_user_country)));
+        out.put(getString(R.string.drop_off_postalcode),
+                t.get(getString(R.string.saved_user_postalcode)));
+
+        out.putAll(getPickupLocation());
+
+        return out;
     }
 
-    public HashMap<String, String> getPick_up_detailed_location() {
-        return pick_up_detailed_location;
-    }
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated

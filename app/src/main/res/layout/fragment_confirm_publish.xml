@@ -1,0 +1,75 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.aalloul.packets.ConfirmPublish">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/relativeLayout_confirm">
+
+        <Button
+            android:text="@string/publish"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/confirm_publish"
+            android:background="@drawable/curvedbutton"
+            android:textColor="@color/cast_expanded_controller_progress_text_color"
+            android:textSize="16sp"
+            android:textAllCaps="false"
+            android:textStyle="normal|bold"
+            android:layout_below="@+id/confirm_location"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="false"
+            android:layout_centerInParent="false"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="30dp" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/user"
+            android:id="@+id/confirm_user_picture"
+            android:layout_below="@+id/confirm_please"
+            android:scaleX="1.5"
+            android:scaleY="1.5"
+            android:layout_margin="20dp"
+            android:background="@drawable/backgroundstate" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/please_confirm"
+            android:id="@+id/confirm_please" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/confirm_first_name"
+            android:layout_below="@+id/confirm_please"
+            android:layout_toRightOf="@+id/confirm_user_picture" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/confirm_surname"
+            android:layout_below="@+id/confirm_first_name"
+            android:layout_toRightOf="@+id/confirm_user_picture" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="phone"
+            android:ems="10"
+            android:id="@+id/confirm_phone_number"
+            android:layout_below="@+id/confirm_surname"
+            android:layout_toRightOf="@+id/confirm_user_picture" />
+
+    </RelativeLayout>
+</FrameLayout>

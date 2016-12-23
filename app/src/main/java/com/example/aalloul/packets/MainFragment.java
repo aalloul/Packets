@@ -1,50 +1,33 @@
 package com.example.aalloul.packets;
-
 import android.content.Context;
-import android.graphics.Color;
-import android.location.Geocoder;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.identity.intents.Address;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
-import com.google.android.gms.location.places.ui.PlaceSelectionListener;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.vision.text.Text;
-
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
+
 
 
 public class MainFragment extends Fragment {
-    private static final String ARG_LATLNG = "latlng";
+    private static final String ARG_CITY_STATE = "city_state";
     private Button searchButton, postButton, pickup_date;
     private Spinner number_packages, size_package;
-    private TextView pickupdate, numberpackages, drop_off_location, pickup_location;
-    static String dateForPickUp;
-    ArrayList<String> parsedPickupLocation, parsedDropOffLocation;
+    private TextView pickupdate_ui, numberpackages, drop_off_location, pickup_location;
+    static String pickupdate;
     private final String LOG_TAG = MainFragment.class.getName();
     private FragmentActivity myContext;
     private HashMap<String, String> drop_off_detailed_location, pick_up_detailed_location;
 
-    // TODO: Rename and change types of parameters
-    private String mLatLng;
+
+    private HashMap<String, String> location;
 
     private OnFragmentInteractionListener mListener;
 
@@ -56,13 +39,16 @@ public class MainFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param latlng Parameter 1.
+     * @param inlocation Parameter 1.
      * @return A new instance of fragment MainFragment.
      */
-    public static MainFragment newInstance(String latlng) {
+    public static MainFragment newInstance(HashMap<String, String> inlocation) {
+        Log.i("MainFragment","newInstsance - Enter");
         MainFragment fragment = new MainFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_LATLNG, latlng);
+
+        Log.i("MainFragment","newInstsance - "+ inlocation.toString());
+        args.putSerializable(ARG_CITY_STATE, inlocation);
         fragment.setArguments(args);
         return fragment;
     }
@@ -71,7 +57,8 @@ public class MainFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mLatLng = getArguments().getString(ARG_LATLNG);
+            pick_up_detailed_location = (HashMap<String, String>)
+                    getArguments().getSerializable(ARG_CITY_STATE);
         }
     }
 
@@ -98,7 +85,9 @@ public class MainFragment extends Fragment {
             }
         });
 
-        pickupdate = (TextView) view.findViewById(R.id.dateofpickup_mainActivity);
+        pickupdate_ui = (TextView) view.findViewById(R.id.dateofpickup_mainActivity);
+        setDate(Utilities.getTomorrow("yyyy-MM-dd"));
+
         pickup_date = (Button) view.findViewById(R.id.setdate_mainActivity);
         pickup_date.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,6 +115,7 @@ public class MainFragment extends Fragment {
 
         // Drop-off and pick up location
         drop_off_location = (TextView) view.findViewById(R.id.dropofflocation_mainactivity);
+        drop_off_location.setText("Amsterdam (NL)");
         drop_off_location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -134,6 +124,8 @@ public class MainFragment extends Fragment {
         });
 
         pickup_location = (TextView) view.findViewById(R.id.pickuplocation_main_activity);
+        _setPickup_location();
+        Log.i(LOG_TAG, "pickup_location = "+pickup_location.getText().toString());
         pickup_location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -164,32 +156,32 @@ public class MainFragment extends Fragment {
         mListener = null;
     }
 
+
     public void setDate(String date) {
         // Most important stuff first
-        dateForPickUp = date;
-        pickupdate.setText(Utilities.DateToDate(dateForPickUp, "yyyy-MM-dd","MMM dd" ));
-
+        pickupdate = date;
+        pickupdate_ui.setText(Utilities.DateToDate(pickupdate, "yyyy-MM-dd","MMM dd" ));
     }
 
-    public String getPickupLocation(){
+    public HashMap<String, String> getPickupLocation(){
         if (pickup_location.getText() == null ) {
             return null;
         }
-        return pickup_location.getText().toString();
+        return pick_up_detailed_location;
     }
 
-    public String getDropOffLocation(){
+    public HashMap<String, String> getDropOffLocation(){
         if (drop_off_location.getText() == null){
             return null;
         }
-        return drop_off_location.getText().toString();
+        return drop_off_detailed_location;
     }
 
     public String getDateForPickUp(){
-        if (dateForPickUp == null) {
+        if (pickupdate == null) {
             return null;
         }
-        return dateForPickUp;
+        return pickupdate;
     }
 
     public String getNumberPackages(){
@@ -208,16 +200,41 @@ public class MainFragment extends Fragment {
 
     public void setDrop_off_location(HashMap<String, String> locationAddress){
         drop_off_detailed_location = locationAddress;
-        String tmp = locationAddress.get("city") +", "+locationAddress.get("postalCode");
+        String tmp = locationAddress.get(getString(R.string.saved_user_city));
+        tmp += " ("+locationAddress.get(getString(R.string.saved_user_state)) +")";
         drop_off_location.setText(tmp);
         return;
     }
 
+    private void _setPickup_location() {
+        if (pick_up_detailed_location == null) return;
+        if (!pick_up_detailed_location.containsKey(getString(R.string.saved_user_city))) return;
+        if (!pick_up_detailed_location.containsKey(getString(R.string.saved_user_state))) return;
+
+        Log.i(LOG_TAG, "_setPickup_location - city = "+
+                pick_up_detailed_location.get(getString(R.string.saved_user_city)));
+        String tmp = pick_up_detailed_location.get(getString(R.string.saved_user_city));
+
+        if (tmp.equals("Updating")) {
+            pickup_location.setText(getString(R.string.updating_location));
+            return;
+        }
+
+        if (!pick_up_detailed_location.get(getString(R.string.saved_user_state)).equals("")) {
+            tmp += " (" + pick_up_detailed_location.get(getString(R.string.saved_user_state)) + ")";
+        } else {
+            tmp += " (" + Utilities.CountryToCountryCode(
+                    pick_up_detailed_location.get(getString(R.string.saved_user_country))) + ")";
+        }
+
+        Log.i(LOG_TAG, "_setPickup_location - tmp = "+tmp);
+
+        pickup_location.setText(tmp);
+    }
+
     public void setPickup_location(HashMap<String, String> locationAddress){
         pick_up_detailed_location = locationAddress;
-        String tmp = locationAddress.get("city") +", "+locationAddress.get("postalCode");
-        pickup_location.setText(tmp);
-        return;
+        this._setPickup_location();
     }
 
     public HashMap<String, String> getDrop_off_detailed_location(){

@@ -317,6 +317,10 @@ final class Utilities {
         return format.format(updatedate);
     }
 
+    static String getTomorrow(String format) {
+        return Epoch2DateStringMillis(CurrentTimeMS() + 24*3600*1000, format);
+    }
+
     static String DateToDate(String date, String inputFormat,String outputFormat) {
         SimpleDateFormat input = new SimpleDateFormat(inputFormat);
         SimpleDateFormat output = new SimpleDateFormat(outputFormat);

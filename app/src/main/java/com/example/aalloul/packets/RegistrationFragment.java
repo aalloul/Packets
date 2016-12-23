@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,15 +21,11 @@ import java.util.HashMap;
 
 
 public class RegistrationFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_LAT = "lat";
-    private static final String ARG_LNG = "long";
-
-    private double lat, lng;
+    private final static String LOG_TAG = RegistrationFragment.class.getSimpleName();
     private ImageButton picture;
-    private EditText firstname, surname, phone_number;
-    private TextView location;
+    private EditText firstname_ui, surname_ui, phone_number_ui;
+    private TextView location_ui;
+    private String firstname, surname, phone_number, location;
     private Button registerMe, registerLater;
     private HashMap<String, String> user_detailed_location = new HashMap<>();
 
@@ -38,36 +35,21 @@ public class RegistrationFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param latlng Parameter 1.
-     * @return A new instance of fragment RegistrationPage.
-     */
-    public static RegistrationFragment newInstance(LatLng latlng) {
+    public static RegistrationFragment newInstance() {
         RegistrationFragment fragment = new RegistrationFragment();
-        Bundle args = new Bundle();
-        if (latlng != null) {
-            args.putDouble(ARG_LAT, latlng.latitude);
-            args.putDouble(ARG_LNG, latlng.longitude);
-            fragment.setArguments(args);
-        }
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            lat = getArguments().getDouble(ARG_LAT);
-            lng = getArguments().getDouble(ARG_LNG);
-        }
+        Log.i(LOG_TAG, "onCreate - called");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.i(LOG_TAG, "onCreateView - Enter");
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_registration_page, container, false);
 
@@ -81,18 +63,22 @@ public class RegistrationFragment extends Fragment {
         });
         
         // surname, first name and phone 
-        firstname = (EditText) view.findViewById(R.id.user_first_name);
-        surname = (EditText) view.findViewById(R.id.user_surname);
-        phone_number = (EditText) view.findViewById(R.id.user_phone_number);
-        
+        firstname_ui = (EditText) view.findViewById(R.id.user_first_name);
+        if (firstname != null) firstname_ui.setText(firstname);
+        surname_ui = (EditText) view.findViewById(R.id.user_surname);
+        if (surname != null) surname_ui.setText(surname);
+        phone_number_ui = (EditText) view.findViewById(R.id.user_phone_number);
+        if (phone_number != null) phone_number_ui.setText(phone_number);
+
         // Location
-        location = (TextView) view.findViewById(R.id.user_location);
-        location.setOnClickListener(new View.OnClickListener() {
+        location_ui = (TextView) view.findViewById(R.id.user_location);
+        location_ui.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mListener.onUserLocationPressed();
             }
         });
+        set_user_detailed_location();
         
         // register buttons
         registerMe = (Button) view.findViewById(R.id.register_me);
@@ -111,6 +97,7 @@ public class RegistrationFragment extends Fragment {
             }
         });
 
+        Log.i(LOG_TAG, "onCreateView - Exit");
         return view;
     }
     
@@ -119,6 +106,24 @@ public class RegistrationFragment extends Fragment {
         //TODO
         //picture.set
     }
+
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public void setPhone_number(String phone_number) {
+        this.phone_number = phone_number;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -136,14 +141,54 @@ public class RegistrationFragment extends Fragment {
         mListener = null;
     }
 
+    public void set_user_detailed_location() {
+        if (user_detailed_location == null) return;
+        if (!user_detailed_location.containsKey(getString(R.string.saved_user_city))) return;
+
+        set_user_detailed_location(user_detailed_location);
+    }
     public void set_user_detailed_location(HashMap<String, String> details) {
+
+        Log.i(LOG_TAG, "set_user_detailed_location - Enter");
+        Log.i(LOG_TAG, "set_user_detailed_location - details = " + details.toString());
+
         user_detailed_location = details;
-        String tmp = details.get("city") +", "+details.get("postalCode");
-        location.setText(tmp);
+        if (details == null) {
+            location_ui.setText(getString(R.string.updating_location));
+            return;
+        }
+
+        String tmp = details.get(getString(R.string.saved_user_city));
+        Log.i(LOG_TAG, "set_user_detailed_location - city = " + tmp);
+
+        if (tmp == null) {
+            location_ui.setText(getString(R.string.updating_location));
+            return;
+        }
+
+        if (tmp.equals("")) {
+            location_ui.setText(getString(R.string.updating_location));
+            return;
+        }
+
+        String tmp2 = details.get(getString(R.string.saved_user_state));
+
+        Log.i(LOG_TAG, "set_user_detailed_location - State = " +tmp2);
+
+        if (tmp2 == null) {
+            tmp += " (" + Utilities.CountryToCountryCode(
+                    details.get(getString(R.string.saved_user_country))) + ")";
+        } else {
+            tmp += " (" + tmp2 + ")";
+        }
+
+        setLocation(tmp);
+        location_ui.setText(tmp);
     }
 
     public String get_user_location() {
-        return location.getText().toString();
+        setLocation(location_ui.getText().toString());
+        return location_ui.getText().toString();
     }
 
     public HashMap<String, String> get_user_detailed_location() {
@@ -151,15 +196,18 @@ public class RegistrationFragment extends Fragment {
     }
 
     public String get_user_phone_number() {
-        return phone_number.getText().toString();
+        setPhone_number(phone_number_ui.getText().toString());
+        return phone_number_ui.getText().toString();
     }
 
     public String get_user_surname(){
-        return surname.getText().toString();
+        setSurname(surname_ui.getText().toString());
+        return surname_ui.getText().toString();
     }
 
     public String get_user_firstname(){
-        return firstname.getText().toString();
+        setFirstname(firstname_ui.getText().toString());
+        return firstname_ui.getText().toString();
     }
 
     public String get_user_picture() {
@@ -167,10 +215,10 @@ public class RegistrationFragment extends Fragment {
     }
 
     public int isInputOk() {
-        if (firstname.getText() == null || get_user_firstname().equals("")) return 0;
-        if (surname.getText() == null|| get_user_surname().equals("")) return 0;
-        if (phone_number.getText() == null || get_user_phone_number().equals("")) return 0;
-        if (location.getText() == null || get_user_location().equals("")) return 1;
+        if (firstname_ui.getText() == null || get_user_firstname().equals("")) return 0;
+        if (surname_ui.getText() == null|| get_user_surname().equals("")) return 0;
+        if (phone_number_ui.getText() == null || get_user_phone_number().equals("")) return 0;
+        if (location_ui.getText() == null || get_user_location().equals("")) return 1;
 
         return 2;
     }

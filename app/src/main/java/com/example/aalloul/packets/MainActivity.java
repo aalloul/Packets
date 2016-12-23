@@ -60,10 +60,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     protected boolean MAP_PERMISSION_GRANTED = false;
     private GoogleApiClient mGoogleApiClient;
     SharedPreferences sharedPref;
-    FusedLocationProviderApi fusedLocationProviderApi;
     private Location userLastLocation;
-    private LatLng userLocation;
-    private View mLayout;
     private MainFragment mainFragment;
     private RegistrationFragment registrationFragment;
 
@@ -93,8 +90,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         searchPerformAction = getIntent();
 
         sharedPref = getPreferences(Context.MODE_PRIVATE);
+        HashMap<String, String> userDetailedLocation = getUserDetailedLocation();
+        String userCity = userDetailedLocation.get(getString(R.string.saved_user_city));
+        Log.i(LOG_TAG, "onCreate - userCity = " + userCity);
 
-        if (mGoogleApiClient == null && !isAlreadyRegistered()) {
+        if (mGoogleApiClient == null && (!isAlreadyRegistered() || userCity.equals("Updating"))) {
             Log.i(LOG_TAG, "onCreate - mGoogleApiClient is null");
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addConnectionCallbacks(this)
@@ -110,13 +110,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             FragmentTransaction fmg = getSupportFragmentManager().beginTransaction();
             if (isAlreadyRegistered()) {
                 Log.i(LOG_TAG, "onCreate - user already registered");
-                sharedPref.getString(getString(R.string.saved_user_city), "");
-
-                mainFragment = MainFragment.newInstance("23423");
+                mainFragment = MainFragment.newInstance(userDetailedLocation);
                 fmg.add(R.id.mainActivity_ListView, mainFragment, "mainFragment");
             } else {
                 Log.i(LOG_TAG, "onCreate - user not registered");
-                registrationFragment = RegistrationFragment.newInstance(new LatLng(1.0, 2.0));
+                registrationFragment = RegistrationFragment.newInstance();
                 fmg.add(R.id.mainActivity_ListView, registrationFragment, "MainFragment");
             }
             fmg.commit();
@@ -148,6 +146,33 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         return true;
     }
 
+    protected HashMap<String, String> getUserDetailedLocation() {
+        Log.i(LOG_TAG, "getUserDetailedLocation - Enter");
+        HashMap<String, String> tmp = new HashMap<>();
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+
+        tmp.put(getString(R.string.saved_user_postalcode),
+                sharedPref.getString(getString(R.string.saved_user_postalcode), ""));
+        tmp.put(getString(R.string.saved_user_city),
+                sharedPref.getString(getString(R.string.saved_user_city), "Updating"));
+
+        if (tmp.get(getString(R.string.saved_user_city)).equals("Updating")) {
+
+        }
+        tmp.put(getString(R.string.saved_user_country),
+                sharedPref.getString(getString(R.string.saved_user_country), ""));
+        tmp.put(getString(R.string.saved_user_state),
+                sharedPref.getString(getString(R.string.saved_user_state), ""));
+        tmp.put(getString(R.string.saved_user_address),
+                sharedPref.getString(getString(R.string.saved_user_address), ""));
+        tmp.put(getString(R.string.saved_user_latitude),
+                sharedPref.getString(getString(R.string.saved_user_latitude), ""));
+        tmp.put(getString(R.string.saved_user_longitude),
+                sharedPref.getString(getString(R.string.saved_user_longitude), ""));
+        Log.i(LOG_TAG, "getUserDetailedLocation - Exit");
+        return tmp;
+    }
+
     private void storeUserDetails() {
         Log.i(LOG_TAG, "storeUserDetails - Enter");
         // This will allow us to know how long before the user decides to register
@@ -164,15 +189,36 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         editor.putInt(getString(R.string.saved_user_npromptstoregister), n_prompts+1);
         // Location data
         HashMap<String, String> tmp = registrationFragment.get_user_detailed_location();
-        editor.putString(getString(R.string.saved_user_address),tmp.get("address"));
-        editor.putString(getString(R.string.saved_user_city),tmp.get("city"));
-        editor.putString(getString(R.string.saved_user_state),tmp.get("state"));
-        editor.putString(getString(R.string.saved_user_country),tmp.get("country"));
-        editor.putString(getString(R.string.saved_user_postalcode),tmp.get("postalCode"));
+        editor.putString(getString(R.string.saved_user_address),   tmp.get(getString(R.string.saved_user_address)));
+        editor.putString(getString(R.string.saved_user_city),      tmp.get(getString(R.string.saved_user_city)));
+        editor.putString(getString(R.string.saved_user_state),     tmp.get(getString(R.string.saved_user_state)));
+        editor.putString(getString(R.string.saved_user_country),   tmp.get(getString(R.string.saved_user_country)));
+        editor.putString(getString(R.string.saved_user_postalcode),tmp.get(getString(R.string.saved_user_postalcode)));
 
         editor.commit();
 
         Log.i(LOG_TAG, "storeUserDetails - Exit");
+    }
+
+    private void updateStoredLocation(Location location) {
+        HashMap<String, String> tmp = new HashMap<>();
+        SharedPreferences.Editor  editor = sharedPref.edit();
+        try {
+            tmp = getParsedLocation(new LatLng(location.getLatitude(), location.getLongitude()));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+        editor.putString(getString(R.string.saved_user_address),
+                tmp.get(getString(R.string.saved_user_address)));
+        editor.putString(getString(R.string.saved_user_city),
+                tmp.get(getString(R.string.saved_user_city)));
+        editor.putString(getString(R.string.saved_user_state),
+                tmp.get(getString(R.string.saved_user_state)));
+        editor.putString(getString(R.string.saved_user_country),
+                tmp.get(getString(R.string.saved_user_country)));
+        editor.putString(getString(R.string.saved_user_postalcode),
+                tmp.get(getString(R.string.saved_user_postalcode)));
     }
 
     private void retrieveUserDetails() {
@@ -213,15 +259,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 mGoogleApiClient, mLocationRequest, this);
 
         if (!checkPermission()) return;
+        if (registrationFragment == null) return;
 
         userLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
-        if (userLocation == null) {
+        if (userLastLocation == null) {
+            registrationFragment.set_user_detailed_location(new HashMap<String, String>());
             Log.i(LOG_TAG, "onConnected - Location not available yet");
-            return;
-        }
-
-        if (registrationFragment == null) {
             return;
         }
 
@@ -340,6 +384,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     protected void stopLocationUpdates() {
         if (mGoogleApiClient == null) return;
 
+        if (!mGoogleApiClient.isConnected()) return;
         LocationServices.FusedLocationApi.removeLocationUpdates(
                 mGoogleApiClient, this);
     }
@@ -440,8 +485,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             return false ;
         }
 
-        String pickuplocation = mainFragment.getPickupLocation();
-        if (pickuplocation == null || pickuplocation.equals("")) {
+        HashMap<String, String> pickuplocation = mainFragment.getPickupLocation();
+
+        if (pickuplocation == null ||
+                !pickuplocation.containsKey(getString(R.string.saved_user_city))) {
             Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
                     getResources().getString(R.string.pickup_location_not_set),
                     getResources().getString(R.string.okay)
@@ -482,8 +529,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         Log.i(LOG_TAG, "Number of Pakcages = "+ numberPackages);
 
 
-        String dropOffLocation = mainFragment.getDropOffLocation();
-        if ( dropOffLocation == null || dropOffLocation.equals("")) {
+        HashMap<String, String> dropOffLocation = mainFragment.getDropOffLocation();
+        if ( dropOffLocation == null || dropOffLocation.containsKey(R.string.saved_user_address)) {
             Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
                     getResources().getString(R.string.dropoff_location_not_set),
                     getResources().getString(R.string.okay)
@@ -572,11 +619,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         // If any additional address line present than only, check with max available address lines
         // by getMaxAddressLineIndex()
         HashMap<String, String> tmp = new HashMap<>();
-        tmp.put("address",addresses.get(0).getAddressLine(0));
-        tmp.put("city", addresses.get(0).getLocality());
-        tmp.put("state",addresses.get(0).getAdminArea());
-        tmp.put("country", addresses.get(0).getCountryName());
-        tmp.put("postalCode", addresses.get(0).getPostalCode());
+        tmp.put(getString(R.string.saved_user_address),addresses.get(0).getAddressLine(0));
+        tmp.put(getString(R.string.saved_user_city), addresses.get(0).getLocality());
+        tmp.put(getString(R.string.saved_user_state),addresses.get(0).getAdminArea());
+        tmp.put(getString(R.string.saved_user_country), addresses.get(0).getCountryName());
+        tmp.put(getString(R.string.saved_user_postalcode), addresses.get(0).getPostalCode());
 
         return tmp;
     }
@@ -703,12 +750,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         storeUserDetails();
         if (mainFragment == null) {
             // TODO pass on the user data
-            mainFragment = MainFragment.newInstance("");
+            mainFragment = MainFragment.newInstance(getUserDetailedLocation());
         }
+
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.mainActivity_ListView, mainFragment, "MainFragment")
-                .addToBackStack(null)
+                .addToBackStack("RegisterToMainFragment")
                 .commit();
     }
 
@@ -723,8 +771,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         editor.commit();
 
         if (mainFragment == null) {
-            mainFragment = MainFragment.newInstance("");
+            mainFragment = MainFragment.newInstance(new HashMap<String, String>());
         }
+
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.mainActivity_ListView, mainFragment, "MainFragment")
@@ -737,7 +786,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         Log.i(LOG_TAG, "onLocationChanged - Enter");
         Log.i(LOG_TAG, "onLocationChanged - location = " + location.toString());
         stopLocationUpdates();
-        updateUserDetails(location);
+        if (isAlreadyRegistered()) {
+            if (mainFragment != null ) {
+                updateStoredLocation(location);
+                mainFragment.setPickup_location(getUserDetailedLocation());
+            }
+        } else {
+            updateUserDetails(location);
+        }
     }
 
     protected void updateUserDetails(Location location) {
@@ -746,6 +802,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             Log.i(LOG_TAG, "updateUserDetails - This call is weird as registrationFragment is null");
             return;
         }
+
         // Location already known
         if (registrationFragment.get_user_location() != "") {
             Log.i(LOG_TAG, "updateUserDetails - User location is already known. Do nothing");

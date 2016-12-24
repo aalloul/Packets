@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,7 @@ import android.widget.TextView;
 
 
 public class ThankYou extends Fragment {
-
+    private final static String LOG_TAG = ThankYou.class.getSimpleName();
     private OnThankYouListener mListener;
     private TextView thank_you;
     private Button back_to_mainFragment;
@@ -43,6 +44,7 @@ public class ThankYou extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        Log.i(LOG_TAG, "onCreateView - enter");
         View view = inflater.inflate(R.layout.fragment_thank_you, container, false);
 
         thank_you = (TextView) view.findViewById(R.id.thank_you_text);

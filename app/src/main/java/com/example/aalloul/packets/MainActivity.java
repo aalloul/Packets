@@ -12,6 +12,8 @@ import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.provider.MediaStore;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
@@ -20,11 +22,9 @@ import android.util.Log;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
-
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -37,9 +37,7 @@ import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.model.LatLng;
-
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -58,6 +56,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     protected final int DROP_OFF_LOCATION_REQUEST = 2;
     protected final int PICK_UP_LOCATION_REQUEST = 3;
     protected final int USER_LOCATION_REQUEST = 4;
+    static final int REQUEST_IMAGE_CAPTURE = 5;
+    private static boolean BACK_CALLED_AFTER_POSTING = false;
 
     protected boolean MAP_PERMISSION_GRANTED = false;
     private GoogleApiClient mGoogleApiClient;
@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private MainFragment mainFragment;
     private RegistrationFragment registrationFragment;
     private ConfirmPublish confirmPublish;
+    private ThankYou thankYou;
 
     // Interaction with Backend
     protected static HashMap<String, String> buffered_delayed_data = new HashMap();
@@ -532,8 +533,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             } else {
                 Log.i(LOG_TAG, "onCreate - user not registered");
                 registrationFragment = RegistrationFragment.newInstance();
-                fmg.add(R.id.mainActivity_ListView, registrationFragment, "MainFragment");
+                fmg.add(R.id.mainActivity_ListView, registrationFragment, "registrationFragment");
             }
+
             fmg.commit();
         }
 
@@ -614,6 +616,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         Log.i(LOG_TAG, "onRequestPermissionsResult - Exit");
     }
 
+    @Override
+    public void onResume() {
+        Log.i(LOG_TAG, "onResume - enter");
+        super.onResume();
+    }
     @Override
     public void onStart() {
         Log.i(LOG_TAG, "onStart - Enter");
@@ -745,77 +752,73 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         launchPlaceAutoCompleteRequest(DROP_OFF_LOCATION_REQUEST);
     }
 
+    // Handles the callback result when the user enters a puck up location
+    private void handleTripLocationRequest(int resultCode, Intent data, String requestAim) {
+        if (resultCode == RESULT_OK) {
+            Place place = PlaceAutocomplete.getPlace(this, data);
+            Log.i(LOG_TAG, "Place: " + place.getName());
+            if (mainFragment != null) {
+                try {
+                    if (requestAim.equals("pickup")) {
+                        mainFragment.setPickup_location(getParsedLocation(place.getLatLng()));
+                    } else {
+                        mainFragment.setDrop_off_location(getParsedLocation(place.getLatLng()));
+                    }
+                } catch (IOException e) {
+                    Log.e(LOG_TAG, "onActivityResult - IOException from" + requestAim+
+                            " location geo-coder");
+                    Log.e(LOG_TAG, e.toString());
+                }
+                Log.i(LOG_TAG, "get Address" + place.getAddress());
+            }
+        } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+            Status status = PlaceAutocomplete.getStatus(this, data);
+            // TODO: Handle the error.
+            Log.i(LOG_TAG, status.getStatusMessage());
+
+        } else if (resultCode == RESULT_CANCELED) {
+            // The user canceled the operation.
+        }
+    }
+
+    private void handleUserLocationRequestion(int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            Place place = PlaceAutocomplete.getPlace(this, data);
+            Log.i(LOG_TAG, "Place: " + place.getName());
+            if (registrationFragment != null) {
+                try {
+                    registrationFragment.set_user_detailed_location(
+                            getParsedLocation(place.getLatLng()));
+                } catch (IOException e) {
+                    Log.e(LOG_TAG, "onActivityResult - IOException from pick up location " +
+                            "geocoder");
+                    Log.e(LOG_TAG, e.toString());
+                }
+                Log.i(LOG_TAG, "get Address" + place.getAddress());
+            }
+        } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+            Status status = PlaceAutocomplete.getStatus(this, data);
+            // TODO: Handle the error.
+            Log.i(LOG_TAG, status.getStatusMessage());
+
+        } else if (resultCode == RESULT_CANCELED) {
+            // The user canceled the operation.
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case DROP_OFF_LOCATION_REQUEST:
-                if (resultCode == RESULT_OK) {
-                    Place place = PlaceAutocomplete.getPlace(this, data);
-                    Log.i(LOG_TAG, "Place: " + place.getName());
-                    if (mainFragment != null) {
-                        try {
-                            mainFragment.setDrop_off_location(getParsedLocation(place.getLatLng()));
-                        } catch (IOException e) {
-                            Log.e(LOG_TAG, "onActivityResult - IOException from drop off location geocoder");
-                            Log.e(LOG_TAG, e.toString());
-                        }
-                    }
-                } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
-                    Status status = PlaceAutocomplete.getStatus(this, data);
-                    // TODO: Handle the error.
-                    Log.i(LOG_TAG, status.getStatusMessage());
-
-                } else if (resultCode == RESULT_CANCELED) {
-                    // The user canceled the operation.
-                }
+                handleTripLocationRequest(resultCode, data, "dropoff");
                 break;
 
             case PICK_UP_LOCATION_REQUEST:
-                if (resultCode == RESULT_OK) {
-                    Place place = PlaceAutocomplete.getPlace(this, data);
-                    Log.i(LOG_TAG, "Place: " + place.getName());
-                    if (mainFragment != null) {
-                        try {
-                            mainFragment.setPickup_location(getParsedLocation(place.getLatLng()));
-                        } catch (IOException e) {
-                            Log.e(LOG_TAG, "onActivityResult - IOException from pick up location geocoder");
-                            Log.e(LOG_TAG, e.toString());
-                        }
-                        Log.i(LOG_TAG, "get Address" + place.getAddress());
-                    }
-                } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
-                    Status status = PlaceAutocomplete.getStatus(this, data);
-                    // TODO: Handle the error.
-                    Log.i(LOG_TAG, status.getStatusMessage());
-
-                } else if (resultCode == RESULT_CANCELED) {
-                    // The user canceled the operation.
-                }
+                handleTripLocationRequest(resultCode, data, "pickup");
                 break;
 
             case USER_LOCATION_REQUEST:
-                if (resultCode == RESULT_OK) {
-                    Place place = PlaceAutocomplete.getPlace(this, data);
-                    Log.i(LOG_TAG, "Place: " + place.getName());
-                    if (registrationFragment != null) {
-                        try {
-                            registrationFragment.set_user_detailed_location(
-                                    getParsedLocation(place.getLatLng()));
-                        } catch (IOException e) {
-                            Log.e(LOG_TAG, "onActivityResult - IOException from pick up location " +
-                                    "geocoder");
-                            Log.e(LOG_TAG, e.toString());
-                        }
-                        Log.i(LOG_TAG, "get Address" + place.getAddress());
-                    }
-                } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
-                    Status status = PlaceAutocomplete.getStatus(this, data);
-                    // TODO: Handle the error.
-                    Log.i(LOG_TAG, status.getStatusMessage());
-
-                } else if (resultCode == RESULT_CANCELED) {
-                    // The user canceled the operation.
-                }
+                handleUserLocationRequestion(resultCode, data);
                 break;
         }
     }
@@ -823,7 +826,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onUserPicturePressed() {
         // TODO handle user providing picture
-
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
     }
 
     @Override
@@ -868,7 +874,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.mainActivity_ListView, mainFragment, "MainFragment")
+                .replace(R.id.mainActivity_ListView, mainFragment, "mainFragment")
                 .addToBackStack("RegisterToMainFragment")
                 .commit();
     }
@@ -889,7 +895,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.mainActivity_ListView, mainFragment, "MainFragment")
+                .replace(R.id.mainActivity_ListView, mainFragment, "mainFragment")
                 .addToBackStack(null)
                 .commit();
     }
@@ -912,6 +918,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onConfirmPublish() {
         Log.i(LOG_TAG, "onConfirmPublish - Publishing new offer");
+        BACK_CALLED_AFTER_POSTING = true;
         if (!checkConfirmInputs()) {
             Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
                     getResources().getString(R.string.registration_input_incomplete),
@@ -928,7 +935,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         Log.i(LOG_TAG, "onConfirmPublish - confirmPublish " + tmp.toString());
 
         // Show a thank you note
-        ThankYou thankYou = ThankYou.newInstance(tmp.get(getString(R.string.saved_user_firstname)));
+        thankYou = ThankYou.newInstance(tmp.get(getString(R.string.saved_user_firstname)));
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.mainActivity_ListView, thankYou, "Thank you")
@@ -940,18 +947,41 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void onBackToMainFragment() {
         Log.i(LOG_TAG, "Thank you!");
         if (mainFragment == null) {
-
             mainFragment = MainFragment.newInstance(getUserDetailedLocation());
         }
-
         FragmentManager fm;
-
         fm = getSupportFragmentManager();
         int ec = fm.getBackStackEntryCount();
+        Log.i(LOG_TAG, "onBackToMainFragment - ec = "+ec);
         int id = fm.getBackStackEntryAt(ec-1).getId();
-        fm.popBackStack(id, fm.POP_BACK_STACK_INCLUSIVE);
+        Log.i(LOG_TAG, "onBackToMainFragment - id = "+id);
+        for (int i = 00; i > ec; i++) {
+            fm.popBackStack(i, fm.POP_BACK_STACK_INCLUSIVE);
+        }
+
         fm.beginTransaction()
-                .replace(R.id.mainActivity_ListView, mainFragment, "mainFragment")
+                .remove(thankYou)
+                .remove(mainFragment)
                 .commit();
+
+        fm.beginTransaction()
+                .add(R.id.mainActivity_ListView, mainFragment, "mainFragment")
+                .commit();
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        Log.i(LOG_TAG, "onBackPressed - start");
+        if (BACK_CALLED_AFTER_POSTING) {
+            Log.i(LOG_TAG, "onBackPressed - is instance");
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            return;
+        }
+
+        super.onBackPressed();
     }
 }

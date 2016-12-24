@@ -23,7 +23,7 @@ import android.widget.TextView;
  * Use the {@link OfferDetail#newInstance} factory method to
  * create an instance of this fragment.
  */
-class OfferDetail extends Fragment {
+public class OfferDetail extends Fragment {
     // create a local variable for identifying the class where the log statements come from
     private final static String LOG_TAG = OfferDetail.class.getSimpleName();
 

@@ -41,11 +41,22 @@
         <item>Medium</item>
         <item>Large</item>
     </string-array>
+    <string-array name="travelling_by">
+        <item>Travelling by</item>
+        <item>Car</item>
+        <item>Train</item>
+        <item>Plane</item>
+    </string-array>
 
     <string name="publish">Publish</string>
     <string name="please_confirm">Please confirm the following information</string>
     <string name="please_register">Please provide us with the following information</string>
+    <string name="thank_you">Thank you!</string>
+    <string name="back_to_main">Back</string>
 
+    <string name="comment_indication">Here you can provide more details about your offer like where
+        you where you would like tomeet the sender/receiver? When do you want to deliver the package?
+    ... any other relevant information</string>
 
     <!-- ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~  -->
     <!--                       Parameters that don't need to be localized                        -->
@@ -94,6 +105,8 @@
     <string name="date_for_pickup">date_for_pickup</string>
     <string name="number_packages">number_packages</string>
     <string name="size_packages">size_packages</string>
+    <string name="travels_by">travels_by</string>
+    <string name="user_comment">user_comment</string>
 
     <string name="drop_off_latitude">drop_off_latitude</string>
     <string name="drop_off_longitude">drop_off_longitude</string>
@@ -103,6 +116,8 @@
     <string name="drop_off_country">drop_off_country</string>
     <string name="drop_off_postalcode">drop_off_postalcode</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

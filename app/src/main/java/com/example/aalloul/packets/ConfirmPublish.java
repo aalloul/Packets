@@ -4,12 +4,16 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.HashMap;
@@ -27,15 +31,17 @@ public class ConfirmPublish extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PERSONAL_DETAILS = "pers_details";
     private static final String ARG_TRIP_DETAILS= "trip_details";
+    private final static String LOG_TAG = ConfirmPublish.class.getSimpleName();
 
     private HashMap<String, String> mpers_details, mtrip_details;
 
     private Button confirmAction;
-    private EditText firstname_edit, surname_edit, phone_edit ;
+    private EditText firstname_edit, surname_edit, phone_edit, comment_user ;
     private TextView confirm_please;
     private ImageButton user_picture;
     private OnCofirmPublishListener mListener;
-
+    private Spinner travelling_by;
+    private FragmentActivity myContext;
     public ConfirmPublish() {
         // Required empty public constructor
     }
@@ -50,6 +56,7 @@ public class ConfirmPublish extends Fragment {
     public static ConfirmPublish newInstance(HashMap<String, String> pers_details,
                                              HashMap<String, String> trip_details) {
         ConfirmPublish fragment = new ConfirmPublish();
+        Log.i(LOG_TAG, "newInstance - pers_details = " + pers_details.toString());
         Bundle args = new Bundle();
         args.putSerializable(ARG_PERSONAL_DETAILS, pers_details);
         args.putSerializable(ARG_TRIP_DETAILS, trip_details);
@@ -86,19 +93,31 @@ public class ConfirmPublish extends Fragment {
         surname_edit = (EditText) view.findViewById(R.id.confirm_surname);
         phone_edit = (EditText) view.findViewById(R.id.confirm_phone_number);
         confirm_please = (TextView) view.findViewById(R.id.confirm_please);
+        comment_user = (EditText) view.findViewById(R.id.comment_user);
 
         if (!mpers_details.get(getString(R.string.saved_user_firstname)).equals("")) {
+            Log.i(LOG_TAG, "onCreateView - mpers_details = "+mpers_details.toString());
             confirm_please.setText(getString(R.string.please_register));
             firstname_edit.setText(mpers_details.get(getString(R.string.saved_user_firstname)));
             surname_edit.setText(mpers_details.get(getString(R.string.saved_user_surname)));
             phone_edit.setText(mpers_details.get(getString(R.string.saved_user_phonenumber)));
         }
 
+        travelling_by = (Spinner) view.findViewById(R.id.travelling_by);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapterTravellingBy= ArrayAdapter.createFromResource(myContext,
+                R.array.travelling_by, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapterTravellingBy.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        travelling_by.setAdapter(adapterTravellingBy);
+
         return view;
     }
 
     @Override
     public void onAttach(Context context) {
+        myContext= (FragmentActivity) context;
         super.onAttach(context);
         if (context instanceof OnCofirmPublishListener) {
             mListener = (OnCofirmPublishListener) context;
@@ -119,8 +138,11 @@ public class ConfirmPublish extends Fragment {
         out.put(getString(R.string.saved_user_surname), surname_edit.getText().toString());
         out.put(getString(R.string.saved_user_firstname), firstname_edit.getText().toString());
         out.put(getString(R.string.saved_user_phonenumber), phone_edit.getText().toString());
+        out.put(getString(R.string.travels_by), travelling_by.getSelectedItem().toString());
+        out.put(getString(R.string.user_comment), comment_user.getText().toString());
 //        out.put(getString(R.string.saved_user_picture), user_picture.get().toString());
         out.putAll(mtrip_details);
+        Log.i(LOG_TAG, "getAllDetails - out" + out.toString());
         return out;
     }
 

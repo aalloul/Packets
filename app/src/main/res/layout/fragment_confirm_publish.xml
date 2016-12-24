@@ -3,7 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.aalloul.packets.ConfirmPublish">
+    tools:context="com.example.aalloul.packets.ConfirmPublish"
+    android:layout_marginRight="10dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginTop="10dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -20,12 +23,10 @@
             android:textSize="16sp"
             android:textAllCaps="false"
             android:textStyle="normal|bold"
-            android:layout_below="@+id/confirm_location"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="false"
+            android:layout_below="@+id/comment_user"
             android:layout_centerInParent="false"
-            android:layout_marginLeft="60dp"
-            android:layout_marginTop="30dp" />
+            android:layout_centerVertical="false"
+            android:layout_centerHorizontal="true" />
 
         <ImageButton
             android:layout_width="wrap_content"
@@ -42,7 +43,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/please_confirm"
-            android:id="@+id/confirm_please" />
+            android:id="@+id/confirm_please"
+            android:layout_marginBottom="10dp" />
 
         <EditText
             android:layout_width="wrap_content"
@@ -51,7 +53,8 @@
             android:ems="10"
             android:id="@+id/confirm_first_name"
             android:layout_below="@+id/confirm_please"
-            android:layout_toRightOf="@+id/confirm_user_picture" />
+            android:layout_toRightOf="@+id/confirm_user_picture"
+            android:hint="@string/enter_first_name" />
 
         <EditText
             android:layout_width="wrap_content"
@@ -60,7 +63,8 @@
             android:ems="10"
             android:id="@+id/confirm_surname"
             android:layout_below="@+id/confirm_first_name"
-            android:layout_toRightOf="@+id/confirm_user_picture" />
+            android:layout_toRightOf="@+id/confirm_user_picture"
+            android:hint="@string/enter_surname" />
 
         <EditText
             android:layout_width="wrap_content"
@@ -69,7 +73,35 @@
             android:ems="10"
             android:id="@+id/confirm_phone_number"
             android:layout_below="@+id/confirm_surname"
-            android:layout_toRightOf="@+id/confirm_user_picture" />
+            android:layout_toRightOf="@+id/confirm_user_picture"
+            android:hint="@string/enter_phone_number" />
+
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/travelling_by"
+            android:layout_below="@+id/confirm_phone_number"
+            android:layout_toRightOf="@+id/confirm_user_picture"
+            android:dropDownWidth="match_parent"
+            android:gravity="center_vertical|center_horizontal"
+            android:layout_centerVertical="false"
+            android:layout_centerInParent="false"
+            android:layout_marginLeft="-5dp"
+            android:layout_marginTop="10dp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:id="@+id/comment_user"
+            android:layout_below="@+id/travelling_by"
+            android:paddingBottom="50dp"
+            android:hint="@string/comment_indication"
+            android:singleLine="false"
+            android:inputType="textMultiLine"
+            android:typeface="normal"
+            android:gravity="top|center_vertical"
+            android:hapticFeedbackEnabled="false" />
 
     </RelativeLayout>
 </FrameLayout>

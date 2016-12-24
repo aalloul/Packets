@@ -12,6 +12,7 @@ import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -38,6 +39,7 @@ import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -49,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         GoogleApiClient.OnConnectionFailedListener, LocationListener, ItemFragment.OnListFragmentInteractionListener,
         OfferDetail.OnFragmentInteractionListener, MainFragment.OnFragmentInteractionListener,
         DatePickerFragment.TheListener, RegistrationFragment.RegistrationFragmentListener,
-        ConfirmPublish.OnCofirmPublishListener {
+        ConfirmPublish.OnCofirmPublishListener, ThankYou.OnThankYouListener {
 
     // Map permission -- make sure 1 is always for position permission
     protected final int MAP_PERMISSION = 1;
@@ -59,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     protected boolean MAP_PERMISSION_GRANTED = false;
     private GoogleApiClient mGoogleApiClient;
-    SharedPreferences sharedPref;
     private Location userLastLocation;
     private MainFragment mainFragment;
     private RegistrationFragment registrationFragment;
@@ -91,12 +92,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             Log.i(LOG_TAG,"isAlreadyRegistered - User first name not found so not registered");
             return false;
         }
+        Log.i(LOG_TAG, "userFirstName = " +
+                sharedPref.getString(getString(R.string.saved_user_firstname), ""));
         return false;
     }
 
     protected HashMap<String, String> getUserDetailedLocation() {
         Log.i(LOG_TAG, "getUserDetailedLocation - Enter");
         HashMap<String, String> tmp = new HashMap<>();
+        SharedPreferences sharedPref;
         sharedPref = getPreferences(Context.MODE_PRIVATE);
 
         tmp.put(getString(R.string.saved_user_postalcode),
@@ -124,8 +128,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private void storeUserDetails() {
         Log.i(LOG_TAG, "storeUserDetails - Enter");
         // This will allow us to know how long before the user decides to register
+        SharedPreferences sharedPref;
+        sharedPref = getPreferences(Context.MODE_PRIVATE);
         int n_prompts = sharedPref.getInt(getString(R.string.saved_user_npromptstoregister), 0);
         SharedPreferences.Editor editor = sharedPref.edit();
+        Log.i(LOG_TAG,"storeUserDetails - firstname = " +
+                registrationFragment.get_user_firstname());
+        Log.i(LOG_TAG,"storeUserDetails - surname = " +
+                registrationFragment.get_user_surname());
+        Log.i(LOG_TAG,"storeUserDetails - get_user_phone_number= " +
+                registrationFragment.get_user_phone_number());
+
         editor.putString(getString(R.string.saved_user_firstname),
                 registrationFragment.get_user_firstname());
         editor.putString(getString(R.string.saved_user_surname),
@@ -149,27 +162,35 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         editor.putString(getString(R.string.saved_user_longitude),
                 tmp.get(getString(R.string.saved_user_longitude)));
 
-        editor.commit();
+        editor.apply();
 
         Log.i(LOG_TAG, "storeUserDetails - Exit");
     }
 
     private void storeUserDetails(HashMap<String, String> details) {
+        SharedPreferences sharedPref;
+        sharedPref = getPreferences(Context.MODE_PRIVATE);
         int n_prompts = sharedPref.getInt(getString(R.string.saved_user_npromptstoregister), 0);
         SharedPreferences.Editor editor = sharedPref.edit();
+
+        Log.i(LOG_TAG, "storeUserDetails(details) - details = "+ details.get(getString(R.string.saved_user_firstname)));
+        Log.i(LOG_TAG, "storeUserDetails(details) - details = "+ details.get(R.string.saved_user_surname));
+
         editor.putString(getString(R.string.saved_user_firstname),
-                getString(R.string.saved_user_firstname));
+                details.get(getString(R.string.saved_user_firstname)));
 
         editor.putString(getString(R.string.saved_user_surname),
-                details.get(R.string.saved_user_surname));
+                details.get(getString(R.string.saved_user_surname)));
+
         editor.putString(getString(R.string.saved_user_picture),
-                details.get(R.string.saved_user_picture));
+                details.get(getString(R.string.saved_user_picture)));
 
         editor.putString(getString(R.string.saved_user_phonenumber),
-                details.get(R.string.saved_user_phonenumber));
+                details.get(getString(R.string.saved_user_phonenumber)));
 
         editor.putString(getString(R.string.saved_user_picture),
-                details.get(R.string.saved_user_picture));
+                details.get(getString(R.string.saved_user_picture)));
+
         editor.putInt(getString(R.string.saved_user_npromptstoregister), n_prompts+1);
 
         editor.putString(getString(R.string.saved_user_address),
@@ -187,10 +208,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         editor.putString(getString(R.string.saved_user_longitude),
                 details.get(getString(R.string.saved_user_longitude)));
 
-        editor.commit();
+        editor.apply();
     }
+
     private void updateStoredLocation(Location location) {
         HashMap<String, String> tmp = new HashMap<>();
+        SharedPreferences sharedPref;
+        sharedPref = getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor  editor = sharedPref.edit();
         try {
             tmp = getParsedLocation(new LatLng(location.getLatitude(), location.getLongitude()));
@@ -321,6 +345,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     // Checks the inputs from the Main Activity
     boolean checkMainFragmentInputs() {
+
+        if (mainFragment == null) return false;
+
         if (!isNetworkOk()) {
             final Snackbar snackbar = Snackbar.make(findViewById(R.id.mainActivity_ListView),
                     getResources().getString(R.string.no_network_connectivity),
@@ -446,6 +473,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     // Returns user personal details
     protected HashMap<String, String> getUserPersonalDetails() {
         HashMap<String, String> dets = new HashMap<>();
+        SharedPreferences sharedPref;
+        sharedPref = getPreferences(Context.MODE_PRIVATE);
         sharedPref = getPreferences(Context.MODE_PRIVATE);
 
         dets.put(getString(R.string.saved_user_firstname),
@@ -475,7 +504,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity_listview);
         searchPerformAction = getIntent();
-
+        SharedPreferences sharedPref;
+        sharedPref = getPreferences(Context.MODE_PRIVATE);
         sharedPref = getPreferences(Context.MODE_PRIVATE);
         HashMap<String, String> userDetailedLocation = getUserDetailedLocation();
         String userCity = userDetailedLocation.get(getString(R.string.saved_user_city));
@@ -508,6 +538,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
 
 
+
+        // New data from the back-end was downloaded
         BroadcastReceiver receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -831,7 +863,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         storeUserDetails();
         if (mainFragment == null) {
-            // TODO pass on the user data
             mainFragment = MainFragment.newInstance(getUserDetailedLocation());
         }
 
@@ -896,7 +927,31 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         //TODO post to backend
         Log.i(LOG_TAG, "onConfirmPublish - confirmPublish " + tmp.toString());
 
+        // Show a thank you note
+        ThankYou thankYou = ThankYou.newInstance(tmp.get(getString(R.string.saved_user_firstname)));
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.mainActivity_ListView, thankYou, "Thank you")
+                .commit();
 
     }
 
+    @Override
+    public void onBackToMainFragment() {
+        Log.i(LOG_TAG, "Thank you!");
+        if (mainFragment == null) {
+
+            mainFragment = MainFragment.newInstance(getUserDetailedLocation());
+        }
+
+        FragmentManager fm;
+
+        fm = getSupportFragmentManager();
+        int ec = fm.getBackStackEntryCount();
+        int id = fm.getBackStackEntryAt(ec-1).getId();
+        fm.popBackStack(id, fm.POP_BACK_STACK_INCLUSIVE);
+        fm.beginTransaction()
+                .replace(R.id.mainActivity_ListView, mainFragment, "mainFragment")
+                .commit();
+    }
 }

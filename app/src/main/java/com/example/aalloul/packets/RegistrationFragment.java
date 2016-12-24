@@ -197,16 +197,19 @@ public class RegistrationFragment extends Fragment {
 
     public String get_user_phone_number() {
         setPhone_number(phone_number_ui.getText().toString());
+        Log.i(LOG_TAG, "get_user_phone_number = "+phone_number_ui.getText().toString());
         return phone_number_ui.getText().toString();
     }
 
     public String get_user_surname(){
         setSurname(surname_ui.getText().toString());
+        Log.i(LOG_TAG, "get_user_surname = "+surname_ui.getText().toString());
         return surname_ui.getText().toString();
     }
 
     public String get_user_firstname(){
         setFirstname(firstname_ui.getText().toString());
+        Log.i(LOG_TAG, "get_user_firstname = "+firstname_ui.getText().toString());
         return firstname_ui.getText().toString();
     }
 

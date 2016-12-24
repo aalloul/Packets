@@ -1,21 +1,25 @@
 package com.example.aalloul.packets;
 
 
+import android.*;
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Geocoder;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.FileProvider;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -37,6 +41,9 @@ import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.model.LatLng;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -57,8 +64,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     protected final int PICK_UP_LOCATION_REQUEST = 3;
     protected final int USER_LOCATION_REQUEST = 4;
     static final int REQUEST_IMAGE_CAPTURE = 5;
+    static final int REQUEST_WRITE_FILES = 6;
     private static boolean BACK_CALLED_AFTER_POSTING = false;
 
+    protected final int PICKUP_AIM = 1;
+    protected final int DROPOFF_AIM = 2;
+    protected final int REGISTRATION_AIM = 3;
+
+    private String mCurrentPhotoPath;
+    SharedPreferences sharedPref;
     protected boolean MAP_PERMISSION_GRANTED = false;
     private GoogleApiClient mGoogleApiClient;
     private Location userLastLocation;
@@ -87,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     private boolean isAlreadyRegistered() {
         Log.i(LOG_TAG, "isAlreadyRegistered - Enter");
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        sharedPref = getPreferences(Context.MODE_PRIVATE);
 
         if (sharedPref.getString(getString(R.string.saved_user_firstname), "").equals("")) {
             Log.i(LOG_TAG,"isAlreadyRegistered - User first name not found so not registered");
@@ -101,7 +115,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     protected HashMap<String, String> getUserDetailedLocation() {
         Log.i(LOG_TAG, "getUserDetailedLocation - Enter");
         HashMap<String, String> tmp = new HashMap<>();
-        SharedPreferences sharedPref;
         sharedPref = getPreferences(Context.MODE_PRIVATE);
 
         tmp.put(getString(R.string.saved_user_postalcode),
@@ -129,10 +142,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private void storeUserDetails() {
         Log.i(LOG_TAG, "storeUserDetails - Enter");
         // This will allow us to know how long before the user decides to register
-        SharedPreferences sharedPref;
         sharedPref = getPreferences(Context.MODE_PRIVATE);
         int n_prompts = sharedPref.getInt(getString(R.string.saved_user_npromptstoregister), 0);
         SharedPreferences.Editor editor = sharedPref.edit();
+
         Log.i(LOG_TAG,"storeUserDetails - firstname = " +
                 registrationFragment.get_user_firstname());
         Log.i(LOG_TAG,"storeUserDetails - surname = " +
@@ -169,7 +182,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     private void storeUserDetails(HashMap<String, String> details) {
-        SharedPreferences sharedPref;
         sharedPref = getPreferences(Context.MODE_PRIVATE);
         int n_prompts = sharedPref.getInt(getString(R.string.saved_user_npromptstoregister), 0);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -214,7 +226,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     private void updateStoredLocation(Location location) {
         HashMap<String, String> tmp = new HashMap<>();
-        SharedPreferences sharedPref;
         sharedPref = getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor  editor = sharedPref.edit();
         try {
@@ -309,6 +320,43 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                         ActivityCompat.requestPermissions(MainActivity.this,
                                 new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                                 MAP_PERMISSION);
+                    }
+                }).show();
+        Log.i(LOG_TAG, "explanation displayed");
+
+        return false;
+    }
+
+    protected boolean checkFilePermission() {
+        Log.i(LOG_TAG, "Start checking permissions");
+        boolean b = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
+                PackageManager.PERMISSION_GRANTED;
+        if (b) {
+            Log.i(LOG_TAG, "Permission already granted");
+            return true;
+        }
+
+        Log.i(LOG_TAG, "Permission not granted");
+        // Should we show an explanation?
+        b = ActivityCompat.shouldShowRequestPermissionRationale(this,
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (!b) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_FILES);
+            return false;
+        }
+
+        Log.i(LOG_TAG, "Apparently we should show an explanation");
+        Snackbar.make(findViewById(R.id.mainActivity_ListView),
+                R.string.permission_position_explanation,
+                Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.permission_position_explanation_ok, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ActivityCompat.requestPermissions(MainActivity.this,
+                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                REQUEST_WRITE_FILES);
                     }
                 }).show();
         Log.i(LOG_TAG, "explanation displayed");
@@ -474,7 +522,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     // Returns user personal details
     protected HashMap<String, String> getUserPersonalDetails() {
         HashMap<String, String> dets = new HashMap<>();
-        SharedPreferences sharedPref;
         sharedPref = getPreferences(Context.MODE_PRIVATE);
         sharedPref = getPreferences(Context.MODE_PRIVATE);
 
@@ -486,13 +533,74 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 sharedPref.getString(getString(R.string.saved_user_phonenumber), ""));
         dets.put(getString(R.string.saved_user_picture),
                 sharedPref.getString(getString(R.string.saved_user_picture), ""));
+        dets.put(getString(R.string.saved_user_picture_path),
+                sharedPref.getString(getString(R.string.saved_user_picture_path),""));
 
         return dets;
 
     }
 
+    // Checks inputs
     protected boolean checkConfirmInputs() {
+        //TODO fill the check here
         return true;
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        if (!checkFilePermission()) throw new IOException("werwe");
+
+        String imageFileName = getString(R.string.user_picture_file);
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    // Creates the intent for the user to take a picture
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+                sharedPref.edit()
+                        .putString(getString(R.string.saved_user_picture_path), mCurrentPhotoPath)
+                        .commit();
+
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+                Log.i(LOG_TAG, "dispatchTakePictureIntent - IOException happened");
+                ex.printStackTrace();
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.example.aalloul.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
+        }
+    }
+
+    // Crops and scales images
+    public static  Bitmap cropAndScale (Bitmap source,int scale){
+        int factor = source.getHeight() <= source.getWidth() ? source.getHeight(): source.getWidth();
+        int longer = source.getHeight() >= source.getWidth() ? source.getHeight(): source.getWidth();
+        int x = source.getHeight() >= source.getWidth() ?0:(longer-factor)/2;
+        int y = source.getHeight() <= source.getWidth() ?0:(longer-factor)/2;
+        source = Bitmap.createBitmap(source, x, y, factor, factor);
+        source = Bitmap.createScaledBitmap(source, scale, scale, false);
+        return source;
     }
 
     /* ***************** ***************** ***************** *****************
@@ -505,7 +613,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity_listview);
         searchPerformAction = getIntent();
-        SharedPreferences sharedPref;
         sharedPref = getPreferences(Context.MODE_PRIVATE);
         sharedPref = getPreferences(Context.MODE_PRIVATE);
         HashMap<String, String> userDetailedLocation = getUserDetailedLocation();
@@ -611,6 +718,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 }
                 break;
             }
+            case REQUEST_WRITE_FILES:
+                Log.i(LOG_TAG, "onRequestPermissionsResult - REQUEST_WRITE_FILES granted");
 
         }
         Log.i(LOG_TAG, "onRequestPermissionsResult - Exit");
@@ -621,6 +730,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         Log.i(LOG_TAG, "onResume - enter");
         super.onResume();
     }
+
     @Override
     public void onStart() {
         Log.i(LOG_TAG, "onStart - Enter");
@@ -752,25 +862,36 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         launchPlaceAutoCompleteRequest(DROP_OFF_LOCATION_REQUEST);
     }
 
-    // Handles the callback result when the user enters a puck up location
-    private void handleTripLocationRequest(int resultCode, Intent data, String requestAim) {
+    // Handles the callback result when the user enters a location somewhere
+    private void handleTripLocationRequest(int resultCode, Intent data, int requestAim) {
         if (resultCode == RESULT_OK) {
             Place place = PlaceAutocomplete.getPlace(this, data);
             Log.i(LOG_TAG, "Place: " + place.getName());
-            if (mainFragment != null) {
-                try {
-                    if (requestAim.equals("pickup")) {
-                        mainFragment.setPickup_location(getParsedLocation(place.getLatLng()));
-                    } else {
-                        mainFragment.setDrop_off_location(getParsedLocation(place.getLatLng()));
-                    }
-                } catch (IOException e) {
-                    Log.e(LOG_TAG, "onActivityResult - IOException from" + requestAim+
-                            " location geo-coder");
-                    Log.e(LOG_TAG, e.toString());
+
+            try {
+                switch (requestAim) {
+                    case PICKUP_AIM:
+                        if (mainFragment != null) {
+                            mainFragment.setPickup_location(getParsedLocation(place.getLatLng()));
+                            break;
+                        }
+
+                    case DROPOFF_AIM:
+                        if (mainFragment != null) {
+                            mainFragment.setDrop_off_location(getParsedLocation(place.getLatLng()));
+                        }
+                    case REGISTRATION_AIM:
+                        if (registrationFragment != null) {
+                            registrationFragment.set_user_detailed_location(
+                                    getParsedLocation(place.getLatLng()));
+                        }
                 }
-                Log.i(LOG_TAG, "get Address" + place.getAddress());
+            } catch (IOException e) {
+                Log.e(LOG_TAG, "onActivityResult - IOException from" + requestAim+
+                        " location geo-coder");
+                Log.e(LOG_TAG, e.toString());
             }
+
         } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
             Status status = PlaceAutocomplete.getStatus(this, data);
             // TODO: Handle the error.
@@ -781,55 +902,57 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
     }
 
-    private void handleUserLocationRequestion(int resultCode, Intent data) {
+    private void handleUserPictureInput(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            Place place = PlaceAutocomplete.getPlace(this, data);
-            Log.i(LOG_TAG, "Place: " + place.getName());
-            if (registrationFragment != null) {
-                try {
-                    registrationFragment.set_user_detailed_location(
-                            getParsedLocation(place.getLatLng()));
-                } catch (IOException e) {
-                    Log.e(LOG_TAG, "onActivityResult - IOException from pick up location " +
-                            "geocoder");
-                    Log.e(LOG_TAG, e.toString());
-                }
-                Log.i(LOG_TAG, "get Address" + place.getAddress());
-            }
-        } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
-            Status status = PlaceAutocomplete.getStatus(this, data);
-            // TODO: Handle the error.
-            Log.i(LOG_TAG, status.getStatusMessage());
+            File file = new File(mCurrentPhotoPath);
+            Uri uri = Uri.fromFile(file);
+            Bitmap bitmap;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                bitmap = ExifUtil.rotateBitmap(mCurrentPhotoPath, bitmap);
+                bitmap = cropAndScale(bitmap, 300);
 
-        } else if (resultCode == RESULT_CANCELED) {
-            // The user canceled the operation.
+                if (registrationFragment != null) {
+                    registrationFragment.setUserPicture(bitmap);
+                }
+            } catch (FileNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
         }
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case DROP_OFF_LOCATION_REQUEST:
-                handleTripLocationRequest(resultCode, data, "dropoff");
+                Log.i(LOG_TAG, "onActivityResult - Handling drop off location result");
+                handleTripLocationRequest(resultCode, data, DROPOFF_AIM);
                 break;
 
             case PICK_UP_LOCATION_REQUEST:
-                handleTripLocationRequest(resultCode, data, "pickup");
+                Log.i(LOG_TAG, "onActivityResult - Handling pick up location result");
+                handleTripLocationRequest(resultCode, data, PICKUP_AIM);
                 break;
 
             case USER_LOCATION_REQUEST:
-                handleUserLocationRequestion(resultCode, data);
+                Log.i(LOG_TAG, "onActivityResult - Handling registration location result");
+                handleTripLocationRequest(resultCode, data, REGISTRATION_AIM);
+                break;
+
+            case REQUEST_IMAGE_CAPTURE:
+                Log.i(LOG_TAG, "onActivityResult - Handling picture taking by the user");
+                handleUserPictureInput(resultCode, data);
                 break;
         }
     }
 
     @Override
     public void onUserPicturePressed() {
-        // TODO handle user providing picture
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        }
+        dispatchTakePictureIntent();
     }
 
     @Override
@@ -882,7 +1005,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onRegisterLaterPressed() {
 
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        sharedPref = getPreferences(Context.MODE_PRIVATE);
         // This will allow us to know how long before the user decides to register
         int n_prompts = sharedPref.getInt(getString(R.string.saved_user_npromptstoregister), 0);
         SharedPreferences.Editor editor = sharedPref.edit();

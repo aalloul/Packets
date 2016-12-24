@@ -203,11 +203,17 @@ public class MainFragment extends Fragment {
         if (locationAddress.get(getString(R.string.saved_user_city)) == null) return;
         drop_off_detailed_location = locationAddress;
         String tmp = locationAddress.get(getString(R.string.saved_user_city));
-        if (locationAddress.get(getString(R.string.saved_user_state)).equals("") ) {
+
+        if (locationAddress.get(getString(R.string.saved_user_state)) == null ) {
             tmp += " ("+Utilities.CountryToCountryCode(
                     locationAddress.get(getString(R.string.saved_user_country))) +")";
         } else {
-            tmp += " (" + locationAddress.get(getString(R.string.saved_user_state)) + ")";
+            if (locationAddress.get(getString(R.string.saved_user_state)).equals("") ) {
+                tmp += " ("+Utilities.CountryToCountryCode(
+                        locationAddress.get(getString(R.string.saved_user_country))) +")";
+            } else {
+                tmp += " (" + locationAddress.get(getString(R.string.saved_user_state)) + ")";
+            }
         }
         drop_off_location.setText(tmp);
         return;

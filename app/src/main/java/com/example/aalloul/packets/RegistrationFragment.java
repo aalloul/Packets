@@ -1,6 +1,7 @@
 package com.example.aalloul.packets;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -23,6 +24,7 @@ import java.util.HashMap;
 public class RegistrationFragment extends Fragment {
     private final static String LOG_TAG = RegistrationFragment.class.getSimpleName();
     private ImageButton picture;
+    private String picture_bitmap;
     private EditText firstname_ui, surname_ui, phone_number_ui;
     private TextView location_ui;
     private String firstname, surname, phone_number, location;
@@ -102,9 +104,11 @@ public class RegistrationFragment extends Fragment {
     }
     
 
-    public void setUserPicture() {
-        //TODO
-        //picture.set
+    public void setUserPicture(Bitmap imageBitmap) {
+        Log.i(LOG_TAG, "setUserPicture - enter");
+        picture_bitmap = Utilities.BitMapToString(imageBitmap);
+        Log.i(LOG_TAG, "setUserPicture picture_bitmap = " + picture_bitmap);
+        picture.setImageBitmap(imageBitmap);
     }
 
 
@@ -214,7 +218,7 @@ public class RegistrationFragment extends Fragment {
     }
 
     public String get_user_picture() {
-        return "erw";
+        return picture_bitmap;
     }
 
     public int isInputOk() {

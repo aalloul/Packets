@@ -1,6 +1,8 @@
 package com.example.aalloul.packets;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -42,6 +44,9 @@ public class ConfirmPublish extends Fragment {
     private OnCofirmPublishListener mListener;
     private Spinner travelling_by;
     private FragmentActivity myContext;
+    private String user_picture_string = "";
+    private String user_picture_path;
+
     public ConfirmPublish() {
         // Required empty public constructor
     }
@@ -95,12 +100,23 @@ public class ConfirmPublish extends Fragment {
         confirm_please = (TextView) view.findViewById(R.id.confirm_please);
         comment_user = (EditText) view.findViewById(R.id.comment_user);
 
+        user_picture = (ImageButton) view.findViewById(R.id.confirm_user_picture);
+
         if (!mpers_details.get(getString(R.string.saved_user_firstname)).equals("")) {
             Log.i(LOG_TAG, "onCreateView - mpers_details = "+mpers_details.toString());
             confirm_please.setText(getString(R.string.please_register));
             firstname_edit.setText(mpers_details.get(getString(R.string.saved_user_firstname)));
             surname_edit.setText(mpers_details.get(getString(R.string.saved_user_surname)));
             phone_edit.setText(mpers_details.get(getString(R.string.saved_user_phonenumber)));
+            user_picture_string = mpers_details.get(getString(R.string.saved_user_picture));
+            user_picture_path = mpers_details.get(getString(R.string.saved_user_picture_path));
+
+            if (!user_picture.equals("")) {
+                user_picture.setImageBitmap(Utilities.StringToBitMap(
+                                mpers_details.get(getString(R.string.saved_user_picture))));
+
+            }
+            Log.i(LOG_TAG, "onCreateView - user_picture_path = "+user_picture_path);
         }
 
         travelling_by = (Spinner) view.findViewById(R.id.travelling_by);
@@ -140,7 +156,7 @@ public class ConfirmPublish extends Fragment {
         out.put(getString(R.string.saved_user_phonenumber), phone_edit.getText().toString());
         out.put(getString(R.string.travels_by), travelling_by.getSelectedItem().toString());
         out.put(getString(R.string.user_comment), comment_user.getText().toString());
-//        out.put(getString(R.string.saved_user_picture), user_picture.get().toString());
+        out.put(getString(R.string.saved_user_picture), user_picture_string);
         out.putAll(mtrip_details);
         Log.i(LOG_TAG, "getAllDetails - out" + out.toString());
         return out;

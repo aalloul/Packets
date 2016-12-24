@@ -231,6 +231,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         try {
             tmp = getParsedLocation(new LatLng(location.getLatitude(), location.getLongitude()));
         } catch (IOException e) {
+            //TODO handle this exception
             e.printStackTrace();
             return;
         }
@@ -285,6 +286,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             HashMap<String, String> tmp = getParsedLocation(latLng);
             registrationFragment.set_user_detailed_location(tmp);
         } catch (IOException e) {
+            //TODO handle this exception
             e.printStackTrace();
         }
     }
@@ -579,6 +581,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             } catch (IOException ex) {
                 // Error occurred while creating the File
                 Log.i(LOG_TAG, "dispatchTakePictureIntent - IOException happened");
+                //TODO handle this exception
                 ex.printStackTrace();
             }
             // Continue only if the File was successfully created
@@ -693,6 +696,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             tmp = getParsedLocation(latLng);
             registrationFragment.set_user_detailed_location(tmp);
         } catch (IOException e) {
+            //TODO handle this exception
             e.printStackTrace();
         }
         Log.i(LOG_TAG, "onConnected - Exit ");

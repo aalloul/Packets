@@ -233,13 +233,17 @@ public class MainFragment extends Fragment {
             return;
         }
 
-        if (!pick_up_detailed_location.get(getString(R.string.saved_user_state)).equals("")) {
-            tmp += " (" + pick_up_detailed_location.get(getString(R.string.saved_user_state)) + ")";
-        } else {
+        if (pick_up_detailed_location.get(getString(R.string.saved_user_state)) == null) {
             tmp += " (" + Utilities.CountryToCountryCode(
                     pick_up_detailed_location.get(getString(R.string.saved_user_country))) + ")";
+        } else {
+            if (!pick_up_detailed_location.get(getString(R.string.saved_user_state)).equals("")) {
+                tmp += " (" + pick_up_detailed_location.get(getString(R.string.saved_user_state)) + ")";
+            } else {
+                tmp += " (" + Utilities.CountryToCountryCode(
+                        pick_up_detailed_location.get(getString(R.string.saved_user_country))) + ")";
+            }
         }
-
         Log.i(LOG_TAG, "_setPickup_location - tmp = "+tmp);
 
         pickup_location.setText(tmp);

@@ -68,14 +68,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     protected final int PICK_UP_LOCATION_REQUEST = 3;
     protected final int USER_LOCATION_REQUEST = 4;
     static final int REQUEST_IMAGE_CAPTURE = 5;
-    static final int REQUEST_WRITE_FILES = 6;
-    static final int REQUEST_PICK_PICTURE= 6;
+    static final int REQUEST_WRITE_FILES_FROM_CAMERA = 6;
+    static final int REQUEST_WRITE_FILES_FROM_GALLERY = 7;
+    static final int REQUEST_PICK_PICTURE= 8;
 
     private static boolean BACK_CALLED_AFTER_POSTING = false;
 
     protected final int PICKUP_AIM = 1;
     protected final int DROPOFF_AIM = 2;
     protected final int REGISTRATION_AIM = 3;
+    protected final int UPDATE_STORED_LOCATION_AIM = 4;
 
     private String mCurrentPhotoPath;
     SharedPreferences sharedPref;
@@ -232,25 +234,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     private void updateStoredLocation(Location location) {
         HashMap<String, String> tmp = new HashMap<>();
-        sharedPref = getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor  editor = sharedPref.edit();
-        try {
-            tmp = getParsedLocation(new LatLng(location.getLatitude(), location.getLongitude()));
-        } catch (IOException e) {
-            //TODO handle this exception
-            e.printStackTrace();
-            return;
-        }
-        editor.putString(getString(R.string.saved_user_address),
-                tmp.get(getString(R.string.saved_user_address)));
-        editor.putString(getString(R.string.saved_user_city),
-                tmp.get(getString(R.string.saved_user_city)));
-        editor.putString(getString(R.string.saved_user_state),
-                tmp.get(getString(R.string.saved_user_state)));
-        editor.putString(getString(R.string.saved_user_country),
-                tmp.get(getString(R.string.saved_user_country)));
-        editor.putString(getString(R.string.saved_user_postalcode),
-                tmp.get(getString(R.string.saved_user_postalcode)));
+
+        HandleGeoCodingAsync handlegeocoding =
+                new HandleGeoCodingAsync(this, UPDATE_STORED_LOCATION_AIM);
+        handlegeocoding.execute(new LatLng(location.getLatitude(), location.getLongitude()));
+
     }
 
     private void handleNetworkResult(String queryResult) {
@@ -288,13 +276,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
         // Okay now we can use this new location
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        try {
-            HashMap<String, String> tmp = getParsedLocation(latLng);
-            registrationFragment.set_user_detailed_location(tmp);
-        } catch (IOException e) {
-            //TODO handle this exception
-            e.printStackTrace();
-        }
+        HandleGeoCodingAsync handlegeocoding = new HandleGeoCodingAsync(this, REGISTRATION_AIM);
+        handlegeocoding.execute(latLng);
     }
 
     protected boolean checkPermission() {
@@ -335,8 +318,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         return false;
     }
 
-    protected boolean checkFilePermission() {
-        Log.i(LOG_TAG, "Start checking permissions");
+    protected boolean checkFilePermission(final int which) {
+
+        Log.i(LOG_TAG, "checkFilePermission - Start checking permissions");
+        Log.i(LOG_TAG, "checkFilePermission - which = "+which);
+
         boolean b = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
                 PackageManager.PERMISSION_GRANTED;
@@ -351,7 +337,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (!b) {
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_FILES);
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, which);
             return false;
         }
 
@@ -362,9 +348,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 .setAction(R.string.permission_position_explanation_ok, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        Log.i(LOG_TAG, "Snackbar - which = " + which);
                         ActivityCompat.requestPermissions(MainActivity.this,
                                 new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                REQUEST_WRITE_FILES);
+                                which);
                     }
                 }).show();
         Log.i(LOG_TAG, "explanation displayed");
@@ -502,31 +489,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
     }
 
-    // Calls geo coder to get the city and country
-    protected HashMap<String, String> getParsedLocation(LatLng latlong) throws IOException {
-        Geocoder geocoder;
-        List<android.location.Address> addresses;
-        geocoder = new Geocoder(this, Locale.getDefault());
-
-        // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-        addresses = geocoder.getFromLocation(latlong.latitude, latlong.longitude, 1);
-
-        // If any additional address line present than only, check with max available address lines
-        // by getMaxAddressLineIndex()
-        HashMap<String, String> tmp = new HashMap<>();
-        tmp.put(getString(R.string.saved_user_address),addresses.get(0).getAddressLine(0));
-        tmp.put(getString(R.string.saved_user_city), addresses.get(0).getLocality());
-        tmp.put(getString(R.string.saved_user_state),addresses.get(0).getAdminArea());
-        tmp.put(getString(R.string.saved_user_country), addresses.get(0).getCountryName());
-        tmp.put(getString(R.string.saved_user_postalcode), addresses.get(0).getPostalCode());
-        tmp.put(getString(R.string.saved_user_latitude),
-                Double.toString(addresses.get(0).getLatitude()));
-        tmp.put(getString(R.string.saved_user_longitude),
-                Double.toString(addresses.get(0).getLongitude()));
-
-        return tmp;
-    }
-
     // Returns user personal details
     protected HashMap<String, String> getUserPersonalDetails() {
         HashMap<String, String> dets = new HashMap<>();
@@ -557,7 +519,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     // USed by dispatchTakePictureIntent to get the file path where to store the picture
     private File createImageFile() throws IOException {
         // Create an image file name
-        if (!checkFilePermission()) throw new IOException("werwe");
 
         String imageFileName = getString(R.string.user_picture_file);
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
@@ -675,6 +636,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         HashMap<String, String> tmp;
         LatLng latLng;
 
+
+        if (!checkPermission()) return;
         // Get location updates
         LocationRequest mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(30000);
@@ -683,7 +646,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 mGoogleApiClient, mLocationRequest, this);
 
-        if (!checkPermission()) return;
         if (registrationFragment == null) return;
 
         userLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -695,13 +657,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
 
         latLng = new LatLng(userLastLocation.getLatitude(), userLastLocation.getLongitude());
-        try {
-            tmp = getParsedLocation(latLng);
-            registrationFragment.set_user_detailed_location(tmp);
-        } catch (IOException e) {
-            //TODO handle this exception
-            e.printStackTrace();
-        }
+        HandleGeoCodingAsync handlegeocoding = new HandleGeoCodingAsync(this, REGISTRATION_AIM);
+        handlegeocoding.execute(latLng);
+
         Log.i(LOG_TAG, "onConnected - Exit ");
     }
 
@@ -710,6 +668,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void onRequestPermissionsResult(int requestCode, String permissions[],
                                            int[] grantResults) {
         Log.i(LOG_TAG, "onRequestPermissionsResult - Enter");
+        Log.i(LOG_TAG, "onRequestPermissionsResult - requestCode = " + requestCode);
+
         switch (requestCode) {
             case MAP_PERMISSION: {
                 // If request is cancelled, the result arrays are empty.
@@ -725,9 +685,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 }
                 break;
             }
-            case REQUEST_WRITE_FILES:
-                Log.i(LOG_TAG, "onRequestPermissionsResult - REQUEST_WRITE_FILES granted");
-
+            case REQUEST_WRITE_FILES_FROM_CAMERA: {
+                Log.i(LOG_TAG, "onRequestPermissionsResult - REQUEST_WRITE_FILES_FROM_CAMERA granted");
+                dispatchTakePictureIntent();
+                break;
+            }
+            case REQUEST_WRITE_FILES_FROM_GALLERY: {
+                Log.i(LOG_TAG, "onRequestPermissionsResult - REQUEST_WRITE_FILES_FROM_GALLERY granted");
+                dispatchGetPictureFromGallery();
+                break;
+            }
         }
         Log.i(LOG_TAG, "onRequestPermissionsResult - Exit");
     }
@@ -874,30 +841,22 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (resultCode == RESULT_OK) {
             Place place = PlaceAutocomplete.getPlace(this, data);
             Log.i(LOG_TAG, "Place: " + place.getName());
+            HandleGeoCodingAsync handlegeocoding;
 
-            try {
-                switch (requestAim) {
-                    case PICKUP_AIM:
-                        if (mainFragment != null) {
-                            mainFragment.setPickup_location(getParsedLocation(place.getLatLng()));
-                            break;
-                        }
+            switch (requestAim) {
+                case PICKUP_AIM:
+                    handlegeocoding = new HandleGeoCodingAsync(this, PICKUP_AIM);
+                    handlegeocoding.execute(place.getLatLng());
+                    break;
 
-                    case DROPOFF_AIM:
-                        if (mainFragment != null) {
-                            mainFragment.setDrop_off_location(getParsedLocation(place.getLatLng()));
-                        }
-                    case REGISTRATION_AIM:
-                        if (registrationFragment != null) {
-                            registrationFragment.set_user_detailed_location(
-                                    getParsedLocation(place.getLatLng()));
-                        }
-                }
-            } catch (IOException e) {
-                Log.e(LOG_TAG, "onActivityResult - IOException from" + requestAim+
-                        " location geo-coder");
-                Log.e(LOG_TAG, e.toString());
+                case DROPOFF_AIM:
+                    handlegeocoding = new HandleGeoCodingAsync(this, DROPOFF_AIM);
+                    handlegeocoding.execute(place.getLatLng());
+                case REGISTRATION_AIM:
+                    handlegeocoding = new HandleGeoCodingAsync(this, REGISTRATION_AIM);
+                    handlegeocoding.execute(place.getLatLng());
             }
+
 
         } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
             Status status = PlaceAutocomplete.getStatus(this, data);
@@ -933,6 +892,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     // handles the result after the user chose a photo from Gallery
     private void handleUserPickPicture(int resultCode, Intent data) {
+
         Log.i(LOG_TAG, "handleUserPickPicture - Enter");
         try {
             if (resultCode == RESULT_OK && null != data) {
@@ -954,6 +914,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 handlepicture.execute(bmp);
             }
         } catch (Exception e) {
+            //TODO handle this exception
             Log.i(LOG_TAG, "handleUserPickPicture - Exception caught");
             e.printStackTrace();
         }
@@ -1167,13 +1128,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             case 0:
                 // Gallery chosen
                 Log.i(LOG_TAG, "onCameraOrGallerySelected - choose from Gallery ");
-                dispatchGetPictureFromGallery();
+                if (checkFilePermission(REQUEST_WRITE_FILES_FROM_GALLERY)) {
+                    dispatchGetPictureFromGallery();
+                }
                 break;
 
             case 1:
                 // Take a new picture
                 Log.i(LOG_TAG, "onCameraOrGallerySelected - take a new picture");
-                dispatchTakePictureIntent();
+                if (checkFilePermission(REQUEST_WRITE_FILES_FROM_CAMERA)) {
+                    dispatchTakePictureIntent();
+                }
                 break;
         }
     }
@@ -1209,5 +1174,78 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 registrationFragment.unsetCaption_user_picture();
             }
         }
+    }
+
+    public class HandleGeoCodingAsync extends AsyncTask<LatLng, Integer, HashMap<String, String>> {
+        private Context context;
+        private int pickupaim;
+
+        public HandleGeoCodingAsync(Context ctx, int pickupaim) {
+            context = ctx;
+            this.pickupaim = pickupaim;
+        }
+
+        @Override
+        protected HashMap<String, String> doInBackground(LatLng... params) {
+            LatLng latlong = params[0];
+             Geocoder geocoder;
+             List<android.location.Address> addresses;
+             geocoder = new Geocoder(context, Locale.getDefault());
+
+            // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+            try {
+                addresses = geocoder.getFromLocation(latlong.latitude, latlong.longitude, 1);
+                // If any additional address line present than only, check with max available address lines
+                // by getMaxAddressLineIndex()
+                HashMap<String, String> tmp = new HashMap<>();
+                tmp.put(getString(R.string.saved_user_address),addresses.get(0).getAddressLine(0));
+                tmp.put(getString(R.string.saved_user_city), addresses.get(0).getLocality());
+                tmp.put(getString(R.string.saved_user_state),addresses.get(0).getAdminArea());
+                tmp.put(getString(R.string.saved_user_country), addresses.get(0).getCountryName());
+                tmp.put(getString(R.string.saved_user_postalcode), addresses.get(0).getPostalCode());
+                tmp.put(getString(R.string.saved_user_latitude),
+                        Double.toString(addresses.get(0).getLatitude()));
+                tmp.put(getString(R.string.saved_user_longitude),
+                        Double.toString(addresses.get(0).getLongitude()));
+                return tmp;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        protected void onPostExecute(HashMap<String, String> res) {
+            switch (pickupaim) {
+                case PICKUP_AIM:
+                    if (mainFragment != null) mainFragment.setPickup_location(res);
+                    break;
+
+                case DROPOFF_AIM:
+                    if (mainFragment != null) mainFragment.setDrop_off_location(res);
+                    break;
+
+                case REGISTRATION_AIM:
+                    if (registrationFragment != null) {
+                        registrationFragment.set_user_detailed_location(res);
+                    }
+                    break;
+
+                case UPDATE_STORED_LOCATION_AIM:
+                    sharedPref = getPreferences(Context.MODE_PRIVATE);
+                    SharedPreferences.Editor  editor = sharedPref.edit();
+                    editor.putString(getString(R.string.saved_user_address),
+                            res.get(getString(R.string.saved_user_address)));
+                    editor.putString(getString(R.string.saved_user_city),
+                            res.get(getString(R.string.saved_user_city)));
+                    editor.putString(getString(R.string.saved_user_state),
+                            res.get(getString(R.string.saved_user_state)));
+                    editor.putString(getString(R.string.saved_user_country),
+                            res.get(getString(R.string.saved_user_country)));
+                    editor.putString(getString(R.string.saved_user_postalcode),
+                            res.get(getString(R.string.saved_user_postalcode)));
+            }
+
+        }
+
     }
 }

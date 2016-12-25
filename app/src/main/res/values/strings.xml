@@ -61,9 +61,21 @@
     <string name="add_profile_picture">Select a profile picture</string>
 
     <string-array name="camera_or_gallery">
-        <item>From Gallery</item> <item>New Selfie</item>
+        <item>From Gallery</item>
+        <item>New Selfie</item>
     </string-array>
     <string name="choose_gallery_or_camera">Choose from Gallery or Picture?</string>
+    <string name="privacynotice">When someone visits www.ico.org.uk we use a third party service, Google Analytics, to collect standard internet log information and details of visitor behaviour patterns. We do this to find out things such as the number of visitors to the various parts of the site. This information is only processed in a way which does not identify anyone. We do not make, and do not allow Google to make, any attempt to find out the identities of those visiting our website. If we do want to collect personally identifiable information through our website, we will be up front about this. We will make it clear when we collect personal information and will explain what we intend to do with it.
+
+Use of cookies by the ICO
+
+You can read more about how we use cookies on our Cookies page.
+
+Search engine
+
+Our website search and decision notice search is powered by System Associates. Search queries and results are logged anonymously to help us improve our website and search functionality. No user-specific data is collected by either ICO or any </string>
+
+
     <!-- ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~  -->
     <!--                       Parameters that don't need to be localized                        -->
     <!-- ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~  -->
@@ -123,5 +135,8 @@
     <string name="drop_off_postalcode">drop_off_postalcode</string>
     <string name="saved_user_picture_path">absolute_path_to_user_picture</string>
     <string name="user_picture_file">user_picture</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

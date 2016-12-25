@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private RegistrationFragment registrationFragment;
     private ConfirmPublish confirmPublish;
     private ThankYou thankYou;
+    private ItemFragment itemfragment;
 
     // Interaction with Backend
     protected static HashMap<String, String> buffered_delayed_data = new HashMap();
@@ -117,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
         Log.i(LOG_TAG, "userFirstName = " +
                 sharedPref.getString(getString(R.string.saved_user_firstname), ""));
-        return false;
+        return true;
     }
 
     protected HashMap<String, String> getUserDetailedLocation() {
@@ -580,13 +581,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity_listview);
         searchPerformAction = getIntent();
-        sharedPref = getPreferences(Context.MODE_PRIVATE);
+
+        // This piece is to check whether the user is already registered with his city being
+        // Updating
         sharedPref = getPreferences(Context.MODE_PRIVATE);
         HashMap<String, String> userDetailedLocation = getUserDetailedLocation();
         String userCity = userDetailedLocation.get(getString(R.string.saved_user_city));
         Log.i(LOG_TAG, "onCreate - userCity = " + userCity);
+        boolean isalreadyregistered = isAlreadyRegistered();
 
-        if (mGoogleApiClient == null && (!isAlreadyRegistered() || userCity.equals("Updating"))) {
+        // if not already registered or the city is "updating" then connect to Google API
+        if (mGoogleApiClient == null && (!isalreadyregistered || userCity.equals("Updating"))) {
             Log.i(LOG_TAG, "onCreate - mGoogleApiClient is null");
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addConnectionCallbacks(this)
@@ -597,10 +602,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             Log.i(LOG_TAG, "onCreate - mGoogleApiClient is not null");
         }
 
+        // Check which fragment to load
         if (savedInstanceState == null) {
             Log.i(LOG_TAG, "onCreate - savedInstanceState is null");
             FragmentTransaction fmg = getSupportFragmentManager().beginTransaction();
-            if (isAlreadyRegistered()) {
+            if (isalreadyregistered) {
                 Log.i(LOG_TAG, "onCreate - user already registered");
                 mainFragment = MainFragment.newInstance(userDetailedLocation);
                 fmg.add(R.id.mainActivity_ListView, mainFragment, "mainFragment");
@@ -612,8 +618,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
             fmg.commit();
         }
-
-
 
         // New data from the back-end was downloaded
         BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -792,9 +796,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void onSearchButtonPressed() {
         Log.i(LOG_TAG, "onSearchButtonPressed - start");
 
-        if (checkMainFragmentInputs()) {
-            // TODO launch the search
+        if (!checkMainFragmentInputs()) {
+            Log.i(LOG_TAG, "onSearchButtonPressed - user did not provide any input");
+            return;
         }
+
+        //TODO call the back-end here
+
+        itemfragment = ItemFragment.newInstance(1);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.mainActivity_ListView, itemfragment, "itemfragment")
+                .addToBackStack("mainToitem")
+                .commit();
 
 
         Log.i(LOG_TAG, "onSearchButtonPressed - exit");
@@ -1176,6 +1189,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
     }
 
+    /*
+     This little class is called to geo-encode the (latitude, longitude) of any place
+      it's done as an AsyncTask to avoid blocking the main UI thread
+     */
     public class HandleGeoCodingAsync extends AsyncTask<LatLng, Integer, HashMap<String, String>> {
         private Context context;
         private int pickupaim;
@@ -1195,8 +1212,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             // Here 1 represent max location result to returned, by documents it recommended 1 to 5
             try {
                 addresses = geocoder.getFromLocation(latlong.latitude, latlong.longitude, 1);
-                // If any additional address line present than only, check with max available address lines
-                // by getMaxAddressLineIndex()
                 HashMap<String, String> tmp = new HashMap<>();
                 tmp.put(getString(R.string.saved_user_address),addresses.get(0).getAddressLine(0));
                 tmp.put(getString(R.string.saved_user_city), addresses.get(0).getLocality());

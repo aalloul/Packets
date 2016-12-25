@@ -58,6 +58,12 @@
         you where you would like tomeet the sender/receiver? When do you want to deliver the package?
     ... any other relevant information</string>
 
+    <string name="add_profile_picture">Select a profile picture</string>
+
+    <string-array name="camera_or_gallery">
+        <item>From Gallery</item> <item>New Selfie</item>
+    </string-array>
+    <string name="choose_gallery_or_camera">Choose from Gallery or Picture?</string>
     <!-- ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~  -->
     <!--                       Parameters that don't need to be localized                        -->
     <!-- ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~  -->

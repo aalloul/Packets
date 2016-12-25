@@ -23,10 +23,10 @@ import java.util.HashMap;
 
 public class RegistrationFragment extends Fragment {
     private final static String LOG_TAG = RegistrationFragment.class.getSimpleName();
-    private ImageButton picture;
+    private ImageButton picture_ui;
     private String picture_bitmap;
     private EditText firstname_ui, surname_ui, phone_number_ui;
-    private TextView location_ui;
+    private TextView location_ui, caption_user_picture;
     private String firstname, surname, phone_number, location;
     private Button registerMe, registerLater;
     private HashMap<String, String> user_detailed_location = new HashMap<>();
@@ -56,8 +56,11 @@ public class RegistrationFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_registration_page, container, false);
 
         // User picture
-        picture = (ImageButton) view.findViewById(R.id.user_picture);
-        picture.setOnClickListener(new View.OnClickListener() {
+        picture_ui = (ImageButton) view.findViewById(R.id.user_picture);
+        if (picture_bitmap != null) picture_ui.setImageBitmap(
+                Utilities.StringToBitMap(picture_bitmap));
+
+        picture_ui.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mListener.onUserPicturePressed();
@@ -99,6 +102,9 @@ public class RegistrationFragment extends Fragment {
             }
         });
 
+        // Text to encourage selecting a profile picture
+        caption_user_picture = (TextView) view.findViewById(R.id.caption_user_picture);
+
         Log.i(LOG_TAG, "onCreateView - Exit");
         return view;
     }
@@ -107,10 +113,14 @@ public class RegistrationFragment extends Fragment {
     public void setUserPicture(Bitmap imageBitmap) {
         Log.i(LOG_TAG, "setUserPicture - enter");
         picture_bitmap = Utilities.BitMapToString(imageBitmap);
-        Log.i(LOG_TAG, "setUserPicture picture_bitmap = " + picture_bitmap);
-        picture.setImageBitmap(imageBitmap);
+//        Log.i(LOG_TAG, "setUserPicture picture_ui_bitmap = " + picture_bitmap);
+        picture_ui.setImageBitmap(imageBitmap);
     }
 
+
+    public void unsetCaption_user_picture() {
+        caption_user_picture.setText("");
+    }
 
     public void setFirstname(String firstname) {
         this.firstname = firstname;

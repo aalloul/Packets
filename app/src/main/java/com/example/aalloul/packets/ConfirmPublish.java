@@ -61,7 +61,7 @@ public class ConfirmPublish extends Fragment {
     public static ConfirmPublish newInstance(HashMap<String, String> pers_details,
                                              HashMap<String, String> trip_details) {
         ConfirmPublish fragment = new ConfirmPublish();
-        Log.i(LOG_TAG, "newInstance - pers_details = " + pers_details.toString());
+//        Log.i(LOG_TAG, "newInstance - pers_details = " + pers_details.toString());
         Bundle args = new Bundle();
         args.putSerializable(ARG_PERSONAL_DETAILS, pers_details);
         args.putSerializable(ARG_TRIP_DETAILS, trip_details);
@@ -103,7 +103,7 @@ public class ConfirmPublish extends Fragment {
         user_picture = (ImageButton) view.findViewById(R.id.confirm_user_picture);
 
         if (!mpers_details.get(getString(R.string.saved_user_firstname)).equals("")) {
-            Log.i(LOG_TAG, "onCreateView - mpers_details = "+mpers_details.toString());
+//            Log.i(LOG_TAG, "onCreateView - mpers_details = "+mpers_details.toString());
             confirm_please.setText(getString(R.string.please_register));
             firstname_edit.setText(mpers_details.get(getString(R.string.saved_user_firstname)));
             surname_edit.setText(mpers_details.get(getString(R.string.saved_user_surname)));
@@ -158,7 +158,7 @@ public class ConfirmPublish extends Fragment {
         out.put(getString(R.string.user_comment), comment_user.getText().toString());
         out.put(getString(R.string.saved_user_picture), user_picture_string);
         out.putAll(mtrip_details);
-        Log.i(LOG_TAG, "getAllDetails - out" + out.toString());
+//        Log.i(LOG_TAG, "getAllDetails - out" + out.toString());
         return out;
     }
 

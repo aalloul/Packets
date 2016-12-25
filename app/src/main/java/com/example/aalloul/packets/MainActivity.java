@@ -1,20 +1,23 @@
 package com.example.aalloul.packets;
 
 
-import android.*;
 import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Geocoder;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentManager;
@@ -56,7 +59,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         GoogleApiClient.OnConnectionFailedListener, LocationListener, ItemFragment.OnListFragmentInteractionListener,
         OfferDetail.OnFragmentInteractionListener, MainFragment.OnFragmentInteractionListener,
         DatePickerFragment.TheListener, RegistrationFragment.RegistrationFragmentListener,
-        ConfirmPublish.OnCofirmPublishListener, ThankYou.OnThankYouListener {
+        ConfirmPublish.OnCofirmPublishListener, ThankYou.OnThankYouListener,
+        CameraOrGalleryDialog.CameraOrGalleryInterface {
 
     // Map permission -- make sure 1 is always for position permission
     protected final int MAP_PERMISSION = 1;
@@ -65,6 +69,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     protected final int USER_LOCATION_REQUEST = 4;
     static final int REQUEST_IMAGE_CAPTURE = 5;
     static final int REQUEST_WRITE_FILES = 6;
+    static final int REQUEST_PICK_PICTURE= 6;
+
     private static boolean BACK_CALLED_AFTER_POSTING = false;
 
     protected final int PICKUP_AIM = 1;
@@ -548,6 +554,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         return true;
     }
 
+    // USed by dispatchTakePictureIntent to get the file path where to store the picture
     private File createImageFile() throws IOException {
         // Create an image file name
         if (!checkFilePermission()) throw new IOException("werwe");
@@ -595,15 +602,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
     }
 
-    // Crops and scales images
-    public static  Bitmap cropAndScale (Bitmap source,int scale){
-        int factor = source.getHeight() <= source.getWidth() ? source.getHeight(): source.getWidth();
-        int longer = source.getHeight() >= source.getWidth() ? source.getHeight(): source.getWidth();
-        int x = source.getHeight() >= source.getWidth() ?0:(longer-factor)/2;
-        int y = source.getHeight() <= source.getWidth() ?0:(longer-factor)/2;
-        source = Bitmap.createBitmap(source, x, y, factor, factor);
-        source = Bitmap.createScaledBitmap(source, scale, scale, false);
-        return source;
+    // Creates the intent for the user to pick a picture from gallery
+    private void dispatchGetPictureFromGallery() {
+        Intent i = new Intent(Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(i,REQUEST_PICK_PICTURE );
     }
 
     /* ***************** ***************** ***************** *****************
@@ -836,7 +839,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         Log.i(LOG_TAG, "onPostButtonPressed - start");
         if (checkMainFragmentInputs()) {
             HashMap<String, String> userDetails = getUserPersonalDetails();
-            Log.i(LOG_TAG, "onPostButtonPressed - userDetails = " + userDetails);
+//            Log.i(LOG_TAG, "onPostButtonPressed - userDetails = " + userDetails);
             confirmPublish = ConfirmPublish.newInstance(userDetails,
                     mainFragment.getTripDetails());
             getSupportFragmentManager()
@@ -906,19 +909,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
     }
 
-    private void handleUserPictureInput(int resultCode, Intent data) {
+    // Handles the camera result
+    private void handleUserCameraResult(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             File file = new File(mCurrentPhotoPath);
             Uri uri = Uri.fromFile(file);
             Bitmap bitmap;
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                bitmap = ExifUtil.rotateBitmap(mCurrentPhotoPath, bitmap);
-                bitmap = cropAndScale(bitmap, 300);
-
-                if (registrationFragment != null) {
-                    registrationFragment.setUserPicture(bitmap);
-                }
+                // Handle this asynchronously
+                HandlePictureAsync handlepicture = new HandlePictureAsync();
+                handlepicture.execute(bitmap);
             } catch (FileNotFoundException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -929,6 +930,35 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         }
     }
+
+    // handles the result after the user chose a photo from Gallery
+    private void handleUserPickPicture(int resultCode, Intent data) {
+        Log.i(LOG_TAG, "handleUserPickPicture - Enter");
+        try {
+            if (resultCode == RESULT_OK && null != data) {
+                Log.i(LOG_TAG, "handleUserPickPicture - Result okay and data not null");
+                Uri selectedImage = data.getData();
+                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+                cursor.moveToFirst();
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                mCurrentPhotoPath = cursor.getString(columnIndex);
+                cursor.close();
+                sharedPref.edit()
+                        .putString(getString(R.string.saved_user_picture_path), mCurrentPhotoPath)
+                        .commit();
+                Log.i(LOG_TAG, "handleUserPickPicture - cursor closed");
+                Bitmap bmp = BitmapFactory.decodeFile(mCurrentPhotoPath);
+                HandlePictureAsync handlepicture = new HandlePictureAsync();
+                Log.i(LOG_TAG, "handleUserPickPicture - async handling of the picture");
+                handlepicture.execute(bmp);
+            }
+        } catch (Exception e) {
+            Log.i(LOG_TAG, "handleUserPickPicture - Exception caught");
+            e.printStackTrace();
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
@@ -949,14 +979,29 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
             case REQUEST_IMAGE_CAPTURE:
                 Log.i(LOG_TAG, "onActivityResult - Handling picture taking by the user");
-                handleUserPictureInput(resultCode, data);
+                handleUserCameraResult(resultCode, data);
+                break;
+
+            case REQUEST_PICK_PICTURE:
+                Log.i(LOG_TAG, "onActivityResult - Handling picture chosen from Gallery");
+                handleUserPickPicture(resultCode, data);
                 break;
         }
     }
 
     @Override
     public void onUserPicturePressed() {
-        dispatchTakePictureIntent();
+        Log.i(LOG_TAG, "onUserPicturePressed - Enter");
+        try {
+            FragmentManager fm = getSupportFragmentManager();
+            CameraOrGalleryDialog dialogFragment = new CameraOrGalleryDialog();
+            dialogFragment.show(fm, "Sample Fragment");
+        } catch (Exception ex) {
+            Log.i(LOG_TAG, "onUserPicturePressed - Exception caught");
+            ex.printStackTrace();
+        } finally {
+            Log.i(LOG_TAG, "onUserPicturePressed - Exit");
+        }
     }
 
     @Override
@@ -1059,7 +1104,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         storeUserDetails(tmp);
 
         //TODO post to backend
-        Log.i(LOG_TAG, "onConfirmPublish - confirmPublish " + tmp.toString());
+//        Log.i(LOG_TAG, "onConfirmPublish - confirmPublish " + tmp.toString());
 
         // Show a thank you note
         thankYou = ThankYou.newInstance(tmp.get(getString(R.string.saved_user_firstname)));
@@ -1099,8 +1144,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onBackPressed()
     {
+        //TODO this is not stable
         Log.i(LOG_TAG, "onBackPressed - start");
         if (BACK_CALLED_AFTER_POSTING) {
+            BACK_CALLED_AFTER_POSTING = false;
             Log.i(LOG_TAG, "onBackPressed - is instance");
             Intent intent = new Intent(Intent.ACTION_MAIN);
             intent.addCategory(Intent.CATEGORY_HOME);
@@ -1110,5 +1157,57 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
 
         super.onBackPressed();
+    }
+
+    @Override
+    public void onCameraOrGallerySelected(DialogInterface dialog, int which ) {
+        Log.i(LOG_TAG, "onCameraOrGallerySelected - Enter");
+
+        switch (which) {
+            case 0:
+                // Gallery chosen
+                Log.i(LOG_TAG, "onCameraOrGallerySelected - choose from Gallery ");
+                dispatchGetPictureFromGallery();
+                break;
+
+            case 1:
+                // Take a new picture
+                Log.i(LOG_TAG, "onCameraOrGallerySelected - take a new picture");
+                dispatchTakePictureIntent();
+                break;
+        }
+    }
+
+
+    /*
+     This little class is called when the user takes a picture of himself. It crops, rotates if
+     necessary and displays the picture on the registration page.
+     */
+    public class HandlePictureAsync extends AsyncTask<Bitmap, Integer, Bitmap> {
+
+        // Crops and scales images
+        public Bitmap cropAndScale (Bitmap source,int scale){
+            int factor = source.getHeight() <= source.getWidth() ? source.getHeight(): source.getWidth();
+            int longer = source.getHeight() >= source.getWidth() ? source.getHeight(): source.getWidth();
+            int x = source.getHeight() >= source.getWidth() ?0:(longer-factor)/2;
+            int y = source.getHeight() <= source.getWidth() ?0:(longer-factor)/2;
+            source = Bitmap.createBitmap(source, x, y, factor, factor);
+            source = Bitmap.createScaledBitmap(source, scale, scale, false);
+            return source;
+        }
+
+        @Override
+        protected Bitmap doInBackground(Bitmap... params) {
+            Bitmap bitmap = ExifUtil.rotateBitmap(mCurrentPhotoPath, params[0]);
+            return cropAndScale(bitmap, 300);
+        }
+
+
+        protected void onPostExecute(Bitmap result) {
+            if (registrationFragment != null) {
+                registrationFragment.setUserPicture(result);
+                registrationFragment.unsetCaption_user_picture();
+            }
+        }
     }
 }

@@ -44,13 +44,16 @@ import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by aalloul on 03/07/16.
@@ -73,11 +76,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     static final int REQUEST_PICK_PICTURE= 8;
 
     private static boolean BACK_CALLED_AFTER_POSTING = false;
+    private HashMap<String, String> u1 = new HashMap<>();
+    private HashMap<String, String> u0 = new HashMap<>();
+
 
     protected final int PICKUP_AIM = 1;
     protected final int DROPOFF_AIM = 2;
     protected final int REGISTRATION_AIM = 3;
     protected final int UPDATE_STORED_LOCATION_AIM = 4;
+
+    protected final long SESSION_ID = Utilities.CurrentTimeS();
+    protected long MAIN_ACTIVITY_START_TIME;
 
     private String mCurrentPhotoPath;
     SharedPreferences sharedPref;
@@ -118,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
         Log.i(LOG_TAG, "userFirstName = " +
                 sharedPref.getString(getString(R.string.saved_user_firstname), ""));
-        return true;
+        return false;
     }
 
     protected HashMap<String, String> getUserDetailedLocation() {
@@ -150,43 +159,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     private void storeUserDetails() {
         Log.i(LOG_TAG, "storeUserDetails - Enter");
-        // This will allow us to know how long before the user decides to register
-        sharedPref = getPreferences(Context.MODE_PRIVATE);
-        int n_prompts = sharedPref.getInt(getString(R.string.saved_user_npromptstoregister), 0);
-        SharedPreferences.Editor editor = sharedPref.edit();
-
-        Log.i(LOG_TAG,"storeUserDetails - firstname = " +
-                registrationFragment.get_user_firstname());
-        Log.i(LOG_TAG,"storeUserDetails - surname = " +
-                registrationFragment.get_user_surname());
-        Log.i(LOG_TAG,"storeUserDetails - get_user_phone_number= " +
-                registrationFragment.get_user_phone_number());
-
-        editor.putString(getString(R.string.saved_user_firstname),
-                registrationFragment.get_user_firstname());
-        editor.putString(getString(R.string.saved_user_surname),
-                registrationFragment.get_user_surname());
-        editor.putString(getString(R.string.saved_user_picture),
-                registrationFragment.get_user_picture());
-        editor.putString(getString(R.string.saved_user_phonenumber),
-                registrationFragment.get_user_phone_number());
-        editor.putString(getString(R.string.saved_user_phonenumber),
-                registrationFragment.get_user_phone_number());
-        editor.putInt(getString(R.string.saved_user_npromptstoregister), n_prompts+1);
-        // Location data
-        HashMap<String, String> tmp = registrationFragment.get_user_detailed_location();
-        editor.putString(getString(R.string.saved_user_address),   tmp.get(getString(R.string.saved_user_address)));
-        editor.putString(getString(R.string.saved_user_city),      tmp.get(getString(R.string.saved_user_city)));
-        editor.putString(getString(R.string.saved_user_state),     tmp.get(getString(R.string.saved_user_state)));
-        editor.putString(getString(R.string.saved_user_country),   tmp.get(getString(R.string.saved_user_country)));
-        editor.putString(getString(R.string.saved_user_postalcode),tmp.get(getString(R.string.saved_user_postalcode)));
-        editor.putString(getString(R.string.saved_user_latitude),
-                tmp.get(getString(R.string.saved_user_latitude)));
-        editor.putString(getString(R.string.saved_user_longitude),
-                tmp.get(getString(R.string.saved_user_longitude)));
-
-        editor.apply();
-
+        storeUserDetails(registrationFragment.getBlob());
         Log.i(LOG_TAG, "storeUserDetails - Exit");
     }
 
@@ -195,40 +168,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         int n_prompts = sharedPref.getInt(getString(R.string.saved_user_npromptstoregister), 0);
         SharedPreferences.Editor editor = sharedPref.edit();
 
-        Log.i(LOG_TAG, "storeUserDetails(details) - details = "+ details.get(getString(R.string.saved_user_firstname)));
-        Log.i(LOG_TAG, "storeUserDetails(details) - details = "+ details.get(R.string.saved_user_surname));
-
-        editor.putString(getString(R.string.saved_user_firstname),
+        editor.putInt(getString(R.string.saved_user_npromptstoregister), n_prompts+1);
+        Log.i(LOG_TAG, "storeUserDetails(details) - saved_user_firstname = "+
                 details.get(getString(R.string.saved_user_firstname)));
-
-        editor.putString(getString(R.string.saved_user_surname),
+        Log.i(LOG_TAG, "storeUserDetails(details) - saved_user_firstname = "+
                 details.get(getString(R.string.saved_user_surname)));
 
-        editor.putString(getString(R.string.saved_user_picture),
-                details.get(getString(R.string.saved_user_picture)));
-
-        editor.putString(getString(R.string.saved_user_phonenumber),
-                details.get(getString(R.string.saved_user_phonenumber)));
-
-        editor.putString(getString(R.string.saved_user_picture),
-                details.get(getString(R.string.saved_user_picture)));
-
-        editor.putInt(getString(R.string.saved_user_npromptstoregister), n_prompts+1);
-
-        editor.putString(getString(R.string.saved_user_address),
-                details.get(getString(R.string.saved_user_address)));
-        editor.putString(getString(R.string.saved_user_city),
-                details.get(getString(R.string.saved_user_city)));
-        editor.putString(getString(R.string.saved_user_state),
-                details.get(getString(R.string.saved_user_state)));
-        editor.putString(getString(R.string.saved_user_country),
-                details.get(getString(R.string.saved_user_country)));
-        editor.putString(getString(R.string.saved_user_postalcode),
-                details.get(getString(R.string.saved_user_postalcode)));
-        editor.putString(getString(R.string.saved_user_latitude),
-                details.get(getString(R.string.saved_user_latitude)));
-        editor.putString(getString(R.string.saved_user_longitude),
-                details.get(getString(R.string.saved_user_longitude)));
+        for (Map.Entry<String, String> entry : details.entrySet()) {
+            editor.putString(entry.getKey(), entry.getValue());
+        }
 
         editor.apply();
     }
@@ -580,7 +528,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         Log.i(LOG_TAG, "OnCreate - Enter");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity_listview);
+        MAIN_ACTIVITY_START_TIME = Utilities.CurrentTimeS();
+
         searchPerformAction = getIntent();
+
 
         // This piece is to check whether the user is already registered with his city being
         // Updating
@@ -987,10 +938,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onRegisterMePressed() {
         Log.i(LOG_TAG, "onRegisterMePressed - Enter");
+        u1.clear();
+        u0.put(getString(R.string.fName),"registration");
+
         int i = registrationFragment.isInputOk();
 
         // At least one import detail is missing
         if (i == 0) {
+            u1.put(getString(R.string.ferror),getString(R.string.reg_nopers));
+            new HandleReportingAsync().execute(u0,u1);
             Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
                     getResources().getString(R.string.registration_input_incomplete),
                     getResources().getString(R.string.okay));
@@ -999,6 +955,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         // User location not provided and access not granted
         if (i == 1 && !MAP_PERMISSION_GRANTED) {
+            u1.put(getString(R.string.ferror),getString(R.string.reg_noloc));
+            new HandleReportingAsync().execute(u0,u1);
                 Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
                         getResources().getString(R.string.user_location_not_entered),
                         getResources().getString(R.string.okay));
@@ -1007,6 +965,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         // User location granted but not found yet
         if (i == 1 && MAP_PERMISSION_GRANTED) {
+            u1.put(getString(R.string.ferror),getString(R.string.reg_locnotfound));
+            new HandleReportingAsync().execute(u0,u1);
             Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
                     getResources().getString(R.string.location_will_come_later),
                     getResources().getString(R.string.okay));
@@ -1014,6 +974,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
 
         storeUserDetails();
+        u1.putAll(registrationFragment.getBlob());
+        u1.put(getString(R.string.nextF),"mainFragment");
+        new HandleReportingAsync().execute(u0,u1);
         if (mainFragment == null) {
             mainFragment = MainFragment.newInstance(getUserDetailedLocation());
         }
@@ -1161,7 +1124,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
      This little class is called when the user takes a picture of himself. It crops, rotates if
      necessary and displays the picture on the registration page.
      */
-    public class HandlePictureAsync extends AsyncTask<Bitmap, Integer, Bitmap> {
+    public class HandlePictureAsync extends AsyncTask<Bitmap, Void, Bitmap> {
 
         // Crops and scales images
         public Bitmap cropAndScale (Bitmap source,int scale){
@@ -1193,7 +1156,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
      This little class is called to geo-encode the (latitude, longitude) of any place
       it's done as an AsyncTask to avoid blocking the main UI thread
      */
-    public class HandleGeoCodingAsync extends AsyncTask<LatLng, Integer, HashMap<String, String>> {
+    public class HandleGeoCodingAsync extends AsyncTask<LatLng, Void, HashMap<String, String>> {
         private Context context;
         private int pickupaim;
 
@@ -1260,6 +1223,40 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                             res.get(getString(R.string.saved_user_postalcode)));
             }
 
+        }
+
+    }
+
+    /*
+    This class is intended to fill the data buffer asynchronously.
+     The why:
+         the data reporting should not block the main thread
+         all of the fragments live within an activity so it makes sense to centralize the reporting
+         the activity knows which fragment is being called next
+     */
+    public class HandleReportingAsync extends AsyncTask<HashMap<String, String>, Void, Void> {
+
+        @Override
+        protected Void doInBackground(HashMap<String, String>... params) {
+            HashMap<String, String> tmp = new HashMap<>();
+
+            Gson gson = new Gson();
+            tmp.put(getString(R.string.sID), Long.toString(SESSION_ID));
+            tmp.put(getString(R.string.acStart), Long.toString(MAIN_ACTIVITY_START_TIME));
+
+            tmp.put(getString(R.string.acName), "mainActivity");
+            if (params[0].get(getString(R.string.sEnd)) != null) {
+                long t = Utilities.CurrentTimeS();
+                tmp.put(getString(R.string.sEnd), Long.toString(t));
+                tmp.put(getString(R.string.sDuration), Long.toString(t-SESSION_ID));
+                tmp.put(getString(R.string.fName), params[0].get(getString(R.string.fName)));
+            } else {
+                tmp.putAll(params[0]);
+                tmp.put(getString(R.string.fActions), gson.toJson(params[1]));
+            }
+            Log.i("HandleReportingAsync","data = " + gson.toJson(tmp));
+            DataBuffer.addEvent(gson.toJson(tmp));
+            return null;
         }
 
     }

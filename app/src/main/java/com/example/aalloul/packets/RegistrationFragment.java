@@ -240,6 +240,22 @@ public class RegistrationFragment extends Fragment {
         return 2;
     }
 
+    public HashMap<String, String> getBlob() {
+        HashMap<String, String> t = new HashMap<>();
+        t.put(getString(R.string.saved_user_firstname),
+                get_user_firstname());
+        t.put(getString(R.string.saved_user_surname),
+                get_user_surname());
+        t.put(getString(R.string.saved_user_picture),
+                get_user_picture());
+        t.put(getString(R.string.saved_user_phonenumber),
+                get_user_phone_number());
+        t.put(getString(R.string.saved_user_phonenumber),
+                get_user_phone_number());
+        t.putAll(get_user_detailed_location());
+        return t;
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated

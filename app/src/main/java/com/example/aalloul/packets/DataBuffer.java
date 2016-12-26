@@ -21,15 +21,14 @@ class DataBuffer {
     private static final String LOG_TAG = "DataBuffer";
 
     // This is an Arraylist of hashmaps that will be dumped into a JSON string -- Serves as a buffer
-    private static ArrayList<HashMap<String, String>> loggerData = new ArrayList<>();
-    private static ArrayList<HashMap<String, String>> BufferloggerData = new ArrayList<>();
+    private static ArrayList<String> loggerData = new ArrayList<>();
 
     // This is some kind of timer that tells whether we should or not submit the data to the backend
     private static long first_update = 0;
 
     // The usage data is appended here -- requires a lock to avoid both the backend and logger
     // accessing at the same time this list
-    static void updateLoggerData(HashMap<String, String> data) {
+    static void addEvent(String data) {
         Log.i(LOG_TAG, "updateLoggerData - Enter");
 
         // Require list and append the data to loggerData
@@ -48,6 +47,7 @@ class DataBuffer {
 
         Log.i(LOG_TAG, "updateLoggerData - Exit");
     }
+
 
     // Called by the Backend intent service to retrieve the data and post it to the backend
     // requests a lock on loggerData in order to get its content and clear it

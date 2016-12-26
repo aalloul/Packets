@@ -340,6 +340,8 @@ final class Utilities {
         return System.currentTimeMillis();
     }
 
+    static long CurrentTimeS() { return Math.round(System.currentTimeMillis()/1000); }
+
     // Hide the keyboard
     static void hideKeyboardFrom(Context context, View view) {
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);

@@ -1,0 +1,126 @@
+data model:
+
+Use case 1: register and post a new offer
+1 - registration
+{
+  "session_id":1482770670000,
+  "activity_name":"mainActivity",
+  "activity_start": 1482770670000,
+  "fragment_name": "registration",
+  "fragment_actions" : {
+    "surname":"alloul",
+    "firstname":"adam",
+    "phone_number":"0628363477",
+    "picture":"<base64>",
+    "picture_from":"gallery",
+    "fragment_duration":36,
+    "action":"register",
+    "error":"error_message"
+  },
+  "next_fragment":"mainFragment"
+}
+
+2- main fragment
+{
+  "session_id":1482770670000,
+  "activity_name":"mainActivity",
+  "activity_start": 1482770706000,
+  "fragment_name": "mainFragment",
+  "fragment_actions" : {
+    "pickup": {...detailed_location...},
+    "dropoff": {...detailed_location...},
+    "number_packages":1,
+    "package_size":"small",
+    "date":"2016-12-20",
+    "action":"post"
+  },
+  "fragment_duration":36,
+  "next_fragment":"confirmPublish"
+}
+
+3- confirm data 
+{
+  "session_id":1482770670000,
+  "activity_name":"mainActivity",
+  "activity_start": 1482770742000,
+  "fragment_name": "confirmPublish",
+  "fragment_actions" : {
+    "comment":"blablablablabla......blablablabla....blablablabla",
+    "travel_by":"car"
+    "action":"publish"
+    
+  },
+  "fragment_duration":36,
+  "next_fragment":"thankyou"
+}
+
+4- Thank you
+{
+  "session_id":1482770670000,
+  "activity_name":"mainActivity",
+  "activity_start": 1482770778000,
+  "fragment_name": "thankyou",
+  "fragment_actions" : {
+    "action":"back_button"
+  },
+  "fragment_duration":6,
+  "next_fragment":"mainFragment"
+}
+
+5- user exits app
+{
+  "session_id":1482770670000,
+  "activity_name":"mainActivity",
+  "end":1,
+  "session_end":1482770676000
+  
+}
+
+----------------------------------------
+if user searches for offers:
+
+2- main fragment
+{
+  "session_id":1482770670000,
+  "activity_name":"mainActivity",
+  "activity_start": 1482770706000,
+  "fragment_name": "mainFragment",
+  "fragment_actions" : {
+    "pickup": {...detailed_location...},
+    "dropoff": {...detailed_location...},
+    "number_packages":1,
+    "package_size":"small",
+    "date":"2016-12-20",
+    "action":"search"
+  },
+  "fragment_duration":36,
+  "next_fragment":"itemFragment"
+}
+
+3- item fragment
+{
+  "session_id":1482770670000,
+  "activity_name":"mainActivity",
+  "activity_start": 1482770706000,
+  "fragment_name": "itemFragment",
+  "fragment_actions" : {
+    "action":["scroll", "select"]
+  },
+  "fragment_duration":36,
+  "next_fragment":"offerDetail",
+  "selected_id":"@id",
+}
+
+4- offer detail fragment
+{
+  "session_id":1482770670000,
+  "activity_name":"mainActivity",
+  "activity_start": 1482770706000,
+  "fragment_name": "offerDetail",
+  "offer_id":"@id"
+  "fragment_actions" : {
+    "action":"call"
+  },
+  "fragment_duration":36
+}
+

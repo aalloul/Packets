@@ -164,7 +164,6 @@ public class RegistrationFragment extends Fragment {
     public void set_user_detailed_location(HashMap<String, String> details) {
 
         Log.i(LOG_TAG, "set_user_detailed_location - Enter");
-        Log.i(LOG_TAG, "set_user_detailed_location - details = " + details.toString());
 
         user_detailed_location = details;
         if (details == null) {
@@ -172,6 +171,7 @@ public class RegistrationFragment extends Fragment {
             return;
         }
 
+        Log.i(LOG_TAG, "set_user_detailed_location - details = " + details.toString());
         String tmp = details.get(getString(R.string.saved_user_city));
         Log.i(LOG_TAG, "set_user_detailed_location - city = " + tmp);
 

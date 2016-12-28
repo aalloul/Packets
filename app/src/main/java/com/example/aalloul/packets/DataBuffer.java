@@ -48,7 +48,9 @@ class DataBuffer {
         Log.i(LOG_TAG, "updateLoggerData - Exit");
     }
 
-
+    static void clear(){
+        loggerData.clear();
+    }
     // Called by the Backend intent service to retrieve the data and post it to the backend
     // requests a lock on loggerData in order to get its content and clear it
     @Nullable

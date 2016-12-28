@@ -19,6 +19,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -35,8 +36,10 @@ import android.view.View;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.BooleanResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.common.data.DataBufferObserver;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -79,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private HashMap<String, String> u1 = new HashMap<>();
     private HashMap<String, String> u0 = new HashMap<>();
 
-
+    private boolean JUSTPOSTED = false;
     protected final int PICKUP_AIM = 1;
     protected final int DROPOFF_AIM = 2;
     protected final int REGISTRATION_AIM = 3;
@@ -683,6 +686,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         Log.i(LOG_TAG, "onPause - Enter");
         super.onPause();
         stopLocationUpdates();
+        DataBuffer.clear();
         Log.i(LOG_TAG, "onPause - Exit");
     }
 
@@ -990,7 +994,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @Override
     public void onRegisterLaterPressed() {
-
         sharedPref = getPreferences(Context.MODE_PRIVATE);
         // This will allow us to know how long before the user decides to register
         int n_prompts = sharedPref.getInt(getString(R.string.saved_user_npromptstoregister), 0);
@@ -1027,7 +1030,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onConfirmPublish() {
         Log.i(LOG_TAG, "onConfirmPublish - Publishing new offer");
-        BACK_CALLED_AFTER_POSTING = true;
+        JUSTPOSTED = true;
         if (!checkConfirmInputs()) {
             Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
                     getResources().getString(R.string.registration_input_incomplete),
@@ -1081,19 +1084,46 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onBackPressed()
     {
-        //TODO this is not stable
+        //TODO check this is stable
         Log.i(LOG_TAG, "onBackPressed - start");
-        if (BACK_CALLED_AFTER_POSTING) {
-            BACK_CALLED_AFTER_POSTING = false;
+//        if (BACK_CALLED_AFTER_POSTING) {
+//            BACK_CALLED_AFTER_POSTING = false;
+//            Log.i(LOG_TAG, "onBackPressed - is instance");
+//            Intent intent = new Intent(Intent.ACTION_MAIN);
+//            intent.addCategory(Intent.CATEGORY_HOME);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            startActivity(intent);
+//            return;
+//        }
+        FragmentTransaction fmg = getSupportFragmentManager().beginTransaction();
+        if (thankYou != null && thankYou.isVisible()) {
             Log.i(LOG_TAG, "onBackPressed - is instance");
-            Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.addCategory(Intent.CATEGORY_HOME);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            return;
+            // Detach the "thank you" to avoid displaying 2 fragments at the same time
+            fmg.detach(thankYou);
+            // Detaching the confirmation to avoid people re-publishing the same offer
+            if (confirmPublish != null) fmg.detach(confirmPublish);
+            fmg.commit();
+//            Intent intent = new Intent(Intent.ACTION_MAIN);
+//            intent.addCategory(Intent.CATEGORY_HOME);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            startActivity(intent);
+//            return;
         }
 
-        super.onBackPressed();
+        try {
+            super.onBackPressed();
+        } catch (Exception e) {
+            Log.i(LOG_TAG, "STUCK STUCK STUCK STUCK ");
+            // If exception, try to detach the mainFragment
+            if (mainFragment != null ) fmg.detach(mainFragment);
+            /* if we try to detach registrationFragment, then the back button will open a white
+            screen which is ugly -- so better just leave it there
+            fmg.detach(registrationFragment);
+             */
+            fmg.commit();
+            // and try again
+            super.onBackPressed();
+        }
     }
 
     @Override

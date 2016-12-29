@@ -26,7 +26,7 @@ public class RegistrationFragment extends Fragment {
     private ImageButton picture_ui;
     private String picture_bitmap;
     private EditText firstname_ui, surname_ui, phone_number_ui;
-    private TextView location_ui, caption_user_picture;
+    private TextView location_ui, caption_user_picture, privacy_button;
     private String firstname, surname, phone_number, location;
     private Button registerMe, registerLater;
     private HashMap<String, String> user_detailed_location = new HashMap<>();
@@ -104,6 +104,14 @@ public class RegistrationFragment extends Fragment {
 
         // Text to encourage selecting a profile picture
         caption_user_picture = (TextView) view.findViewById(R.id.caption_user_picture);
+
+        privacy_button = (TextView) view.findViewById(R.id.privacyButton);
+        privacy_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.OnPrivacyButtonPressed();
+            }
+        });
 
         Log.i(LOG_TAG, "onCreateView - Exit");
         return view;
@@ -275,5 +283,7 @@ public class RegistrationFragment extends Fragment {
         void onRegisterMePressed();
 
         void onRegisterLaterPressed();
+
+        void OnPrivacyButtonPressed();
     }
 }

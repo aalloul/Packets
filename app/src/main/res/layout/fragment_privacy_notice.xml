@@ -7,21 +7,6 @@
 
     <!-- TODO: Update blank fragment layout -->
 
-    <Button
-        android:text="@string/okay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/okay_privacy"
-        android:background="@drawable/curvedbutton"
-        android:textColor="@color/cast_expanded_controller_progress_text_color"
-        android:textSize="16sp"
-        android:textAllCaps="false"
-        android:textStyle="normal|bold"
-        android:layout_toRightOf="@+id/searchbutton_main_activity"
-        android:layout_below="@+id/privacynotice"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp" />
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

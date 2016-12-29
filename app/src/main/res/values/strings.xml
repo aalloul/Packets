@@ -76,6 +76,9 @@ Search engine
 Our website search and decision notice search is powered by System Associates. Search queries and results are logged anonymously to help us improve our website and search functionality. No user-specific data is collected by either ICO or any </string>
 
 
+    <string name="privacy_button">We\'re proud of our privacy notice</string>
+
+
     <!-- ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~  -->
     <!--                       Parameters that don't need to be localized                        -->
     <!-- ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~  -->
@@ -151,5 +154,8 @@ Our website search and decision notice search is powered by System Associates. S
     <string name="reg_nopers">reg_nopres_detail</string>
     <string name="reg_noloc">reg_no_location</string>
     <string name="reg_locnotfound">reg_location_notfound</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

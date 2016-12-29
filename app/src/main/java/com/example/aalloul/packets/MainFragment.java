@@ -16,6 +16,9 @@ import java.util.HashMap;
 
 
 public class MainFragment extends Fragment {
+
+    //TODO check why when user hits "register later" then "back button" then "register"
+    // the location is not set in the UI
     private static final String ARG_CITY_STATE = "city_state";
     private Button searchButton, postButton, pickup_date;
     private Spinner number_packages, size_package;

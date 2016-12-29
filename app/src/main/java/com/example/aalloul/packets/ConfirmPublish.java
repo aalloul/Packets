@@ -39,7 +39,7 @@ public class ConfirmPublish extends Fragment {
 
     private Button confirmAction;
     private EditText firstname_edit, surname_edit, phone_edit, comment_user ;
-    private TextView confirm_please;
+    private TextView confirm_please, privacyButton;
     private ImageButton user_picture;
     private OnCofirmPublishListener mListener;
     private Spinner travelling_by;
@@ -128,6 +128,15 @@ public class ConfirmPublish extends Fragment {
         // Apply the adapter to the spinner
         travelling_by.setAdapter(adapterTravellingBy);
 
+        // Privacy button
+        privacyButton = (TextView) view.findViewById(R.id.privacyButton2);
+        privacyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.OnPrivacyButtonPressed2();
+            }
+        });
+
         return view;
     }
 
@@ -174,5 +183,6 @@ public class ConfirmPublish extends Fragment {
      */
     public interface OnCofirmPublishListener {
         void onConfirmPublish();
+        void OnPrivacyButtonPressed2();
     }
 }

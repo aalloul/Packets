@@ -19,7 +19,6 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -33,13 +32,12 @@ import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.common.api.BooleanResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.common.data.DataBufferObserver;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -53,7 +51,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -66,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         OfferDetail.OnFragmentInteractionListener, MainFragment.OnFragmentInteractionListener,
         DatePickerFragment.TheListener, RegistrationFragment.RegistrationFragmentListener,
         ConfirmPublish.OnCofirmPublishListener, ThankYou.OnThankYouListener,
-        CameraOrGalleryDialog.CameraOrGalleryInterface {
+        CameraOrGalleryDialog.CameraOrGalleryInterface{
 
     // Map permission -- make sure 1 is always for position permission
     protected final int MAP_PERMISSION = 1;
@@ -78,9 +75,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     static final int REQUEST_WRITE_FILES_FROM_GALLERY = 7;
     static final int REQUEST_PICK_PICTURE= 8;
 
-    private static boolean BACK_CALLED_AFTER_POSTING = false;
     private HashMap<String, String> u1 = new HashMap<>();
     private HashMap<String, String> u0 = new HashMap<>();
+
 
     private boolean JUSTPOSTED = false;
     protected final int PICKUP_AIM = 1;
@@ -531,6 +528,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         Log.i(LOG_TAG, "OnCreate - Enter");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity_listview);
+//        privacyButton = (TextView) findViewById(R.id.privacy_button);
+//        privacyButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                getSupportFragmentManager().beginTransaction()
+//                        .replace(R.id.mainActivity_ListView, PrivacyNotice.newInstance())
+//                        .commit();
+//            }
+//        });
+
+
         MAIN_ACTIVITY_START_TIME = Utilities.CurrentTimeS();
 
         searchPerformAction = getIntent();
@@ -558,6 +566,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         // Check which fragment to load
         if (savedInstanceState == null) {
+
             Log.i(LOG_TAG, "onCreate - savedInstanceState is null");
             FragmentTransaction fmg = getSupportFragmentManager().beginTransaction();
             if (isalreadyregistered) {
@@ -569,7 +578,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 registrationFragment = RegistrationFragment.newInstance();
                 fmg.add(R.id.mainActivity_ListView, registrationFragment, "registrationFragment");
             }
-
             fmg.commit();
         }
 
@@ -757,7 +765,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
 
         //TODO call the back-end here
-
         itemfragment = ItemFragment.newInstance(1);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.mainActivity_ListView, itemfragment, "itemfragment")
@@ -1149,6 +1156,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
     }
 
+    @Override
+    public void OnPrivacyButtonPressed() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.mainActivity_ListView, PrivacyNotice.newInstance())
+                .addToBackStack("toPrivacy")
+                .commit();
+    }
+
+    @Override
+    public void OnPrivacyButtonPressed2() {
+        this.OnPrivacyButtonPressed();
+    }
 
     /*
      This little class is called when the user takes a picture of himself. It crops, rotates if

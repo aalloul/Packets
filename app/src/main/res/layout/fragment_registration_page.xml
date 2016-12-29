@@ -112,5 +112,15 @@
             android:layout_toRightOf="@+id/register_me"
             android:layout_toEndOf="@+id/register_me"
             android:textAllCaps="false" />
+
+        <TextView
+            android:text="@string/privacy_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/privacyButton"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="5dp" />
+
     </RelativeLayout>
 </FrameLayout>

@@ -77,6 +77,9 @@ Our website search and decision notice search is powered by System Associates. S
 
 
     <string name="privacy_button">We\'re proud of our privacy notice</string>
+    <string name="thankyou_registration_pt1">Hi</string>
+    <string name="thankyou_registration_pt2">and Welcome!</string>
+    <string name="thankyou_registration">Thank you very much for registering with Shippy</string>
 
 
     <!-- ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~  -->
@@ -155,7 +158,9 @@ Our website search and decision notice search is powered by System Associates. S
     <string name="reg_noloc">reg_no_location</string>
     <string name="reg_locnotfound">reg_location_notfound</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_splash_screen">SplashScreen</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
 
 </resources>

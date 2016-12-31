@@ -18,6 +18,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentManager;
@@ -32,7 +33,6 @@ import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
-
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -46,7 +46,6 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -528,16 +527,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         Log.i(LOG_TAG, "OnCreate - Enter");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity_listview);
-//        privacyButton = (TextView) findViewById(R.id.privacy_button);
-//        privacyButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                getSupportFragmentManager().beginTransaction()
-//                        .replace(R.id.mainActivity_ListView, PrivacyNotice.newInstance())
-//                        .commit();
-//            }
-//        });
-
 
         MAIN_ACTIVITY_START_TIME = Utilities.CurrentTimeS();
 
@@ -983,20 +972,41 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     getResources().getString(R.string.okay));
         }
 
-
+        // Store the details in SharedPref
         storeUserDetails();
+        // Report the new data
         u1.putAll(registrationFragment.getBlob());
         u1.put(getString(R.string.nextF),"mainFragment");
         new HandleReportingAsync().execute(u0,u1);
-        if (mainFragment == null) {
-            mainFragment = MainFragment.newInstance(getUserDetailedLocation());
-        }
 
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.mainActivity_ListView, mainFragment, "mainFragment")
+
+        // Show a thank you note for 3 seconds
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.mainActivity_ListView,
+                        RegistrationThanks.newInstance(
+                                getUserPersonalDetails().get(
+                                        getString(R.string.saved_user_firstname))), "regThank")
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .addToBackStack("RegisterToMainFragment")
                 .commit();
+
+        // And move on
+        new CountDownTimer(3000, 1000) {
+            public void onTick(long millisUntilFinished) { }
+            public void onFinish() {
+                if (mainFragment == null)
+                {
+                    mainFragment = MainFragment.newInstance(getUserDetailedLocation());
+                }
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.mainActivity_ListView, mainFragment, "mainFragment")
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                        .addToBackStack("RegisterToMainFragment")
+                        .commit();
+            }
+        }.start();
+
     }
 
     @Override
@@ -1008,8 +1018,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         editor.putInt(getString(R.string.saved_user_npromptstoregister), n_prompts + 1);
         editor.commit();
 
+
         if (mainFragment == null) {
-            mainFragment = MainFragment.newInstance(new HashMap<String, String>());
+            mainFragment = MainFragment.newInstance(getUserDetailedLocation());
         }
 
         getSupportFragmentManager()

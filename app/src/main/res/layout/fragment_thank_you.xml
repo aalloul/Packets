@@ -26,19 +26,19 @@
         android:layout_above="@+id/shippy_thankyou" />
 
     <ImageView
-        app:srcCompat="@drawable/shippy"
+        app:srcCompat="@drawable/shippy_spread_the_word"
         android:id="@+id/shippy_thankyou"
-        android:scaleX="0.5"
-        android:scaleY="0.5"
+        android:scaleX="1"
+        android:scaleY="1"
         android:adjustViewBounds="true"
-        android:layout_width="400dp"
-        android:layout_height="200dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerVertical="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/thank_you"
+        android:text="@string/tell_your_friends"
         android:id="@+id/thank_you_text"
         android:layout_centerInParent="false"
         android:textStyle="normal|bold"

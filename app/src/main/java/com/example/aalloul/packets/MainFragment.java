@@ -20,9 +20,10 @@ public class MainFragment extends Fragment {
     //TODO check why when user hits "register later" then "back button" then "register"
     // the location is not set in the UI
     private static final String ARG_CITY_STATE = "city_state";
+    private static final String ARG_FIRST_NAME= "first_name";
     private Button searchButton, postButton, pickup_date;
     private Spinner number_packages, size_package;
-    private TextView pickupdate_ui, drop_off_location, pickup_location;
+    private TextView pickupdate_ui, drop_off_location, pickup_location, welcome_text;
     static String pickupdate;
     private final String LOG_TAG = MainFragment.class.getName();
     private FragmentActivity myContext;
@@ -30,6 +31,7 @@ public class MainFragment extends Fragment {
 
 
     private HashMap<String, String> location;
+    private String first_name;
 
     private OnFragmentInteractionListener mListener;
 
@@ -44,14 +46,14 @@ public class MainFragment extends Fragment {
      * @param inlocation Parameter 1.
      * @return A new instance of fragment MainFragment.
      */
-    public static MainFragment newInstance(HashMap<String, String> inlocation) {
+    public static MainFragment newInstance(HashMap<String, String> inlocation, String first_name) {
         Log.i("MainFragment","newInstsance - Enter");
         MainFragment fragment = new MainFragment();
         Bundle args = new Bundle();
 
         Log.i("MainFragment","newInstsance - "+ inlocation.toString());
-        if (inlocation == null ) return fragment;
-        args.putSerializable(ARG_CITY_STATE, inlocation);
+        if (inlocation != null ) args.putSerializable(ARG_CITY_STATE, inlocation);
+        args.putString(ARG_FIRST_NAME, first_name);
         fragment.setArguments(args);
         return fragment;
     }
@@ -62,6 +64,7 @@ public class MainFragment extends Fragment {
         if (getArguments() != null) {
             pick_up_detailed_location = (HashMap<String, String>)
                     getArguments().getSerializable(ARG_CITY_STATE);
+            first_name = getArguments().getString(ARG_FIRST_NAME);
         }
     }
 
@@ -112,6 +115,7 @@ public class MainFragment extends Fragment {
         size_package = (Spinner) view.findViewById(R.id.packagesize);
         ArrayAdapter<CharSequence> adapterSizePackage = ArrayAdapter.createFromResource(myContext,
                 R.array.package_size, android.R.layout.simple_spinner_item);
+
         adapterSizePackage.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         size_package.setAdapter(adapterSizePackage);
 
@@ -134,9 +138,20 @@ public class MainFragment extends Fragment {
                 mListener.onDropOffLocationPressed();
             }
         });
+
+        welcome_text = (TextView) view.findViewById(R.id.explanationText);
+        String text = getString(R.string.explanation_main_activity);
+
+        if (first_name.equals("")) {
+            text += " "+getString(R.string.explanation_main_activity2);
+            text += getString(R.string.explanation_main_activity3);
+        } else {
+            text += " "+first_name;
+            text += getString(R.string.explanation_main_activity3);
+        }
+        welcome_text.setText(text);
         return view;
     }
-
 
 
 

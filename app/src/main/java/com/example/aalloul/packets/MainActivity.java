@@ -537,6 +537,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         // Updating
         sharedPref = getPreferences(Context.MODE_PRIVATE);
         HashMap<String, String> userDetailedLocation = getUserDetailedLocation();
+        String firstname = getUserPersonalDetails().get(getString(R.string.saved_user_firstname));
         String userCity = userDetailedLocation.get(getString(R.string.saved_user_city));
         Log.i(LOG_TAG, "onCreate - userCity = " + userCity);
         boolean isalreadyregistered = isAlreadyRegistered();
@@ -560,7 +561,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             FragmentTransaction fmg = getSupportFragmentManager().beginTransaction();
             if (isalreadyregistered) {
                 Log.i(LOG_TAG, "onCreate - user already registered");
-                mainFragment = MainFragment.newInstance(userDetailedLocation);
+                mainFragment = MainFragment.newInstance(userDetailedLocation, firstname);
                 fmg.add(R.id.mainActivity_ListView, mainFragment, "mainFragment");
             } else {
                 Log.i(LOG_TAG, "onCreate - user not registered");
@@ -999,7 +1000,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             public void onFinish() {
                 if (mainFragment == null)
                 {
-                    mainFragment = MainFragment.newInstance(getUserDetailedLocation());
+                    mainFragment = MainFragment.newInstance(getUserDetailedLocation(),
+                            getUserPersonalDetails().get(getString(R.string.saved_user_firstname)));
                 }
                 getSupportFragmentManager()
                         .beginTransaction()
@@ -1023,7 +1025,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
 
         if (mainFragment == null) {
-            mainFragment = MainFragment.newInstance(getUserDetailedLocation());
+            mainFragment = MainFragment.newInstance(getUserDetailedLocation(),"");
         }
 
         getSupportFragmentManager()
@@ -1080,7 +1082,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void onBackToMainFragment() {
         Log.i(LOG_TAG, "Thank you!");
         if (mainFragment == null) {
-            mainFragment = MainFragment.newInstance(getUserDetailedLocation());
+            mainFragment = MainFragment.newInstance(getUserDetailedLocation(),
+                    getUserPersonalDetails().get(getString(R.string.saved_user_firstname)));
         }
         FragmentManager fm;
         fm = getSupportFragmentManager();
@@ -1203,7 +1206,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         @Override
         protected Bitmap doInBackground(Bitmap... params) {
             Bitmap bitmap = ExifUtil.rotateBitmap(mCurrentPhotoPath, params[0]);
-            return cropAndScale(bitmap, 200);
+            return cropAndScale(bitmap, 250);
         }
 
 

@@ -9,7 +9,8 @@
         tools:context="com.example.aalloul.packets.MainFragment"
         android:background="@color/colorBackground"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp">
         <TextView
             android:text="@string/explanation_main_activity"
             android:layout_width="match_parent"
@@ -20,22 +21,49 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
-            android:textSize="18sp"
+            android:textSize="24sp"
             android:layout_marginLeft="0dp"
             android:layout_marginTop="0dp"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
-            android:paddingLeft="15dp"
-            android:background="@android:color/holo_green_light"
-            android:textColor="@android:color/white" />
+            android:background="@drawable/backgroundstate"
+            android:textColor="@color/regColor"
+            android:typeface="monospace"
+            android:textStyle="normal|bold"
+            android:layout_marginBottom="20dp"
+            android:layout_marginStart="10dp" />
+
+        <TextView
+            android:text="@string/explanation_main_activity_pt2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/explanationText2"
+            android:layout_below="@+id/explanationText"
+            android:textColor="@color/regColor"
+            android:typeface="monospace"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp" />
+
+        <TextView
+            android:text="@string/explanation_main_activity_pt3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/explanationText3"
+            android:layout_below="@+id/explanationText2"
+            android:textColor="@color/regColor"
+            android:typeface="monospace"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/explanationText"
+            android:layout_below="@+id/explanationText3"
             android:layout_marginTop="20dp"
-            android:layout_marginLeft="20dp"
-            android:id="@+id/layout2_main_activity">
+            android:id="@+id/layout2_main_activity"
+            android:layout_marginStart="25dp"
+            android:layout_marginLeft="25dp">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -43,7 +71,8 @@
                 android:id="@+id/dot1_main_activity"
                 android:scaleX="0.5"
                 android:scaleY="0.5"
-                android:src="@drawable/dot" />
+                android:src="@drawable/dot"
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -54,7 +83,8 @@
                 android:layout_marginTop="31dp"
                 android:layout_marginBottom="10dp"
                 android:src="@drawable/bar"
-                android:scaleX="3" />
+                android:scaleX="3"
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -64,12 +94,12 @@
                 android:scaleX="0.5"
                 android:scaleY="0.5"
                 android:src="@drawable/dot"
-                android:layout_marginTop="5dp" />
+                android:layout_marginTop="5dp"
+                tools:ignore="ContentDescription" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
                 android:ems="10"
                 android:id="@+id/dropofflocation_mainactivity"
                 android:layout_toRightOf="@+id/dot2_main_activity"
@@ -77,9 +107,14 @@
                 android:hint="@string/enter_dropoff_location"
                 android:layout_marginTop="22dp"
                 android:background="@drawable/backgroundstate"
-                android:backgroundTint="?android:attr/colorBackground"
                 android:clickable="true"
-                android:layout_alignBottom="@+id/dot2_main_activity" />
+                android:layout_alignBottom="@+id/dot2_main_activity"
+                android:textColor="@color/regColor"
+                android:textColorHint="@color/regColor"
+                android:typeface="monospace"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_toEndOf="@+id/dot2_main_activity" />
 
             <Button
                 android:layout_width="wrap_content"
@@ -91,7 +126,9 @@
                 android:layout_marginTop="5dp"
                 android:src="@drawable/calendar"
                 android:scaleX="0.6"
-                 />
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_toEndOf="@+id/bar_main_activity" />
 
             <Spinner
                 android:layout_width="wrap_content"
@@ -99,7 +136,6 @@
                 android:id="@+id/setNumberPackages"
                 android:layout_below="@+id/setdate_mainActivity"
                 android:background="@drawable/packageicon"
-                android:layout_marginLeft="24dp"
                 android:layout_marginTop="13dp"
                 android:scaleX="1.2"
                 android:scaleY="1.2"
@@ -110,7 +146,11 @@
                 android:layout_centerVertical="false"
                 android:layout_centerInParent="false"
                 android:paddingLeft="8dp"
-                android:paddingTop="10dp" />
+                android:paddingTop="10dp"
+                android:layout_marginStart="34dp"
+                android:layout_marginLeft="34dp"
+                android:paddingRight="8dp"
+                android:layout_toEndOf="@+id/bar_main_activity" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -118,33 +158,42 @@
                 android:id="@+id/dateofpickup_mainActivity"
                 android:layout_toRightOf="@+id/setdate_mainActivity"
                 android:layout_below="@+id/pickuplocation_main_activity"
-                android:layout_marginTop="20dp" />
+                android:layout_marginTop="20dp"
+                android:textColor="@color/regColor"
+                android:typeface="monospace"
+                android:textColorHint="@color/regColor"
+                android:layout_toEndOf="@+id/setdate_mainActivity" />
 
             <TextView
                 android:layout_height="wrap_content"
-                android:inputType="text"
                 android:ems="10"
                 android:id="@+id/pickuplocation_main_activity"
                 android:hint="@string/enter_pickup_location"
                 android:layout_alignParentTop="true"
                 android:layout_toRightOf="@+id/dot1_main_activity"
                 android:layout_toEndOf="@+id/dot1_main_activity"
-                android:backgroundTint="?android:attr/colorBackground"
                 android:background="@drawable/backgroundstate"
                 android:layout_alignBottom="@+id/dot1_main_activity"
                 android:layout_width="220dp"
-                android:layout_marginTop="15dp" />
+                android:layout_marginTop="15dp"
+                android:textColorHint="@color/regColor"
+                android:typeface="monospace"
+                android:textColor="@color/regColor"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"/>
 
             <Spinner
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/packagesize"
                 android:dropDownWidth="match_parent"
-                android:background="@android:drawable/btn_dropdown"
-                android:backgroundTint="@color/colorBackground"
+                android:background="@drawable/backgroundstate"
                 android:layout_alignTop="@+id/setNumberPackages"
                 android:layout_toRightOf="@+id/setNumberPackages"
-                android:layout_toEndOf="@+id/setNumberPackages" />
+                android:layout_toEndOf="@+id/setNumberPackages"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginLeft="15dp" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -154,28 +203,31 @@
             android:layout_below="@+id/layout2_main_activity"
             android:layout_centerInParent="false"
             android:layout_marginTop="30dp"
-            android:layout_marginLeft="40dp"
-            android:paddingBottom="20dp">
+            android:paddingBottom="20dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginLeft="40dp">
 
             <Button
                 android:text="@string/postbutton_main_activity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/postbutton_main_activity"
-                android:background="@drawable/curvedbutton"
+                android:background="@color/colorPublish"
                 android:textColor="@color/cast_expanded_controller_progress_text_color"
                 android:textSize="16sp"
                 android:textAllCaps="false"
                 android:textStyle="normal|bold"
                 android:layout_toRightOf="@+id/searchbutton_main_activity"
-                android:layout_marginLeft="50dp" />
+                android:layout_marginStart="50dp"
+                android:layout_marginLeft="50dp"
+                android:layout_toEndOf="@+id/searchbutton_main_activity" />
 
             <Button
                 android:text="@string/searchbutton_main_activity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/searchbutton_main_activity"
-                android:background="@drawable/curvedbutton"
+                android:background="@color/colorPrimary"
                 android:textColor="@color/cast_expanded_controller_progress_text_color"
                 android:textSize="16sp"
                 android:textAllCaps="false"

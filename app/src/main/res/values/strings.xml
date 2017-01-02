@@ -32,7 +32,11 @@
 
     <!--This okay is displayed when input is missing when searching/posting offers -->
     <string name="okay">Ok</string>
-    <string name="explanation_main_activity">Search or publish a new offer</string>
+    <string name="explanation_main_activity">Hey</string>
+    <string name="explanation_main_activity2">there</string>
+    <string name="explanation_main_activity3">, welcome!</string>
+    <string name="explanation_main_activity_pt2">To help you get started we already pre-filled some of the required fields. </string>
+    <string name="explanation_main_activity_pt3">Make sure they match your criteria and hit the "Search" or "Publish" button </string>
     <string name="enter_pickup_location">Pick-up location</string>
     <string name="enter_dropoff_location">Drop-off location</string>
     <string name="searchbutton_main_activity">Search</string>
@@ -50,8 +54,8 @@
     </string-array>
 
     <string name="publish">Publish</string>
-    <string name="please_confirm">Please confirm the following information</string>
-    <string name="please_register">Please provide us with the following information</string>
+    <string name="please_confirm">Please your registration information</string>
+    <string name="please_register">Please fill in the details below </string>
     <string name="thank_you">Thank you!</string>
     <string name="back_to_main">Back</string>
 

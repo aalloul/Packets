@@ -39,7 +39,7 @@ public class ConfirmPublish extends Fragment {
 
     private Button confirmAction;
     private EditText firstname_edit, surname_edit, phone_edit, comment_user ;
-    private TextView confirm_please, privacyButton;
+    private TextView confirm_please, privacyButton, caption_confirm_user_picture;
     private ImageButton user_picture;
     private OnCofirmPublishListener mListener;
     private Spinner travelling_by;
@@ -99,6 +99,8 @@ public class ConfirmPublish extends Fragment {
         phone_edit = (EditText) view.findViewById(R.id.confirm_phone_number);
         confirm_please = (TextView) view.findViewById(R.id.confirm_please);
         comment_user = (EditText) view.findViewById(R.id.comment_user);
+        caption_confirm_user_picture = (TextView) view.findViewById(
+                R.id.caption_confirm_user_picture);
 
         user_picture = (ImageButton) view.findViewById(R.id.confirm_user_picture);
 
@@ -111,7 +113,8 @@ public class ConfirmPublish extends Fragment {
             user_picture_string = mpers_details.get(getString(R.string.saved_user_picture));
             user_picture_path = mpers_details.get(getString(R.string.saved_user_picture_path));
 
-            if (!user_picture.equals("")) {
+            if (!user_picture_string.equals("")) {
+                caption_confirm_user_picture.setText(null);
                 user_picture.setImageBitmap(Utilities.StringToBitMap(
                                 mpers_details.get(getString(R.string.saved_user_picture))));
 

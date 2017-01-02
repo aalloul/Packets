@@ -240,9 +240,13 @@ public class RegistrationFragment extends Fragment {
     }
 
     public int isInputOk() {
+        if (firstname_ui == null ) return 0;
         if (firstname_ui.getText() == null || get_user_firstname().equals("")) return 0;
+        if (surname_ui == null) return 0;
         if (surname_ui.getText() == null|| get_user_surname().equals("")) return 0;
+        if (phone_number_ui == null) return 0;
         if (phone_number_ui.getText() == null || get_user_phone_number().equals("")) return 0;
+        if (location_ui == null) return 0;
         if (location_ui.getText() == null || get_user_location().equals("")) return 1;
 
         return 2;

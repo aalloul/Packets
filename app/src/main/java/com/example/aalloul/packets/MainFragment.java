@@ -22,7 +22,7 @@ public class MainFragment extends Fragment {
     private static final String ARG_CITY_STATE = "city_state";
     private Button searchButton, postButton, pickup_date;
     private Spinner number_packages, size_package;
-    private TextView pickupdate_ui, numberpackages, drop_off_location, pickup_location;
+    private TextView pickupdate_ui, drop_off_location, pickup_location;
     static String pickupdate;
     private final String LOG_TAG = MainFragment.class.getName();
     private FragmentActivity myContext;
@@ -99,7 +99,6 @@ public class MainFragment extends Fragment {
             }
         });
 
-        numberpackages = (TextView) view.findViewById(R.id.numberOfPackages_mainActivity);
         number_packages = (Spinner) view.findViewById(R.id.setNumberPackages);
 
         // Create an ArrayAdapter using the string array and a default spinner layout

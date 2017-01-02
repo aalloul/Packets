@@ -941,6 +941,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         u1.clear();
         u0.put(getString(R.string.fName),"registration");
 
+        if (registrationFragment == null ) {
+            registrationFragment = RegistrationFragment.newInstance();
+        }
         int i = registrationFragment.isInputOk();
 
         // At least one import detail is missing
@@ -1200,7 +1203,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         @Override
         protected Bitmap doInBackground(Bitmap... params) {
             Bitmap bitmap = ExifUtil.rotateBitmap(mCurrentPhotoPath, params[0]);
-            return cropAndScale(bitmap, 300);
+            return cropAndScale(bitmap, 200);
         }
 
 

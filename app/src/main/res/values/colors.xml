@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#98af4c</color>
+    <color name="colorPrimary">#81B626</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#ffbf0d</color>
 
     <color name="black_overlay">#66000000</color>
+    <color name="cardColor">#f6f7e5</color>
+    <color name="regColor">#5e5c72</color>
+    <color name="colorBackground">#f0f7e9</color>
 </resources>

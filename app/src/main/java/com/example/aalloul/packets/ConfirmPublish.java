@@ -125,6 +125,7 @@ public class ConfirmPublish extends Fragment {
                 R.array.travelling_by, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         adapterTravellingBy.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
         // Apply the adapter to the spinner
         travelling_by.setAdapter(adapterTravellingBy);
 

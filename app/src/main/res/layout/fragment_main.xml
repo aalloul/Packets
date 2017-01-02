@@ -1,10 +1,13 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:fillViewport="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.example.aalloul.packets.MainFragment">
+    android:layout_height="match_parent">
 
     <RelativeLayout
+        tools:context="com.example.aalloul.packets.MainFragment"
+        android:background="@color/colorBackground"
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
         <TextView
@@ -72,8 +75,8 @@
                 android:layout_toRightOf="@+id/dot2_main_activity"
                 android:layout_below="@+id/setNumberPackages"
                 android:hint="@string/enter_dropoff_location"
-                android:layout_marginTop="15dp"
-                android:background="@android:drawable/btn_dropdown"
+                android:layout_marginTop="22dp"
+                android:background="@drawable/backgroundstate"
                 android:backgroundTint="?android:attr/colorBackground"
                 android:clickable="true"
                 android:layout_alignBottom="@+id/dot2_main_activity" />
@@ -118,14 +121,6 @@
                 android:layout_marginTop="20dp" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/numberOfPackages_mainActivity"
-                android:layout_below="@+id/setdate_mainActivity"
-                android:layout_toRightOf="@+id/setdate_mainActivity"
-                android:layout_marginTop="30dp" />
-
-            <TextView
                 android:layout_height="wrap_content"
                 android:inputType="text"
                 android:ems="10"
@@ -135,10 +130,10 @@
                 android:layout_toRightOf="@+id/dot1_main_activity"
                 android:layout_toEndOf="@+id/dot1_main_activity"
                 android:backgroundTint="?android:attr/colorBackground"
-                android:background="@android:drawable/btn_dropdown"
-                android:layout_marginTop="10dp"
+                android:background="@drawable/backgroundstate"
                 android:layout_alignBottom="@+id/dot1_main_activity"
-                android:layout_width="220dp" />
+                android:layout_width="220dp"
+                android:layout_marginTop="15dp" />
 
             <Spinner
                 android:layout_width="wrap_content"
@@ -146,7 +141,7 @@
                 android:id="@+id/packagesize"
                 android:dropDownWidth="match_parent"
                 android:background="@android:drawable/btn_dropdown"
-                android:backgroundTint="?android:attr/colorBackground"
+                android:backgroundTint="@color/colorBackground"
                 android:layout_alignTop="@+id/setNumberPackages"
                 android:layout_toRightOf="@+id/setNumberPackages"
                 android:layout_toEndOf="@+id/setNumberPackages" />
@@ -159,7 +154,8 @@
             android:layout_below="@+id/layout2_main_activity"
             android:layout_centerInParent="false"
             android:layout_marginTop="30dp"
-            android:layout_marginLeft="40dp">
+            android:layout_marginLeft="40dp"
+            android:paddingBottom="20dp">
 
             <Button
                 android:text="@string/postbutton_main_activity"
@@ -190,4 +186,4 @@
         </RelativeLayout>
     </RelativeLayout>
 
-</FrameLayout>
+</ScrollView>

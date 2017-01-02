@@ -1255,15 +1255,19 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         protected void onPostExecute(HashMap<String, String> res) {
             switch (pickupaim) {
                 case PICKUP_AIM:
-                    if (mainFragment != null) mainFragment.setPickup_location(res);
+                    if (mainFragment != null && mainFragment.isVisible()) {
+                        mainFragment.setPickup_location(res);
+                    }
                     break;
 
                 case DROPOFF_AIM:
-                    if (mainFragment != null) mainFragment.setDrop_off_location(res);
+                    if (mainFragment != null && mainFragment.isVisible()) {
+                        mainFragment.setDrop_off_location(res);
+                    }
                     break;
 
                 case REGISTRATION_AIM:
-                    if (registrationFragment != null) {
+                    if (registrationFragment != null && registrationFragment.isVisible()) {
                         registrationFragment.set_user_detailed_location(res);
                     }
                     break;

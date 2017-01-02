@@ -61,8 +61,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         GoogleApiClient.OnConnectionFailedListener, LocationListener, ItemFragment.OnListFragmentInteractionListener,
         OfferDetail.OnFragmentInteractionListener, MainFragment.OnFragmentInteractionListener,
         DatePickerFragment.TheListener, RegistrationFragment.RegistrationFragmentListener,
-        ConfirmPublish.OnCofirmPublishListener, ThankYou.OnThankYouListener,
-        CameraOrGalleryDialog.CameraOrGalleryInterface{
+        ConfirmPublish.OnCofirmPublishListener, CameraOrGalleryDialog.CameraOrGalleryInterface{
 
     // Map permission -- make sure 1 is always for position permission
     protected final int MAP_PERMISSION = 1;
@@ -1076,34 +1075,37 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 .replace(R.id.mainActivity_ListView, thankYou, "Thank you")
                 .commit();
 
+        new CountDownTimer(3000, 1000) {
+            public void onTick(long millisUntilFinished) { }
+            public void onFinish() {
+                if (mainFragment == null) {
+                    mainFragment = MainFragment.newInstance(getUserDetailedLocation(),
+                            getUserPersonalDetails().get(getString(R.string.saved_user_firstname)));
+                }
+                FragmentManager fm;
+                fm = getSupportFragmentManager();
+                int ec = fm.getBackStackEntryCount();
+                Log.i(LOG_TAG, "onBackToMainFragment - ec = "+ec);
+                int id = fm.getBackStackEntryAt(ec-1).getId();
+                Log.i(LOG_TAG, "onBackToMainFragment - id = "+id);
+                for (int i = 00; i > ec; i++) {
+                    fm.popBackStack(i, fm.POP_BACK_STACK_INCLUSIVE);
+                }
+
+                fm.beginTransaction()
+                        .remove(thankYou)
+                        .remove(mainFragment)
+                        .commit();
+
+                fm.beginTransaction()
+                        .add(R.id.mainActivity_ListView, mainFragment, "mainFragment")
+                        .commit();
+            }
+        }.start();
+
+
     }
 
-    @Override
-    public void onBackToMainFragment() {
-        Log.i(LOG_TAG, "Thank you!");
-        if (mainFragment == null) {
-            mainFragment = MainFragment.newInstance(getUserDetailedLocation(),
-                    getUserPersonalDetails().get(getString(R.string.saved_user_firstname)));
-        }
-        FragmentManager fm;
-        fm = getSupportFragmentManager();
-        int ec = fm.getBackStackEntryCount();
-        Log.i(LOG_TAG, "onBackToMainFragment - ec = "+ec);
-        int id = fm.getBackStackEntryAt(ec-1).getId();
-        Log.i(LOG_TAG, "onBackToMainFragment - id = "+id);
-        for (int i = 00; i > ec; i++) {
-            fm.popBackStack(i, fm.POP_BACK_STACK_INCLUSIVE);
-        }
-
-        fm.beginTransaction()
-                .remove(thankYou)
-                .remove(mainFragment)
-                .commit();
-
-        fm.beginTransaction()
-                .add(R.id.mainActivity_ListView, mainFragment, "mainFragment")
-                .commit();
-    }
 
     @Override
     public void onBackPressed()

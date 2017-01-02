@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,30 +10,43 @@
     android:background="@color/colorBackground">
 
     <!-- TODO: Update blank fragment layout -->
+
+    <TextView
+        android:text="@string/share_with_friends"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView2"
+        android:textColor="@color/goldColord"
+        android:typeface="monospace"
+        android:textStyle="normal|bold"
+        android:textSize="24sp"
+        android:layout_alignParentTop="false"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/shippy_thankyou" />
+
+    <ImageView
+        app:srcCompat="@drawable/shippy"
+        android:id="@+id/shippy_thankyou"
+        android:scaleX="0.5"
+        android:scaleY="0.5"
+        android:adjustViewBounds="true"
+        android:layout_width="400dp"
+        android:layout_height="200dp"
+        android:layout_centerVertical="true" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/thank_you"
         android:id="@+id/thank_you_text"
         android:layout_centerInParent="false"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
-
-    <Button
-        android:text="@string/back_to_main"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/back_to_mainFragment"
-        android:background="@drawable/curvedbutton"
-        android:textColor="@color/cast_expanded_controller_progress_text_color"
-        android:textSize="16sp"
-        android:textAllCaps="false"
         android:textStyle="normal|bold"
-        android:layout_below="@+id/thank_you_text"
-        android:layout_centerInParent="false"
-        android:layout_marginLeft="60dp"
-        android:layout_marginTop="30dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" />
+        android:typeface="monospace"
+        android:textSize="24sp"
+        android:textColor="@color/goldColord"
+        android:layout_centerVertical="false"
+        android:layout_below="@+id/shippy_thankyou"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

@@ -14,9 +14,7 @@ import android.widget.TextView;
 
 public class ThankYou extends Fragment {
     private final static String LOG_TAG = ThankYou.class.getSimpleName();
-    private OnThankYouListener mListener;
     private TextView thank_you;
-    private Button back_to_mainFragment;
     private static final String ARG_FIRST_NAME = "first_name";
     private String first_name;
 
@@ -48,13 +46,6 @@ public class ThankYou extends Fragment {
         View view = inflater.inflate(R.layout.fragment_thank_you, container, false);
 
         thank_you = (TextView) view.findViewById(R.id.thank_you_text);
-        back_to_mainFragment = (Button) view.findViewById(R.id.back_to_mainFragment);
-        back_to_mainFragment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onBackToMainFragment();
-            }
-        });
 
         return view;
     }
@@ -62,22 +53,11 @@ public class ThankYou extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnThankYouListener) {
-            mListener = (OnThankYouListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
-    public interface OnThankYouListener {
-        // TODO: Update argument type and name
-        void onBackToMainFragment();
-    }
 }

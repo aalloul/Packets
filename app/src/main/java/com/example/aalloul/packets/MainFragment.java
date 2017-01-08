@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import java.util.HashMap;
@@ -22,7 +23,8 @@ public class MainFragment extends Fragment {
     private static final String ARG_CITY_STATE = "city_state";
     private static final String ARG_FIRST_NAME= "first_name";
     private View view;
-    private Button searchButton, postButton, pickup_date;
+    private Button searchButton, postButton;
+    private ImageView pickup_date;
     private Spinner number_packages, size_package;
     private TextView pickupdate_ui, drop_off_location, pickup_location, welcome_text;
     static String pickupdate;
@@ -93,27 +95,27 @@ public class MainFragment extends Fragment {
         pickupdate_ui = (TextView) view.findViewById(R.id.dateofpickup_mainActivity);
         setDate(Utilities.getTomorrow("yyyy-MM-dd"));
 
-        pickup_date = (Button) view.findViewById(R.id.setdate_mainActivity);
+        pickup_date = (ImageView) view.findViewById(R.id.setdate_mainActivity);
         pickup_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 new DatePickerFragment().show(myContext.getSupportFragmentManager(), "datePicker");
             }
         });
-        pickup_date.setText("");
+//        pickup_date.setText("");
     }
     private void restorePickUpDateButton(String val) {
         pickupdate_ui = (TextView) view.findViewById(R.id.dateofpickup_mainActivity);
-        setDate(Utilities.getTomorrow("yyyy-MM-dd"));
+        setDate(val);
 
-        pickup_date = (Button) view.findViewById(R.id.setdate_mainActivity);
+        pickup_date = (ImageView) view.findViewById(R.id.setdate_mainActivity);
         pickup_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 new DatePickerFragment().show(myContext.getSupportFragmentManager(), "datePicker");
             }
         });
-        pickup_date.setText(val);
+//        pickup_date.setText(val);
     }
 
     private void getNumberPackagesButton(){
@@ -207,9 +209,14 @@ public class MainFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle bundle) {
         super.onSaveInstanceState(bundle);
+        //TODO check this
         bundle.putString("pick_up_date", pickupdate);
-        bundle.putString("size_packages",size_package.getSelectedItem().toString());
-        bundle.putString("number_packages",number_packages.getSelectedItem().toString());
+        if (size_package != null) {
+            bundle.putString("size_packages",size_package.getSelectedItem().toString());
+        }
+        if (number_packages != null) {
+            bundle.putString("number_packages", number_packages.getSelectedItem().toString());
+        }
         bundle.putSerializable("pick_up_location", getPickupLocation());
         bundle.putSerializable("drop_off_location", getDropOffLocation());
     }
@@ -283,14 +290,14 @@ public class MainFragment extends Fragment {
     }
 
     public HashMap<String, String> getPickupLocation(){
-        if (pickup_location.getText() == null ) {
+        if (pickup_location == null || pickup_location.getText() == null ) {
             return null;
         }
         return pick_up_detailed_location;
     }
 
     public HashMap<String, String> getDropOffLocation(){
-        if (drop_off_location.getText() == null){
+        if (drop_off_location == null || drop_off_location.getText() == null){
             return null;
         }
         return drop_off_detailed_location;

@@ -578,6 +578,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     getSupportFragmentManager().getFragment(savedInstanceState, "detailsFragment");
             itemFragment = (ItemFragment)
                     getSupportFragmentManager().getFragment(savedInstanceState, "itemFragment");
+            mainFragment = (MainFragment)
+                    getSupportFragmentManager().getFragment(savedInstanceState, "mainFragment");
         }
 
         // New data from the back-end was downloaded
@@ -714,17 +716,19 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         super.onSaveInstanceState(outState);
 
         //Save the fragment's instance
-        getSupportFragmentManager().putFragment(outState, "registrationFragment", registrationFragment);
-        if (mainFragment != null) {
+        if (registrationFragment != null && registrationFragment.isVisible()) {
+            getSupportFragmentManager().putFragment(outState, "registrationFragment", registrationFragment);
+        }
+        if (mainFragment != null && mainFragment.isVisible()) {
             getSupportFragmentManager().putFragment(outState, "mainFragment", mainFragment);
         }
-        if (detailsFragment != null) {
+        if (detailsFragment != null && detailsFragment.isVisible()) {
             getSupportFragmentManager().putFragment(outState, "detailsFragment", detailsFragment);
         }
-        if (confirmPublish != null) {
+        if (confirmPublish != null && confirmPublish.isVisible()) {
             getSupportFragmentManager().putFragment(outState, "confirmPublish", confirmPublish);
         }
-        if (itemFragment != null) {
+        if (itemFragment != null && itemFragment.isVisible()) {
             getSupportFragmentManager().putFragment(outState, "itemFragment", itemFragment);
         }
 

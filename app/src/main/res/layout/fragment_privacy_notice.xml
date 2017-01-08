@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     tools:context="com.example.aalloul.packets.PrivacyNotice"
     android:layout_margin="20dp"
-    android:background="@color/colorBackground">
+    android:background="@android:color/white">
 
     <!-- TODO: Update blank fragment layout -->
 

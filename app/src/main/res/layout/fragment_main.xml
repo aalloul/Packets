@@ -7,7 +7,7 @@
 
     <RelativeLayout
         tools:context="com.example.aalloul.packets.MainFragment"
-        android:background="@color/colorBackground"
+        android:background="@android:color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp">

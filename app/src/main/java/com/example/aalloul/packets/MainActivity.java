@@ -217,10 +217,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
 
         // Location already known
-        if (registrationFragment.get_user_location() != "") {
-            Log.i(LOG_TAG, "updateUserDetails - User location is already known. Do nothing");
-            return;
-        }
+//        if (registrationFragment.get_user_location() != "") {
+//            Log.i(LOG_TAG, "updateUserDetails - User location is already known. Do nothing");
+//            return;
+//        }
         // Okay now we can use this new location
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         HandleGeoCodingAsync handlegeocoding = new HandleGeoCodingAsync(this, REGISTRATION_AIM);
@@ -585,6 +585,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         Log.i(LOG_TAG, "OnCreate - Exit");
     }
 
+
     @Override
     public void onConnected(Bundle connectionHint) {
         Log.i(LOG_TAG, "onConnected - Enter ");
@@ -595,8 +596,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (!checkPermission()) return;
         // Get location updates
         LocationRequest mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(30000);
-        mLocationRequest.setFastestInterval(30000);
+        mLocationRequest.setInterval(5000);
+        mLocationRequest.setFastestInterval(5000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 mGoogleApiClient, mLocationRequest, this);
@@ -658,6 +659,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void onResume() {
         Log.i(LOG_TAG, "onResume - enter");
         super.onResume();
+
+        if (mGoogleApiClient == null ) {
+            Log.i(LOG_TAG, "onResume - mGoogleApiClient is null");
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
+
+
     }
 
     @Override
@@ -1038,7 +1050,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void onLocationChanged(Location location) {
         Log.i(LOG_TAG, "onLocationChanged - Enter");
         Log.i(LOG_TAG, "onLocationChanged - location = " + location.toString());
-        stopLocationUpdates();
+//        stopLocationUpdates();
         if (isAlreadyRegistered()) {
             if (mainFragment != null ) {
                 updateStoredLocation(location);
@@ -1208,7 +1220,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         @Override
         protected Bitmap doInBackground(Bitmap... params) {
             Bitmap bitmap = ExifUtil.rotateBitmap(mCurrentPhotoPath, params[0]);
-            return cropAndScale(bitmap, 200);
+            return cropAndScale(bitmap, 250);
         }
 
 

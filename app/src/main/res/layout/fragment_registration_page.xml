@@ -10,7 +10,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context="com.example.aalloul.packets.RegistrationFragment"
-    android:background="@color/colorBackground"
+    android:background="@android:color/white"
     android:alpha="1">
 
 
@@ -78,13 +78,16 @@
             android:layout_centerHorizontal="false"
             android:layout_centerVertical="false"
             android:layout_marginTop="35dp"
-            android:scaleX="1.5"
-            android:scaleY="1.5"
+            android:scaleX="1"
+            android:scaleY="1"
             android:contentDescription="@string/add_profile_picture"
             android:elevation="3dp"
             android:background="@drawable/backgroundstate"
             android:layout_marginEnd="10dp"
-            android:layout_marginStart="20dp" />
+            android:layout_marginStart="20dp"
+            android:cropToPadding="false"
+            android:adjustViewBounds="false"
+            android:scaleType="fitXY" />
 
         <EditText
             android:layout_width="match_parent"

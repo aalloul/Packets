@@ -1,6 +1,7 @@
 package com.example.aalloul.packets;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -46,6 +47,12 @@ public class ThankYou extends Fragment {
         View view = inflater.inflate(R.layout.fragment_thank_you, container, false);
 
         thank_you = (TextView) view.findViewById(R.id.thank_you_text);
+        Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "fonts/banana.ttf");
+        thank_you.setTypeface(tf);
+        thank_you.setText(getString(R.string.thank_you_firstname) + " "+first_name);
+
+        TextView share = (TextView) view.findViewById(R.id.spread_the_word);
+        share.setTypeface(tf);
 
         return view;
     }

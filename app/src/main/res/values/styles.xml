@@ -35,6 +35,6 @@
 
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:background">@color/black_overlay</item>
-        <item name="android:foreground">@drawable/shippysplash</item>
+        <item name="android:foreground">@drawable/drawable_splash_screen</item>
     </style>
 </resources>

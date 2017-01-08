@@ -1220,7 +1220,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         @Override
         protected Bitmap doInBackground(Bitmap... params) {
             Bitmap bitmap = ExifUtil.rotateBitmap(mCurrentPhotoPath, params[0]);
-            return cropAndScale(bitmap, 200);
+            return cropAndScale(bitmap, 250);
         }
 
 

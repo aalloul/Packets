@@ -21,11 +21,12 @@ public class MainFragment extends Fragment {
     // the location is not set in the UI
     private static final String ARG_CITY_STATE = "city_state";
     private static final String ARG_FIRST_NAME= "first_name";
+    private View view;
     private Button searchButton, postButton, pickup_date;
     private Spinner number_packages, size_package;
     private TextView pickupdate_ui, drop_off_location, pickup_location, welcome_text;
     static String pickupdate;
-    private final String LOG_TAG = MainFragment.class.getName();
+    private final String LOG_TAG = MainFragment.class.getSimpleName();
     private FragmentActivity myContext;
     private HashMap<String, String> drop_off_detailed_location, pick_up_detailed_location;
 
@@ -68,18 +69,7 @@ public class MainFragment extends Fragment {
         }
     }
 
-
-    @Override
-    public void onSaveInstanceState(Bundle bundle) {
-        super.onSaveInstanceState(bundle);
-        bundle.putString("number_packages", pickupdate);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view= inflater.inflate(R.layout.fragment_main, container, false);
+    private void getSearchButton() {
         searchButton = (Button) view.findViewById(R.id.searchbutton_main_activity);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,8 +77,9 @@ public class MainFragment extends Fragment {
                 mListener.onSearchButtonPressed();
             }
         });
+    }
 
-
+    private void getPostButton() {
         postButton= (Button) view.findViewById(R.id.postbutton_main_activity);
         postButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,7 +87,9 @@ public class MainFragment extends Fragment {
                 mListener.onPostButtonPressed();
             }
         });
+    }
 
+    private void getPickUpDateButton() {
         pickupdate_ui = (TextView) view.findViewById(R.id.dateofpickup_mainActivity);
         setDate(Utilities.getTomorrow("yyyy-MM-dd"));
 
@@ -107,9 +100,24 @@ public class MainFragment extends Fragment {
                 new DatePickerFragment().show(myContext.getSupportFragmentManager(), "datePicker");
             }
         });
+        pickup_date.setText("");
+    }
+    private void restorePickUpDateButton(String val) {
+        pickupdate_ui = (TextView) view.findViewById(R.id.dateofpickup_mainActivity);
+        setDate(Utilities.getTomorrow("yyyy-MM-dd"));
 
+        pickup_date = (Button) view.findViewById(R.id.setdate_mainActivity);
+        pickup_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new DatePickerFragment().show(myContext.getSupportFragmentManager(), "datePicker");
+            }
+        });
+        pickup_date.setText(val);
+    }
+
+    private void getNumberPackagesButton(){
         number_packages = (Spinner) view.findViewById(R.id.setNumberPackages);
-
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapterNPackages = ArrayAdapter.createFromResource(myContext,
                 R.array.number_packages_array, android.R.layout.simple_spinner_item);
@@ -117,14 +125,38 @@ public class MainFragment extends Fragment {
         adapterNPackages.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         number_packages.setAdapter(adapterNPackages);
+    }
+    private void restoreNumberPackagesButton(String val){
+        number_packages = (Spinner) view.findViewById(R.id.setNumberPackages);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapterNPackages = ArrayAdapter.createFromResource(myContext,
+                R.array.number_packages_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapterNPackages.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        number_packages.setAdapter(adapterNPackages);
+        number_packages.setSelection(adapterNPackages.getPosition(val));
+    }
 
+    private void getSizePackagesButton(){
         size_package = (Spinner) view.findViewById(R.id.packagesize);
         ArrayAdapter<CharSequence> adapterSizePackage = ArrayAdapter.createFromResource(myContext,
                 R.array.package_size, android.R.layout.simple_spinner_item);
 
         adapterSizePackage.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         size_package.setAdapter(adapterSizePackage);
+    }
+    private void restoreSizePackagesButton(String val) {
+        size_package = (Spinner) view.findViewById(R.id.packagesize);
+        ArrayAdapter<CharSequence> adapterSizePackage = ArrayAdapter.createFromResource(myContext,
+                R.array.package_size, android.R.layout.simple_spinner_item);
 
+        adapterSizePackage.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        size_package.setAdapter(adapterSizePackage);
+        size_package.setSelection(adapterSizePackage.getPosition(val));
+    }
+
+    private void getPickUpLocationButton() {
         pickup_location = (TextView) view.findViewById(R.id.pickuplocation_main_activity);
         _setPickup_location();
         Log.i(LOG_TAG, "pickup_location = "+pickup_location.getText().toString());
@@ -134,9 +166,24 @@ public class MainFragment extends Fragment {
                 mListener.onPickUpLocationPressed();
             }
         });
+    }
+    private void restorePickupLocation(HashMap<String, String> val){
+        pickup_location = (TextView) view.findViewById(R.id.pickuplocation_main_activity);
+        setPickup_location(val);
+        Log.i(LOG_TAG, "pickup_location = "+pickup_location.getText().toString());
+        pickup_location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onPickUpLocationPressed();
+            }
+        });
 
+    }
+
+    private void getDropOffLocationButton() {
         // Drop-off and pick up location
         drop_off_location = (TextView) view.findViewById(R.id.dropofflocation_mainactivity);
+        //TODO change this
         setDrop_off_location(pick_up_detailed_location);
         drop_off_location.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,6 +191,55 @@ public class MainFragment extends Fragment {
                 mListener.onDropOffLocationPressed();
             }
         });
+    }
+    private void restoreDropOffLocation(HashMap<String, String> val) {
+        // Drop-off and pick up location
+        drop_off_location = (TextView) view.findViewById(R.id.dropofflocation_mainactivity);
+        setDrop_off_location(val);
+        drop_off_location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onDropOffLocationPressed();
+            }
+        });
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle bundle) {
+        super.onSaveInstanceState(bundle);
+        bundle.putString("pick_up_date", pickupdate);
+        bundle.putString("size_packages",size_package.getSelectedItem().toString());
+        bundle.putString("number_packages",number_packages.getSelectedItem().toString());
+        bundle.putSerializable("pick_up_location", getPickupLocation());
+        bundle.putSerializable("drop_off_location", getDropOffLocation());
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        Log.i(LOG_TAG, "onCreateView - Enter");
+
+        view= inflater.inflate(R.layout.fragment_main, container, false);
+        getSearchButton();
+        getPostButton();
+
+        if (savedInstanceState == null) {
+            Log.i(LOG_TAG, "onCreateView - savedInstance is null");
+            getPickUpDateButton();
+            getNumberPackagesButton();
+            getSizePackagesButton();
+            getPickUpLocationButton();
+            getDropOffLocationButton();
+        } else {
+            Log.i(LOG_TAG, "onCreateView - savedInstance is not null");
+            restorePickUpDateButton(savedInstanceState.getString("pick_up_date"));
+            restoreNumberPackagesButton(savedInstanceState.getString("number_packages"));
+            restoreSizePackagesButton(savedInstanceState.getString("size_packages"));
+            restorePickupLocation((HashMap) savedInstanceState.getSerializable("pick_up_location"));
+            restoreDropOffLocation((HashMap) savedInstanceState.getSerializable("drop_off_location"));
+        }
+
 
         welcome_text = (TextView) view.findViewById(R.id.explanationText);
         String text = getString(R.string.explanation_main_activity);

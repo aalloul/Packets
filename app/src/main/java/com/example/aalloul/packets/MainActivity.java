@@ -552,6 +552,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     .build();
         } else {
             Log.i(LOG_TAG, "onCreate - mGoogleApiClient is not null");
+            mGoogleApiClient.connect();
         }
 
         if (savedInstanceState == null) {
@@ -571,15 +572,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         } else {
             Log.i(LOG_TAG, "OnCreate - savedInstanceState not null");
             registrationFragment = (RegistrationFragment)
-                    getSupportFragmentManager().getFragment(savedInstanceState, "registrationFragment");
+                    getSupportFragmentManager().findFragmentByTag("registrationFragment");
+
             confirmPublish = (ConfirmPublish)
-                    getSupportFragmentManager().getFragment(savedInstanceState, "confirmPublish");
+                    getSupportFragmentManager().findFragmentByTag("confirmPublish");
             detailsFragment = (OfferDetail)
-                    getSupportFragmentManager().getFragment(savedInstanceState, "detailsFragment");
+                    getSupportFragmentManager().findFragmentByTag("detailsFragment");
             itemFragment = (ItemFragment)
-                    getSupportFragmentManager().getFragment(savedInstanceState, "itemFragment");
+                    getSupportFragmentManager().findFragmentByTag("itemFragment");
             mainFragment = (MainFragment)
-                    getSupportFragmentManager().getFragment(savedInstanceState, "mainFragment");
+                    getSupportFragmentManager().findFragmentByTag("mainFragment");
         }
 
         // New data from the back-end was downloaded
@@ -613,12 +615,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 mGoogleApiClient, mLocationRequest, this);
+        Log.i(LOG_TAG, "onConnected - Requested location updates");
 
-        if (registrationFragment == null) return;
+        if (registrationFragment == null) {
+            Log.i(LOG_TAG, "onConnected - Registration Fragment is null");
+            return;
+        }
 
         userLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        Log.i(LOG_TAG, "onConnected - Requested last location");
 
         if (userLastLocation == null) {
+            Log.i(LOG_TAG, "onConnected - userLastLocation is null");
             registrationFragment.set_user_detailed_location(new HashMap<String, String>());
             Log.i(LOG_TAG, "onConnected - Location not available yet");
             return;
@@ -670,7 +678,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onResume() {
         Log.i(LOG_TAG, "onResume - enter");
-        super.onResume();
+
 
         if (mGoogleApiClient == null ) {
             Log.i(LOG_TAG, "onResume - mGoogleApiClient is null");
@@ -679,8 +687,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API)
                     .build();
+        } else {
+            Log.i(LOG_TAG, "onResume - mGoogleApiClient is NOT null");
+            Log.i(LOG_TAG, "onResume - Connecting mGoogleApiClient ");
+            mGoogleApiClient.connect();
         }
-
+        super.onResume();
 
     }
 
@@ -714,21 +726,20 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
         //Save the fragment's instance
-        if (registrationFragment != null && registrationFragment.isVisible()) {
+        if (registrationFragment != null && registrationFragment.isAdded()) {
             getSupportFragmentManager().putFragment(outState, "registrationFragment", registrationFragment);
         }
-        if (mainFragment != null && mainFragment.isVisible()) {
+        if (mainFragment != null && mainFragment.isAdded()) {
             getSupportFragmentManager().putFragment(outState, "mainFragment", mainFragment);
         }
-        if (detailsFragment != null && detailsFragment.isVisible()) {
+        if (detailsFragment != null && detailsFragment.isAdded() ) {
             getSupportFragmentManager().putFragment(outState, "detailsFragment", detailsFragment);
         }
-        if (confirmPublish != null && confirmPublish.isVisible()) {
+        if (confirmPublish != null && confirmPublish.isAdded()) {
             getSupportFragmentManager().putFragment(outState, "confirmPublish", confirmPublish);
         }
-        if (itemFragment != null && itemFragment.isVisible()) {
+        if (itemFragment != null && itemFragment.isAdded()) {
             getSupportFragmentManager().putFragment(outState, "itemFragment", itemFragment);
         }
 

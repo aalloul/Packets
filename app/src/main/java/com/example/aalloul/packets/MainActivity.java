@@ -1058,6 +1058,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             public void onFinish() {
                 if (mainFragment == null)
                 {
+                    Log.w(LOG_TAG, "onRegisterMePressed - mainFragment is null");
                     mainFragment = MainFragment.newInstance(getUserDetailedLocation(),
                             getUserPersonalDetails().get(getString(R.string.saved_user_firstname)));
                 }

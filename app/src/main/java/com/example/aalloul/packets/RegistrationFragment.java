@@ -54,20 +54,21 @@ public class RegistrationFragment extends Fragment {
         Log.i(LOG_TAG, "onSaveInstanceState - Enter");
         Log.i(LOG_TAG, "onSaveInstanceState - user_location = " + get_user_detailed_location());
         bundle.putSerializable("user_location", get_user_detailed_location());
-        if (picture_ui == null ) return;
-        if (picture_ui.getDrawable() == null) return;
-
-        bundle.putString("user_picture",
-                Utilities.BitMapToString(((BitmapDrawable) picture_ui.getDrawable()).getBitmap()));
+        if (picture_bitmap == null ) return;
+        Log.i(LOG_TAG, "onSaveInstanceState - picture_ui  not null");
+        bundle.putString("user_picture", picture_bitmap);
 
     }
 
     private void getUserPicture() {
         Log.i(LOG_TAG, "getUserPicture - Enter");
         picture_ui = (ImageButton) view.findViewById(R.id.user_picture);
-        if (picture_bitmap != null) picture_ui.setImageBitmap(
-                Utilities.StringToBitMap(picture_bitmap));
-
+        if (picture_bitmap != null) {
+            Log.i(LOG_TAG, "picture_bitmap not null");
+            picture_ui.setImageBitmap(
+                    Utilities.StringToBitMap(picture_bitmap));
+        }
+        Log.i(LOG_TAG, "picture_bitmap IS null");
         picture_ui.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,16 +78,15 @@ public class RegistrationFragment extends Fragment {
         // Text to encourage selecting a profile picture
         caption_user_picture = (TextView) view.findViewById(R.id.caption_user_picture);
     }
+
     private void restoreUserPicture(String bnp) {
         Log.i(LOG_TAG, "restoreUserPicture - Enter");
-//        Log.i(LOG_TAG, "restoreUserPicture - bnp = " + bnp);
-
-
         picture_ui = (ImageButton) view.findViewById(R.id.user_picture);
 
         if (bnp != null)  {
-            Log.i(LOG_TAG, "restoreUserPicture - bnp = " + bnp);
+            Log.i(LOG_TAG, "restoreUserPicture - bnp  not null");
             picture_ui.setImageBitmap(Utilities.StringToBitMap(bnp));
+            picture_bitmap = bnp;
             caption_user_picture = (TextView) view.findViewById(R.id.caption_user_picture);
             caption_user_picture.setText("");
         } else {
@@ -187,7 +187,7 @@ public class RegistrationFragment extends Fragment {
     public void setUserPicture(Bitmap imageBitmap) {
         Log.i(LOG_TAG, "setUserPicture - enter");
         picture_bitmap = Utilities.BitMapToString(imageBitmap);
-        Log.i(LOG_TAG, "setUserPicture picture_ui_bitmap = " + picture_bitmap);
+//        Log.i(LOG_TAG, "setUserPicture picture_ui_bitmap = " + picture_bitmap);
         picture_ui.setImageBitmap(imageBitmap);
     }
 

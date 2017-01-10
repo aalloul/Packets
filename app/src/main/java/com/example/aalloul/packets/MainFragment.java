@@ -69,6 +69,13 @@ public class MainFragment extends Fragment {
                     getArguments().getSerializable(ARG_CITY_STATE);
             first_name = getArguments().getString(ARG_FIRST_NAME);
         }
+
+        if (savedInstanceState != null) {
+            pick_up_detailed_location = (HashMap<String, String>)
+                    savedInstanceState.getSerializable("pick_up_location");
+            drop_off_detailed_location = (HashMap<String, String>)
+                    savedInstanceState.getSerializable("drop_off_location");
+        }
     }
 
     private void getSearchButton() {
@@ -172,7 +179,7 @@ public class MainFragment extends Fragment {
     private void restorePickupLocation(HashMap<String, String> val){
         pickup_location = (TextView) view.findViewById(R.id.pickuplocation_main_activity);
         setPickup_location(val);
-        Log.i(LOG_TAG, "pickup_location = "+pickup_location.getText().toString());
+        Log.i(LOG_TAG, "restorePickupLocation - pickup_location = "+pickup_location.getText().toString());
         pickup_location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -185,7 +192,6 @@ public class MainFragment extends Fragment {
     private void getDropOffLocationButton() {
         // Drop-off and pick up location
         drop_off_location = (TextView) view.findViewById(R.id.dropofflocation_mainactivity);
-        //TODO change this
         setDrop_off_location(pick_up_detailed_location);
         drop_off_location.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -209,7 +215,7 @@ public class MainFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle bundle) {
         super.onSaveInstanceState(bundle);
-        //TODO check this
+
         bundle.putString("pick_up_date", pickupdate);
         if (size_package != null) {
             bundle.putString("size_packages",size_package.getSelectedItem().toString());
@@ -290,16 +296,19 @@ public class MainFragment extends Fragment {
     }
 
     public HashMap<String, String> getPickupLocation(){
-        if (pickup_location == null || pickup_location.getText() == null ) {
-            return null;
-        }
+//        if (pick_up_detailed_location == null || pickup_location.getText() == null ) {
+//            Log.i(LOG_TAG, "getPickupLocation - pickup_location is null");
+//            return null;
+//        }
+        Log.i(LOG_TAG, "getPickupLocation - pickup_location is NOT null");
         return pick_up_detailed_location;
     }
 
     public HashMap<String, String> getDropOffLocation(){
-        if (drop_off_location == null || drop_off_location.getText() == null){
-            return null;
-        }
+//        if (drop_off_location == null || drop_off_location.getText() == null){
+//            return null;
+//        }
+        Log.i(LOG_TAG, "getDropOffLocation - drop_off_detailed_location = "+drop_off_detailed_location);
         return drop_off_detailed_location;
     }
 

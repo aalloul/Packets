@@ -47,13 +47,19 @@ public class RegistrationFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(LOG_TAG, "onCreate - called");
+
+        if (savedInstanceState != null) {
+            user_detailed_location = (HashMap<String, String>)
+                    savedInstanceState.getSerializable("user_location");
+        }
     }
 
     @Override
     public void onSaveInstanceState(Bundle bundle) {
         Log.i(LOG_TAG, "onSaveInstanceState - Enter");
-        Log.i(LOG_TAG, "onSaveInstanceState - user_location = " + get_user_detailed_location());
-        bundle.putSerializable("user_location", get_user_detailed_location());
+        HashMap<String, String> tmp = get_user_detailed_location();
+        Log.i(LOG_TAG, "onSaveInstanceState - user_location = " + tmp);
+        bundle.putSerializable("user_location", tmp);
         if (picture_bitmap == null ) return;
         Log.i(LOG_TAG, "onSaveInstanceState - picture_ui  not null");
         bundle.putString("user_picture", picture_bitmap);
@@ -122,6 +128,7 @@ public class RegistrationFragment extends Fragment {
                 mListener.onUserLocationPressed();
             }
         });
+        Log.i(LOG_TAG, "restoreUserLocation - val = "+val);
         set_user_detailed_location(val);
     }
 

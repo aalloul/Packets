@@ -95,7 +95,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private RegistrationFragment registrationFragment;
     private ConfirmPublish confirmPublish;
     private ThankYou thankYou;
-    private ItemFragment itemfragment;
+    private ItemFragment itemFragment;
+    private OfferDetail detailsFragment;
 
     // Interaction with Backend
     protected static HashMap<String, String> buffered_delayed_data = new HashMap();
@@ -551,9 +552,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     .build();
         } else {
             Log.i(LOG_TAG, "onCreate - mGoogleApiClient is not null");
+            mGoogleApiClient.connect();
         }
 
-        // Check which fragment to load
         if (savedInstanceState == null) {
 
             Log.i(LOG_TAG, "onCreate - savedInstanceState is null");
@@ -568,6 +569,19 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 fmg.add(R.id.mainActivity_ListView, registrationFragment, "registrationFragment");
             }
             fmg.commit();
+        } else {
+            Log.i(LOG_TAG, "OnCreate - savedInstanceState not null");
+            registrationFragment = (RegistrationFragment)
+                    getSupportFragmentManager().findFragmentByTag("registrationFragment");
+
+            confirmPublish = (ConfirmPublish)
+                    getSupportFragmentManager().findFragmentByTag("confirmPublish");
+            detailsFragment = (OfferDetail)
+                    getSupportFragmentManager().findFragmentByTag("detailsFragment");
+            itemFragment = (ItemFragment)
+                    getSupportFragmentManager().findFragmentByTag("itemFragment");
+            mainFragment = (MainFragment)
+                    getSupportFragmentManager().findFragmentByTag("mainFragment");
         }
 
         // New data from the back-end was downloaded
@@ -601,12 +615,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 mGoogleApiClient, mLocationRequest, this);
+        Log.i(LOG_TAG, "onConnected - Requested location updates");
 
-        if (registrationFragment == null) return;
+        if (registrationFragment == null) {
+            Log.i(LOG_TAG, "onConnected - Registration Fragment is null");
+            return;
+        }
 
         userLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        Log.i(LOG_TAG, "onConnected - Requested last location");
 
         if (userLastLocation == null) {
+            Log.i(LOG_TAG, "onConnected - userLastLocation is null");
             registrationFragment.set_user_detailed_location(new HashMap<String, String>());
             Log.i(LOG_TAG, "onConnected - Location not available yet");
             return;
@@ -658,7 +678,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onResume() {
         Log.i(LOG_TAG, "onResume - enter");
-        super.onResume();
+
 
         if (mGoogleApiClient == null ) {
             Log.i(LOG_TAG, "onResume - mGoogleApiClient is null");
@@ -667,8 +687,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API)
                     .build();
+        } else {
+            Log.i(LOG_TAG, "onResume - mGoogleApiClient is NOT null");
+            Log.i(LOG_TAG, "onResume - Connecting mGoogleApiClient ");
+            mGoogleApiClient.connect();
         }
-
+        super.onResume();
 
     }
 
@@ -700,6 +724,28 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //Save the fragment's instance
+        if (registrationFragment != null && registrationFragment.isAdded()) {
+            getSupportFragmentManager().putFragment(outState, "registrationFragment", registrationFragment);
+        }
+        if (mainFragment != null && mainFragment.isAdded()) {
+            getSupportFragmentManager().putFragment(outState, "mainFragment", mainFragment);
+        }
+        if (detailsFragment != null && detailsFragment.isAdded() ) {
+            getSupportFragmentManager().putFragment(outState, "detailsFragment", detailsFragment);
+        }
+        if (confirmPublish != null && confirmPublish.isAdded()) {
+            getSupportFragmentManager().putFragment(outState, "confirmPublish", confirmPublish);
+        }
+        if (itemFragment != null && itemFragment.isAdded()) {
+            getSupportFragmentManager().putFragment(outState, "itemFragment", itemFragment);
+        }
+
+    }
+
+    @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.i(LOG_TAG, "onConnectionFailed - Enter");
         Log.i(LOG_TAG, "onConnectionFailed - Exit");
@@ -721,13 +767,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         Log.i(LOG_TAG, "onListFragmentInteraction - nameAndFirstName = " + nameAndFirstName);
         Log.i(LOG_TAG, "onListFragmentInteraction - source_city = " + source_city);
 
-        final OfferDetail detailsFragment =
+        detailsFragment =
                 OfferDetail.newInstance(nameAndFirstName, source_city, source_country,
                         destination_city, destination_country, n_packets,
                         phone_number, comments);
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.mainActivity_ListView, detailsFragment, "OfferDetail")
+                .replace(R.id.mainActivity_ListView, detailsFragment, "detailsFragment")
                 .addToBackStack(null)
                 .commit();
 
@@ -766,9 +812,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
 
         //TODO call the back-end here
-        itemfragment = ItemFragment.newInstance(1);
+        itemFragment = ItemFragment.newInstance(1);
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.mainActivity_ListView, itemfragment, "itemfragment")
+                .replace(R.id.mainActivity_ListView, itemFragment, "itemFragment")
                 .addToBackStack("mainToitem")
                 .commit();
 
@@ -954,6 +1000,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         u0.put(getString(R.string.fName),"registration");
 
         if (registrationFragment == null ) {
+            Log.i(LOG_TAG, "onRegisterMePressed - registrationFragment is null");
             registrationFragment = RegistrationFragment.newInstance();
         }
         int i = registrationFragment.isInputOk();
@@ -1011,6 +1058,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             public void onFinish() {
                 if (mainFragment == null)
                 {
+                    Log.w(LOG_TAG, "onRegisterMePressed - mainFragment is null");
                     mainFragment = MainFragment.newInstance(getUserDetailedLocation(),
                             getUserPersonalDetails().get(getString(R.string.saved_user_firstname)));
                 }

@@ -46,6 +46,7 @@ public class ConfirmPublish extends Fragment {
     private FragmentActivity myContext;
     private String user_picture_string = "";
     private String user_picture_path;
+    private View view;
 
     public ConfirmPublish() {
         // Required empty public constructor
@@ -78,13 +79,49 @@ public class ConfirmPublish extends Fragment {
             mtrip_details = (HashMap<String, String>)
                     getArguments().getSerializable(ARG_TRIP_DETAILS);
         }
+
+        if (savedInstanceState != null) {
+            user_picture_string = savedInstanceState.getString("user_picture");
+            user_picture_path   = savedInstanceState.getString("user_picture_path");
+        }
+    }
+
+    private void restoreUserPicture(String val, String val2) {
+        user_picture_string = val;
+        user_picture_path = val2;
+        if (!user_picture_string.equals("")) {
+            user_picture = (ImageButton) view.findViewById(R.id.confirm_user_picture);
+            caption_confirm_user_picture.setText(null);
+            user_picture.setImageBitmap(Utilities.StringToBitMap(
+                    mpers_details.get(getString(R.string.saved_user_picture))));
+
+        }
+    }
+
+    private void getUserPicture(){
+        if (!user_picture_string.equals("")) {
+            user_picture = (ImageButton) view.findViewById(R.id.confirm_user_picture);
+            caption_confirm_user_picture.setText(null);
+            user_picture.setImageBitmap(Utilities.StringToBitMap(
+                    mpers_details.get(getString(R.string.saved_user_picture))));
+
+        }
     }
 
     @Override
+    public void onSaveInstanceState(Bundle bundle) {
+        bundle.putString("user_picture", user_picture_string);
+        bundle.putString("user_picture_path", user_picture_path);
+        super.onSaveInstanceState(bundle);
+    }
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.i(LOG_TAG, "onCreateView - start");
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_confirm_publish, container, false);
+        view =  inflater.inflate(R.layout.fragment_confirm_publish, container, false);
+        caption_confirm_user_picture = (TextView) view.findViewById(
+                R.id.caption_confirm_user_picture);
 
         confirmAction = (Button) view.findViewById(R.id.confirm_publish);
         confirmAction.setOnClickListener(new View.OnClickListener() {
@@ -99,10 +136,6 @@ public class ConfirmPublish extends Fragment {
         phone_edit = (EditText) view.findViewById(R.id.confirm_phone_number);
         confirm_please = (TextView) view.findViewById(R.id.confirm_please);
         comment_user = (EditText) view.findViewById(R.id.comment_user);
-        caption_confirm_user_picture = (TextView) view.findViewById(
-                R.id.caption_confirm_user_picture);
-
-        user_picture = (ImageButton) view.findViewById(R.id.confirm_user_picture);
 
         if (!mpers_details.get(getString(R.string.saved_user_firstname)).equals("")) {
 //            Log.i(LOG_TAG, "onCreateView - mpers_details = "+mpers_details.toString());
@@ -113,14 +146,18 @@ public class ConfirmPublish extends Fragment {
             user_picture_string = mpers_details.get(getString(R.string.saved_user_picture));
             user_picture_path = mpers_details.get(getString(R.string.saved_user_picture_path));
 
-            if (!user_picture_string.equals("")) {
-                caption_confirm_user_picture.setText(null);
-                user_picture.setImageBitmap(Utilities.StringToBitMap(
-                                mpers_details.get(getString(R.string.saved_user_picture))));
-
-            }
             Log.i(LOG_TAG, "onCreateView - user_picture_path = "+user_picture_path);
+//            Log.i(LOG_TAG, "onCreateView - user_picture_path = "+user_picture_string);
         }
+
+        if (savedInstanceState != null) {
+            restoreUserPicture(savedInstanceState.getString("user_picture"),
+                    savedInstanceState.getString("user_picture_path"));
+        } else {
+            getUserPicture();
+        }
+
+
 
         travelling_by = (Spinner) view.findViewById(R.id.travelling_by);
         // Create an ArrayAdapter using the string array and a default spinner layout

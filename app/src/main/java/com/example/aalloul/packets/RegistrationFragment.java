@@ -2,6 +2,7 @@ package com.example.aalloul.packets;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -27,8 +28,9 @@ public class RegistrationFragment extends Fragment {
     private String picture_bitmap;
     private EditText firstname_ui, surname_ui, phone_number_ui;
     private TextView location_ui, caption_user_picture, privacy_button;
-    private String firstname, surname, phone_number, location;
+    private String firstname, surname, phone_number;
     private Button registerMe, registerLater;
+    private View view;
     private HashMap<String, String> user_detailed_location = new HashMap<>();
 
     private RegistrationFragmentListener mListener;
@@ -38,27 +40,67 @@ public class RegistrationFragment extends Fragment {
     }
 
     public static RegistrationFragment newInstance() {
-        RegistrationFragment fragment = new RegistrationFragment();
-        return fragment;
+        return new RegistrationFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(LOG_TAG, "onCreate - called");
+
+        if (savedInstanceState != null) {
+            user_detailed_location = (HashMap<String, String>)
+                    savedInstanceState.getSerializable("user_location");
+            picture_bitmap = savedInstanceState.getString("user_picture");
+        }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        Log.i(LOG_TAG, "onCreateView - Enter");
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_registration_page, container, false);
+    public void onSaveInstanceState(Bundle bundle) {
+        Log.i(LOG_TAG, "onSaveInstanceState - Enter");
+        HashMap<String, String> tmp = get_user_detailed_location();
+        Log.i(LOG_TAG, "onSaveInstanceState - user_location = " + tmp);
+        bundle.putSerializable("user_location", tmp);
+        if (picture_bitmap == null ) return;
+        Log.i(LOG_TAG, "onSaveInstanceState - picture_ui  not null");
+        bundle.putString("user_picture", picture_bitmap);
+        super.onSaveInstanceState(bundle);
+    }
 
-        // User picture
+    private void getUserPicture() {
+        Log.i(LOG_TAG, "getUserPicture - Enter");
         picture_ui = (ImageButton) view.findViewById(R.id.user_picture);
-        if (picture_bitmap != null) picture_ui.setImageBitmap(
-                Utilities.StringToBitMap(picture_bitmap));
+        if (picture_bitmap != null) {
+            Log.i(LOG_TAG, "picture_bitmap not null");
+            picture_ui.setImageBitmap(
+                    Utilities.StringToBitMap(picture_bitmap));
+        }
+        Log.i(LOG_TAG, "picture_bitmap IS null");
+        picture_ui.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onUserPicturePressed();
+            }
+        });
+        // Text to encourage selecting a profile picture
+        caption_user_picture = (TextView) view.findViewById(R.id.caption_user_picture);
+    }
+
+    private void restoreUserPicture(String bnp) {
+        Log.i(LOG_TAG, "restoreUserPicture - Enter");
+        picture_ui = (ImageButton) view.findViewById(R.id.user_picture);
+
+        if (bnp != null)  {
+            Log.i(LOG_TAG, "restoreUserPicture - bnp  not null");
+            picture_ui.setImageBitmap(Utilities.StringToBitMap(bnp));
+            picture_bitmap = bnp;
+            caption_user_picture = (TextView) view.findViewById(R.id.caption_user_picture);
+            caption_user_picture.setText("");
+        } else {
+            Log.i(LOG_TAG, "restoreUserPicture - bnp is null");
+            caption_user_picture = (TextView) view.findViewById(R.id.caption_user_picture);
+            caption_user_picture.setText(getString(R.string.add_profile_picture));
+        }
 
         picture_ui.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,16 +108,10 @@ public class RegistrationFragment extends Fragment {
                 mListener.onUserPicturePressed();
             }
         });
-        
-        // surname, first name and phone 
-        firstname_ui = (EditText) view.findViewById(R.id.user_first_name);
-        if (firstname != null) firstname_ui.setText(firstname);
-        surname_ui = (EditText) view.findViewById(R.id.user_surname);
-        if (surname != null) surname_ui.setText(surname);
-        phone_number_ui = (EditText) view.findViewById(R.id.user_phone_number);
-        if (phone_number != null) phone_number_ui.setText(phone_number);
 
-        // Location
+    }
+
+    private void getUserLocation() {
         location_ui = (TextView) view.findViewById(R.id.user_location);
         location_ui.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,7 +120,47 @@ public class RegistrationFragment extends Fragment {
             }
         });
         set_user_detailed_location();
-        
+    }
+    private void restoreUserLocation(HashMap<String, String> val) {
+        location_ui = (TextView) view.findViewById(R.id.user_location);
+        location_ui.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onUserLocationPressed();
+            }
+        });
+        Log.i(LOG_TAG, "restoreUserLocation - val = "+val);
+        set_user_detailed_location(val);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        Log.i(LOG_TAG, "onCreateView - Enter");
+        // Inflate the layout for this fragment
+        view = inflater.inflate(R.layout.fragment_registration_page, container, false);
+
+        if (savedInstanceState == null){
+            Log.i(LOG_TAG,"onCreateView - savedInstanceState is null");
+            // User picture
+            getUserPicture();
+            // Location
+            getUserLocation();
+        } else {
+            Log.i(LOG_TAG,"onCreateView - savedInstanceState is NOT null");
+            restoreUserPicture(savedInstanceState.getString("user_picture"));
+            restoreUserLocation((HashMap) savedInstanceState.getSerializable("user_location"));
+        }
+
+
+        // surname, first name and phone 
+        firstname_ui = (EditText) view.findViewById(R.id.user_first_name);
+        if (firstname != null) firstname_ui.setText(firstname);
+        surname_ui = (EditText) view.findViewById(R.id.user_surname);
+        if (surname != null) surname_ui.setText(surname);
+        phone_number_ui = (EditText) view.findViewById(R.id.user_phone_number);
+        if (phone_number != null) phone_number_ui.setText(phone_number);
+
         // register buttons
         registerMe = (Button) view.findViewById(R.id.register_me);
         registerMe.setOnClickListener(new View.OnClickListener() {
@@ -102,8 +178,6 @@ public class RegistrationFragment extends Fragment {
             }
         });
 
-        // Text to encourage selecting a profile picture
-        caption_user_picture = (TextView) view.findViewById(R.id.caption_user_picture);
 
         privacy_button = (TextView) view.findViewById(R.id.privacyButton);
         privacy_button.setOnClickListener(new View.OnClickListener() {
@@ -142,10 +216,6 @@ public class RegistrationFragment extends Fragment {
         this.phone_number = phone_number;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -169,6 +239,7 @@ public class RegistrationFragment extends Fragment {
 
         set_user_detailed_location(user_detailed_location);
     }
+
     public void set_user_detailed_location(HashMap<String, String> details) {
 
         Log.i(LOG_TAG, "set_user_detailed_location - Enter");
@@ -204,16 +275,18 @@ public class RegistrationFragment extends Fragment {
             tmp += " (" + tmp2 + ")";
         }
 
-        setLocation(tmp);
+//        setLocation(tmp);
         location_ui.setText(tmp);
     }
 
     public String get_user_location() {
-        setLocation(location_ui.getText().toString());
+//        setLocation(location_ui.getText().toString());
         return location_ui.getText().toString();
     }
 
     public HashMap<String, String> get_user_detailed_location() {
+        Log.i(LOG_TAG, "get_user_detailed_location - Enter");
+        Log.i(LOG_TAG, "get_user_detailed_location - user_detailed_location = " + user_detailed_location);
         return user_detailed_location;
     }
 

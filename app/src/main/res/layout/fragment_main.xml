@@ -116,19 +116,20 @@
                 android:layout_marginLeft="10dp"
                 android:layout_toEndOf="@+id/dot2_main_activity" />
 
-            <Button
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/setdate_mainActivity"
                 android:layout_toRightOf="@+id/bar_main_activity"
                 android:layout_below="@+id/pickuplocation_main_activity"
-                android:background="@drawable/calendar"
                 android:layout_marginTop="5dp"
                 android:src="@drawable/calendar"
-                android:scaleX="0.6"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_toEndOf="@+id/bar_main_activity" />
+                android:layout_marginStart="30dp"
+                android:layout_marginLeft="30dp"
+                android:layout_toEndOf="@+id/bar_main_activity"
+                android:background="@drawable/calendar"
+                android:layout_marginEnd="20dp"
+                android:layout_marginRight="20dp" />
 
             <Spinner
                 android:layout_width="wrap_content"

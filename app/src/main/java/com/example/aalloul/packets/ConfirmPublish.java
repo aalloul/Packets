@@ -212,6 +212,26 @@ public class ConfirmPublish extends Fragment {
         return out;
     }
 
+    public boolean checkInputs() {
+
+        Log.i(LOG_TAG, "checkInputs - Enter");
+
+        if (firstname_edit.getText() == null || firstname_edit.getText().toString().equals("")) {
+            return false;
+        }
+        if (surname_edit.getText() == null || surname_edit.getText().toString().equals("")) {
+            return false;
+        }
+        if (phone_edit.getText() == null || phone_edit.getText().toString().equals("")) {
+            return false;
+        }
+        if (comment_user.getText() == null || comment_user.getText().toString().equals("")) {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated

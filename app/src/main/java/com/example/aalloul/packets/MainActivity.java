@@ -458,12 +458,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     }
 
-    // Checks inputs
-    protected boolean checkConfirmInputs() {
-        //TODO fill the check here
-        return true;
-    }
-
     // USed by dispatchTakePictureIntent to get the file path where to store the picture
     private File createImageFile() throws IOException {
         // Create an image file name
@@ -1113,11 +1107,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void onConfirmPublish() {
         Log.i(LOG_TAG, "onConfirmPublish - Publishing new offer");
         JUSTPOSTED = true;
-        if (!checkConfirmInputs()) {
+        if (!confirmPublish.checkInputs()) {
             Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
                     getResources().getString(R.string.registration_input_incomplete),
                     getResources().getString(R.string.okay)
             );
+            return;
         }
         HashMap<String, String> tmp = confirmPublish.getAllDetails();
         /** This might need a bit more thinking -- For example, the user is temporarily in another

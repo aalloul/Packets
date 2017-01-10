@@ -28,7 +28,7 @@ public class RegistrationFragment extends Fragment {
     private String picture_bitmap;
     private EditText firstname_ui, surname_ui, phone_number_ui;
     private TextView location_ui, caption_user_picture, privacy_button;
-    private String firstname, surname, phone_number, location;
+    private String firstname, surname, phone_number;
     private Button registerMe, registerLater;
     private View view;
     private HashMap<String, String> user_detailed_location = new HashMap<>();
@@ -51,6 +51,7 @@ public class RegistrationFragment extends Fragment {
         if (savedInstanceState != null) {
             user_detailed_location = (HashMap<String, String>)
                     savedInstanceState.getSerializable("user_location");
+            picture_bitmap = savedInstanceState.getString("user_picture");
         }
     }
 
@@ -63,7 +64,7 @@ public class RegistrationFragment extends Fragment {
         if (picture_bitmap == null ) return;
         Log.i(LOG_TAG, "onSaveInstanceState - picture_ui  not null");
         bundle.putString("user_picture", picture_bitmap);
-
+        super.onSaveInstanceState(bundle);
     }
 
     private void getUserPicture() {

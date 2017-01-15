@@ -1,23 +1,16 @@
 package com.example.aalloul.packets;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.app.DatePickerDialog;
 import android.util.Log;
-import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.NumberPicker;
-import android.widget.TextView;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-/**
- * Created by adamalloul on 16/10/2016.
- */
 
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener{
 
@@ -43,6 +36,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     }
 
     @Override
+    @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the current date as the default date in the picker
         final Calendar c = Calendar.getInstance();
@@ -71,7 +65,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 
         if (listener != null)
         {
-            Log.i(LOG_TAG, "onDateSet - Listner not null");
+            Log.i(LOG_TAG, "onDateSet - Listener not null");
             listener.returnDate(formattedDate);
 
         }

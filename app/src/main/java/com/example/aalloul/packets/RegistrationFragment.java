@@ -2,8 +2,6 @@ package com.example.aalloul.packets;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -13,12 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.google.android.gms.maps.model.LatLng;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 
 
@@ -27,9 +20,8 @@ public class RegistrationFragment extends Fragment {
     private ImageButton picture_ui;
     private String picture_bitmap;
     private EditText firstname_ui, surname_ui, phone_number_ui;
-    private TextView location_ui, caption_user_picture, privacy_button;
+    private TextView location_ui, caption_user_picture;
     private String firstname, surname, phone_number;
-    private Button registerMe, registerLater;
     private View view;
     private HashMap<String, String> user_detailed_location = new HashMap<>();
     private RegistrationFragmentListener mListener;
@@ -46,6 +38,7 @@ public class RegistrationFragment extends Fragment {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(LOG_TAG, "onCreate - called");
@@ -136,6 +129,7 @@ public class RegistrationFragment extends Fragment {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.i(LOG_TAG, "onCreateView - Enter");
@@ -151,7 +145,7 @@ public class RegistrationFragment extends Fragment {
         } else {
             Log.i(LOG_TAG,"onCreateView - savedInstanceState is NOT null");
             restoreUserPicture(savedInstanceState.getString("user_picture"));
-            restoreUserLocation((HashMap) savedInstanceState.getSerializable("user_location"));
+            restoreUserLocation((HashMap<String, String>) savedInstanceState.getSerializable("user_location"));
         }
 
 
@@ -164,7 +158,7 @@ public class RegistrationFragment extends Fragment {
         if (phone_number != null) phone_number_ui.setText(phone_number);
 
         // register buttons
-        registerMe = (Button) view.findViewById(R.id.register_me);
+        Button registerMe = (Button) view.findViewById(R.id.register_me);
         registerMe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -172,7 +166,7 @@ public class RegistrationFragment extends Fragment {
             }
         });
         
-        registerLater = (Button) view.findViewById(R.id.register_not_now);
+        Button registerLater = (Button) view.findViewById(R.id.register_not_now);
         registerLater.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -181,7 +175,7 @@ public class RegistrationFragment extends Fragment {
         });
 
 
-        privacy_button = (TextView) view.findViewById(R.id.privacyButton);
+        TextView privacy_button = (TextView) view.findViewById(R.id.privacyButton);
         privacy_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

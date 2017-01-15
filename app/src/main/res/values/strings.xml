@@ -31,7 +31,7 @@
     <string name="updating_location">Retrieving your location</string>
 
     <!--This okay is displayed when input is missing when searching/posting offers -->
-    <string name="okay">Ok</string>
+    <string name="okay">OK</string>
     <string name="explanation_main_activity">Hey</string>
     <string name="explanation_main_activity2">there</string>
     <string name="explanation_main_activity3">, welcome!</string>
@@ -61,7 +61,7 @@
 
     <string name="comment_indication">Here you can provide more details about your offer like where
         you where you would like tomeet the sender/receiver? When do you want to deliver the package?
-    ... any other relevant information</string>
+    (&#8230;) any other relevant information</string>
 
     <string name="add_profile_picture">Select a profile picture</string>
 

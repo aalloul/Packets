@@ -163,9 +163,14 @@ Our website search and decision notice search is powered by System Associates. S
     <string name="sEnd">sessEnd</string>
     <string name="sDuration">sessDuration</string>
     <string name="ferror">actionError</string>
+
+    <!-- Registration Fragment strings -->
     <string name="reg_nopers">reg_nopres_detail</string>
     <string name="reg_noloc">reg_no_location</string>
     <string name="reg_locnotfound">reg_location_notfound</string>
+    <string name="reg_later">reg_later</string>
+    <string name="user_location_edited">user_edited_location</string>
+    <string name="nprompts">n_prompts_registration</string>
 
     <string name="title_activity_splash_screen">SplashScreen</string>
     <string name="dummy_button">Dummy Button</string>

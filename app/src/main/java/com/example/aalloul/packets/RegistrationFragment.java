@@ -34,6 +34,7 @@ public class RegistrationFragment extends Fragment {
     private HashMap<String, String> user_detailed_location = new HashMap<>();
     private RegistrationFragmentListener mListener;
     private Long fragment_start_time;
+    private boolean edited_location;
 
     public RegistrationFragment() {
         // Required empty public constructor
@@ -217,6 +218,9 @@ public class RegistrationFragment extends Fragment {
         this.phone_number = phone_number;
     }
 
+    public void setEdited_location() {
+        edited_location = true;
+    }
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -310,6 +314,7 @@ public class RegistrationFragment extends Fragment {
     }
 
     public String get_user_picture() {
+        if (picture_bitmap == null) return "";
         return picture_bitmap;
     }
 
@@ -348,6 +353,9 @@ public class RegistrationFragment extends Fragment {
                 get_user_phone_number());
         t.put(getString(R.string.saved_user_phonenumber),
                 get_user_phone_number());
+
+        t.put(getString(R.string.user_location_edited), Boolean.toString(edited_location));
+
         t.putAll(get_user_detailed_location());
         return t;
     }

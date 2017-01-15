@@ -75,7 +75,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     static final int REQUEST_WRITE_FILES_FROM_GALLERY = 7;
     static final int REQUEST_PICK_PICTURE= 8;
 
-    private HashMap<String, String> u1 = new HashMap<>();
     private HashMap<String, String> u0 = new HashMap<>();
 
 
@@ -158,10 +157,20 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         return tmp;
     }
 
+    /**
+     * This function reads the data entered in the registration fragment
+     * and returns a hashmap
+     * @param nextFrag is used by the data reporting to know what the next fragment is
+     * @return a hashmap to send to the back-end
+     */
+
     private HashMap<String, String> storeUserDetails(String nextFrag) {
         Log.i(LOG_TAG, "storeUserDetails - Enter");
         HashMap<String, String> tmp = registrationFragment.getBlob(nextFrag);
         storeUserDetails(tmp);
+        sharedPref = getPreferences(Context.MODE_PRIVATE);
+        int n_prompts = sharedPref.getInt(getString(R.string.saved_user_npromptstoregister), 0);
+        tmp.put(getString(R.string.nprompts), Integer.toString(n_prompts));
         Log.i(LOG_TAG, "storeUserDetails - Exit");
         return tmp;
     }
@@ -988,6 +997,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onUserLocationPressed() {
         Log.i(LOG_TAG, "onDropOffLocationPressed - Enter");
+        registrationFragment.setEdited_location();
         launchPlaceAutoCompleteRequest(USER_LOCATION_REQUEST);
     }
 
@@ -995,6 +1005,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void onRegisterMePressed() {
         Log.i(LOG_TAG, "onRegisterMePressed - Enter");
         u0.put(getString(R.string.fName),"registration");
+
 
         if (registrationFragment == null ) {
             Log.i(LOG_TAG, "onRegisterMePressed - registrationFragment is null");
@@ -1071,6 +1082,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onRegisterLaterPressed() {
         sharedPref = getPreferences(Context.MODE_PRIVATE);
+
         // This will allow us to know how long before the user decides to register
         int n_prompts = sharedPref.getInt(getString(R.string.saved_user_npromptstoregister), 0);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -1079,8 +1091,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
 
         if (mainFragment == null) {
+            Log.i(LOG_TAG, "onRegisterLaterPressed - mainFragment is null");
             mainFragment = MainFragment.newInstance(getUserDetailedLocation(),"");
         }
+
+        u0.put(getString(R.string.fName),"registration");
+        new HandleReportingAsync().execute(u0,registrationFragment.getBlob(
+                getString(R.string.action),getString(R.string.reg_later)));
+
 
         getSupportFragmentManager()
                 .beginTransaction()
@@ -1373,16 +1391,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             tmp.put(getString(R.string.acStart), Long.toString(MAIN_ACTIVITY_START_TIME));
 
             tmp.put(getString(R.string.acName), "mainActivity");
+
+            tmp.put(getString(R.string.fName), params[0].get(getString(R.string.fName)));
+
             if (params[0].get(getString(R.string.sEnd)) != null) {
                 // If leaving the app
                 long t = Utilities.CurrentTimeMS();
                 tmp.put(getString(R.string.sEnd), Long.toString(t));
                 tmp.put(getString(R.string.sDuration), Long.toString(t-SESSION_ID));
-                tmp.put(getString(R.string.fName), params[0].get(getString(R.string.fName)));
             } else {
                 // If navigating from 1 fragment to another
-                tmp.putAll(params[0]);
-
                 tmp.put(getString(R.string.fActions), gson.toJson(params[1]));
             }
 

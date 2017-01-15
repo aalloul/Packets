@@ -164,13 +164,26 @@ Our website search and decision notice search is powered by System Associates. S
     <string name="sDuration">sessDuration</string>
     <string name="ferror">actionError</string>
 
-    <!-- Registration Fragment strings -->
+    <!-- @Reporting: Registration Fragment strings -->
     <string name="reg_nopers">reg_nopres_detail</string>
     <string name="reg_noloc">reg_no_location</string>
     <string name="reg_locnotfound">reg_location_notfound</string>
     <string name="reg_later">reg_later</string>
     <string name="user_location_edited">user_edited_location</string>
     <string name="nprompts">n_prompts_registration</string>
+
+    <!-- @Reporting: Main Fragment strings -->
+    <string name="no_network_error">no_network_error</string>
+    <string name="no_pickup_location">no_pickup_location_error</string>
+    <string name="no_pickup_date">no_pickup_date_error</string>
+    <string name="pickup_location_edited">pickup_location_edited</string>
+
+    <string name="no_dropoff_location">no_dropoff_location_error</string>
+    <string name="no_dropoff_date">no_dropoff_date_error</string>
+
+    <string name="n_packages">n_packages_not_set</string>
+    <string name="s_packages">size_packages_not_set</string>
+
 
     <string name="title_activity_splash_screen">SplashScreen</string>
     <string name="dummy_button">Dummy Button</string>

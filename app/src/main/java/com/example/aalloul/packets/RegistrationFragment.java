@@ -34,7 +34,7 @@ public class RegistrationFragment extends Fragment {
     private HashMap<String, String> user_detailed_location = new HashMap<>();
     private RegistrationFragmentListener mListener;
     private Long fragment_start_time;
-    private boolean edited_location;
+    private boolean edited_location = false;
 
     public RegistrationFragment() {
         // Required empty public constructor

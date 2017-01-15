@@ -349,11 +349,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     // Checks the inputs from the Main Activity
-    boolean checkMainFragmentInputs() {
+    boolean checkMainFragmentInputs(String action) {
 
-        if (mainFragment == null) return false;
+        if (mainFragment == null) {
+            Log.i(LOG_TAG, "checkMainFragmentInputs - mainFragment is null");
+            return false;
+        }
 
         if (!isNetworkOk()) {
+            // Report error
+            new HandleReportingAsync().execute(u0,mainFragment.mainFragmentError(
+                    getString(R.string.ferror),getString(R.string.no_network_error), action));
+
             final Snackbar snackbar = Snackbar.make(findViewById(R.id.mainActivity_ListView),
                     getResources().getString(R.string.no_network_connectivity),
                     Snackbar.LENGTH_INDEFINITE);
@@ -371,6 +378,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         if (pickuplocation == null ||
                 !pickuplocation.containsKey(getString(R.string.saved_user_city))) {
+
+            // Report error
+            new HandleReportingAsync().execute(u0,mainFragment.mainFragmentError(
+                    getString(R.string.ferror),getString(R.string.no_pickup_location), action));
+
             Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
                     getResources().getString(R.string.pickup_location_not_set),
                     getResources().getString(R.string.okay)
@@ -382,6 +394,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         String dateforpickup = mainFragment.getDateForPickUp();
         if ( dateforpickup == null) {
+
+            // Report error
+            new HandleReportingAsync().execute(u0,mainFragment.mainFragmentError(
+                    getString(R.string.ferror),getString(R.string.no_pickup_date), action));
+
             Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
                     getResources().getString(R.string.date_send_not_set),
                     getResources().getString(R.string.okay)
@@ -392,6 +409,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         String numberPackages = mainFragment.getNumberPackages();
         if ( numberPackages == null) {
+
+            // Report error
+            new HandleReportingAsync().execute(u0,mainFragment.mainFragmentError(
+                    getString(R.string.ferror),getString(R.string.n_packages), action));
+
             Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
                     getResources().getString(R.string.size_packages_not_set),
                     getResources().getString(R.string.okay)
@@ -402,6 +424,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         String sizePackages = mainFragment.getSizePackage();
         if (sizePackages == null) {
+
+            // Report error
+            new HandleReportingAsync().execute(u0,mainFragment.mainFragmentError(
+                    getString(R.string.ferror),getString(R.string.s_packages), action));
+
             Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
                     getResources().getString(R.string.number_packages_not_set),
                     getResources().getString(R.string.okay)
@@ -415,6 +442,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         if ( dropOffLocation == null ||
                 !dropOffLocation.containsKey(getString(R.string.saved_user_city)) ) {
+
+            // Report error
+            new HandleReportingAsync().execute(u0,mainFragment.mainFragmentError(
+                    getString(R.string.ferror),getString(R.string.no_dropoff_location), action));
+
             Log.i(LOG_TAG, "checkMainFragmentInputs- Unbelievable!");
             Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
                     getResources().getString(R.string.dropoff_location_not_set),
@@ -813,10 +845,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void onSearchButtonPressed() {
         Log.i(LOG_TAG, "onSearchButtonPressed - start");
 
-        if (!checkMainFragmentInputs()) {
+        if (!checkMainFragmentInputs("SEARCH")) {
             Log.i(LOG_TAG, "onSearchButtonPressed - user did not provide any input");
             return;
         }
+
+        u0.put(getString(R.string.fName),"mainFragment");
+        HashMap<String, String> hashMap = mainFragment.getTripDetails("SEARCH","itemFragment");
+
+        // Send data to reporting
+        new HandleReportingAsync().execute(u0,hashMap);
 
         //TODO call the back-end here
         itemFragment = ItemFragment.newInstance(1);
@@ -833,17 +871,26 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onPostButtonPressed() {
         Log.i(LOG_TAG, "onPostButtonPressed - start");
-        if (checkMainFragmentInputs()) {
-            HashMap<String, String> userDetails = getUserPersonalDetails();
-//            Log.i(LOG_TAG, "onPostButtonPressed - userDetails = " + userDetails);
-            confirmPublish = ConfirmPublish.newInstance(userDetails,
-                    mainFragment.getTripDetails());
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.mainActivity_ListView, confirmPublish, "confirmPublish")
-                    .addToBackStack("MainFragmentToConfirmPublish")
-                    .commit();
-        }
+
+        u0.put(getString(R.string.fName),"mainFragment");
+
+        // Check whether input data is correct
+        if (!checkMainFragmentInputs("POST")) { return ;}
+
+        // Gather all information
+        HashMap<String, String> userDetails = getUserPersonalDetails();
+        HashMap<String, String> hashMap = mainFragment.getTripDetails("POST", "confirmPublish");
+
+        // Send data to reporting
+        new HandleReportingAsync().execute(u0,hashMap);
+
+        // Show confirmation page
+        confirmPublish = ConfirmPublish.newInstance(userDetails,hashMap);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.mainActivity_ListView, confirmPublish, "confirmPublish")
+                .addToBackStack("MainFragmentToConfirmPublish")
+                .commit();
         Log.i(LOG_TAG, "onPostButtonPressed - exit");
     }
 
@@ -856,6 +903,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onPickUpLocationPressed() {
         Log.i(LOG_TAG, "onPickUpLocationPressed - Enter");
+        mainFragment.setEdited_pickup_location();
         launchPlaceAutoCompleteRequest(PICK_UP_LOCATION_REQUEST);
     }
     

@@ -23,23 +23,21 @@ public class MainFragment extends Fragment {
     private static final String ARG_CITY_STATE = "city_state";
     private static final String ARG_FIRST_NAME= "first_name";
     private View view;
-    private Button searchButton, postButton;
     private ImageView pickup_date;
     private Spinner number_packages, size_package;
-    private TextView pickupdate_ui, drop_off_location, pickup_location, welcome_text;
-    static String pickupdate;
+    private TextView pickupdate_ui, drop_off_location, pickup_location;
+    static String pickupdate, first_name;
     private final String LOG_TAG = MainFragment.class.getSimpleName();
     private FragmentActivity myContext;
     private HashMap<String, String> drop_off_detailed_location, pick_up_detailed_location;
-
-
-    private HashMap<String, String> location;
-    private String first_name;
+    private long fragment_start_time;
+    private Boolean edited_pickup_location = false;
 
     private OnFragmentInteractionListener mListener;
 
     public MainFragment() {
         // Required empty public constructor
+        fragment_start_time = Utilities.CurrentTimeMS();
     }
 
     /**
@@ -55,19 +53,20 @@ public class MainFragment extends Fragment {
         Bundle args = new Bundle();
 
         Log.i("MainFragment","newInstsance - "+ inlocation.toString());
-        if (inlocation != null ) args.putSerializable(ARG_CITY_STATE, inlocation);
+        args.putSerializable(ARG_CITY_STATE, inlocation);
         args.putString(ARG_FIRST_NAME, first_name);
         fragment.setArguments(args);
         return fragment;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            pick_up_detailed_location = (HashMap<String, String>)
-                    getArguments().getSerializable(ARG_CITY_STATE);
-            first_name = getArguments().getString(ARG_FIRST_NAME);
+                pick_up_detailed_location = (HashMap<String, String>)
+                        getArguments().getSerializable(ARG_CITY_STATE);
+                first_name = getArguments().getString(ARG_FIRST_NAME);
         }
 
         if (savedInstanceState != null) {
@@ -78,8 +77,12 @@ public class MainFragment extends Fragment {
         }
     }
 
+    public void setEdited_pickup_location(){
+        edited_pickup_location = true;
+    }
+
     private void getSearchButton() {
-        searchButton = (Button) view.findViewById(R.id.searchbutton_main_activity);
+        Button searchButton = (Button) view.findViewById(R.id.searchbutton_main_activity);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,7 +92,8 @@ public class MainFragment extends Fragment {
     }
 
     private void getPostButton() {
-        postButton= (Button) view.findViewById(R.id.postbutton_main_activity);
+
+        Button postButton= (Button) view.findViewById(R.id.postbutton_main_activity);
         postButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -106,10 +110,10 @@ public class MainFragment extends Fragment {
         pickup_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DatePickerFragment().show(myContext.getSupportFragmentManager(), "datePicker");
+                new DatePickerFragment()
+                        .show(myContext.getSupportFragmentManager(), "datePicker");
             }
         });
-//        pickup_date.setText("");
     }
     private void restorePickUpDateButton(String val) {
         pickupdate_ui = (TextView) view.findViewById(R.id.dateofpickup_mainActivity);
@@ -227,6 +231,7 @@ public class MainFragment extends Fragment {
         bundle.putSerializable("drop_off_location", getDropOffLocation());
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -249,12 +254,14 @@ public class MainFragment extends Fragment {
             restorePickUpDateButton(savedInstanceState.getString("pick_up_date"));
             restoreNumberPackagesButton(savedInstanceState.getString("number_packages"));
             restoreSizePackagesButton(savedInstanceState.getString("size_packages"));
-            restorePickupLocation((HashMap) savedInstanceState.getSerializable("pick_up_location"));
-            restoreDropOffLocation((HashMap) savedInstanceState.getSerializable("drop_off_location"));
+            restorePickupLocation((HashMap<String, String>)
+                    savedInstanceState.getSerializable("pick_up_location"));
+            restoreDropOffLocation((HashMap<String, String>)
+                    savedInstanceState.getSerializable("drop_off_location"));
         }
 
 
-        welcome_text = (TextView) view.findViewById(R.id.explanationText);
+        TextView welcome_text = (TextView) view.findViewById(R.id.explanationText);
         String text = getString(R.string.explanation_main_activity);
 
         if (first_name.equals("")) {
@@ -351,7 +358,6 @@ public class MainFragment extends Fragment {
             }
         }
         drop_off_location.setText(tmp);
-        return;
     }
 
     private void _setPickup_location() {
@@ -389,11 +395,30 @@ public class MainFragment extends Fragment {
         this._setPickup_location();
     }
 
-    public HashMap<String, String> getTripDetails() {
+    /**
+     * Function that reads all input fields and returns their value in a HashMap
+     * @param action whether this method is called after a search or a publish offer
+     * @return HashMap of all input field values
+     */
+    public HashMap<String, String> getTripDetails(String action, String nextFrag) {
         HashMap<String, String> out = new HashMap<>();
+        Long end_time = Utilities.CurrentTimeMS();
+        out.put(getString(R.string.fActions), action);
+
+        // time fields
+        out.put(getString(R.string.fStart), Long.toString(fragment_start_time));
+        out.put(getString(R.string.fEnd), Long.toString(end_time));
+        out.put(getString(R.string.fDuration), Long.toString(end_time - fragment_start_time));
+
+        // Next Fragment
+        out.put(getString(R.string.nextF), nextFrag);
+
+        // Input fields
         out.put(getString(R.string.date_for_pickup), getDateForPickUp());
         out.put(getString(R.string.number_packages), getNumberPackages());
         out.put(getString(R.string.size_packages), getSizePackage());
+
+        // Drop location
         HashMap<String, String> t = getDropOffLocation();
         out.put(getString(R.string.drop_off_latitude),
                 t.get(getString(R.string.saved_user_latitude)));
@@ -401,13 +426,38 @@ public class MainFragment extends Fragment {
                 t.get(getString(R.string.saved_user_longitude)));
         out.put(getString(R.string.drop_off_address),
                 t.get(getString(R.string.saved_user_address)));
-        out.put(getString(R.string.drop_off_city), t.get(getString(R.string.saved_user_city)));
+        out.put(getString(R.string.drop_off_city),
+                t.get(getString(R.string.saved_user_city)));
         out.put(getString(R.string.drop_off_country),
                 t.get(getString(R.string.saved_user_country)));
         out.put(getString(R.string.drop_off_postalcode),
                 t.get(getString(R.string.saved_user_postalcode)));
-
         out.putAll(getPickupLocation());
+
+        // Pick up location
+        out.put(getString(R.string.pickup_location_edited), Boolean.toString(edited_pickup_location));
+
+        return out;
+    }
+
+
+    /**
+     * Only used for data reporting when the input is not complete.
+     * @param key is the key for the error field
+     * @param value is the value for the error
+     * @return HashMap to be sent to reporting back-end
+     */
+    public HashMap<String, String> mainFragmentError(String key, String value, String action) {
+        HashMap<String, String> out = new HashMap<>();
+        Long end_time = Utilities.CurrentTimeMS();
+        out.put(getString(R.string.fStart), Long.toString(fragment_start_time));
+        out.put(getString(R.string.fEnd), Long.toString(end_time));
+        out.put(getString(R.string.fDuration), Long.toString(end_time - fragment_start_time));
+
+        out.put(getString(R.string.fActions), action);
+        out.put(getString(R.string.pickup_location_edited), Boolean.toString(edited_pickup_location));
+
+        out.put(key, value);
 
         return out;
     }

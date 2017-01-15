@@ -46,8 +46,6 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -56,9 +54,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-/**
- * Created by aalloul on 03/07/16.
- */
+
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener, ItemFragment.OnListFragmentInteractionListener,
         OfferDetail.OnFragmentInteractionListener, MainFragment.OnFragmentInteractionListener,
@@ -78,7 +74,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private HashMap<String, String> u0 = new HashMap<>();
 
 
-    private boolean JUSTPOSTED = false;
     protected final int PICKUP_AIM = 1;
     protected final int DROPOFF_AIM = 2;
     protected final int REGISTRATION_AIM = 3;
@@ -91,7 +86,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     SharedPreferences sharedPref;
     protected boolean MAP_PERMISSION_GRANTED = false;
     private GoogleApiClient mGoogleApiClient;
-    private Location userLastLocation;
     private MainFragment mainFragment;
     private RegistrationFragment registrationFragment;
     private ConfirmPublish confirmPublish;
@@ -100,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private OfferDetail detailsFragment;
 
     // Interaction with Backend
-    protected static HashMap<String, String> buffered_delayed_data = new HashMap();
+    protected static HashMap<String, String> buffered_delayed_data = new HashMap<String, String>();
     private BackendInteraction backend = new BackendInteraction();
 
     //Interaction with the offer search activity
@@ -140,9 +134,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         tmp.put(getString(R.string.saved_user_city),
                 sharedPref.getString(getString(R.string.saved_user_city), "Updating"));
 
-        if (tmp.get(getString(R.string.saved_user_city)).equals("Updating")) {
-
-        }
         tmp.put(getString(R.string.saved_user_country),
                 sharedPref.getString(getString(R.string.saved_user_country), ""));
         tmp.put(getString(R.string.saved_user_state),
@@ -194,8 +185,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     private void updateStoredLocation(Location location) {
-        HashMap<String, String> tmp = new HashMap<>();
-
         HandleGeoCodingAsync handlegeocoding =
                 new HandleGeoCodingAsync(this, UPDATE_STORED_LOCATION_AIM);
         handlegeocoding.execute(new LatLng(location.getLatitude(), location.getLongitude()));
@@ -206,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (queryResult.equals("ok")) {
             ItemFragment.myItemRecyclerViewAdapter.notifyDataSetChanged();
         } else {
-            // TODO display error
+            Log.i(LOG_TAG, "handleNetworkResult - An error happened with the network");
         }
     }
 
@@ -254,6 +243,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         Log.i(LOG_TAG, "Permission not granted");
         // Should we show an explanation?
+        MAP_PERMISSION_GRANTED = false;
+
         b = ActivityCompat.shouldShowRequestPermissionRationale(this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION);
         if (!b) {
@@ -338,7 +329,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     // Tries to open the settings 
-    public void goToSettings(AppCompatActivity activity) {
+    public void goToSettings() {
         try {
             Intent gpsOptionsIntent = new Intent(Intent.ACTION_MAIN);
             gpsOptionsIntent.setClassName("com.android.phone", "com.android.phone.Settings");
@@ -349,6 +340,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     // Checks the inputs from the Main Activity
+    @SuppressWarnings("unchecked")
     boolean checkMainFragmentInputs(String action) {
 
         if (mainFragment == null) {
@@ -367,7 +359,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             snackbar.setAction(R.string.okay, new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    goToSettings(MainActivity.this);
+                    goToSettings();
                 }
             });
             snackbar.show();
@@ -642,9 +634,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onConnected(Bundle connectionHint) {
         Log.i(LOG_TAG, "onConnected - Enter ");
-        HashMap<String, String> tmp;
         LatLng latLng;
-
 
         if (!checkPermission()) return;
         // Get location updates
@@ -661,7 +651,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             return;
         }
 
-        userLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        Location userLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         Log.i(LOG_TAG, "onConnected - Requested last location");
 
         if (userLastLocation == null) {
@@ -680,8 +670,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     // Handle the permission request result
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[],
-                                           int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
         Log.i(LOG_TAG, "onRequestPermissionsResult - Enter");
         Log.i(LOG_TAG, "onRequestPermissionsResult - requestCode = " + requestCode);
 
@@ -842,6 +832,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     // Method for search_button
     @Override
+    @SuppressWarnings("unchecked")
     public void onSearchButtonPressed() {
         Log.i(LOG_TAG, "onSearchButtonPressed - start");
 
@@ -869,6 +860,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     // Method for publish offer
     @Override
+    @SuppressWarnings("unchecked")
     public void onPostButtonPressed() {
         Log.i(LOG_TAG, "onPostButtonPressed - start");
 
@@ -941,12 +933,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             Log.i(LOG_TAG, status.getStatusMessage());
 
         } else if (resultCode == RESULT_CANCELED) {
-            // The user canceled the operation.
+            Log.i(LOG_TAG, "handleTripLocationRequest - cancelled");
         }
     }
 
     // Handles the camera result
-    private void handleUserCameraResult(int resultCode, Intent data) {
+    private void handleUserCameraResult(int resultCode) {
         if (resultCode == RESULT_OK) {
             File file = new File(mCurrentPhotoPath);
             Uri uri = Uri.fromFile(file);
@@ -961,6 +953,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 e.printStackTrace();
             } catch (IOException e) {
                 // TODO Auto-generated catch block
+                Log.w(LOG_TAG, "handleUserCameraResult - IOException");
                 e.printStackTrace();
             }
 
@@ -978,6 +971,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 String[] filePathColumn = {MediaStore.Images.Media.DATA};
                 Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
                 cursor.moveToFirst();
+
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                 mCurrentPhotoPath = cursor.getString(columnIndex);
                 cursor.close();
@@ -1017,7 +1011,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
             case REQUEST_IMAGE_CAPTURE:
                 Log.i(LOG_TAG, "onActivityResult - Handling picture taking by the user");
-                handleUserCameraResult(resultCode, data);
+                handleUserCameraResult(resultCode);
                 break;
 
             case REQUEST_PICK_PICTURE:
@@ -1050,6 +1044,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void onRegisterMePressed() {
         Log.i(LOG_TAG, "onRegisterMePressed - Enter");
         u0.put(getString(R.string.fName),"registration");
@@ -1128,6 +1123,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void onRegisterLaterPressed() {
         sharedPref = getPreferences(Context.MODE_PRIVATE);
 
@@ -1173,7 +1169,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onConfirmPublish() {
         Log.i(LOG_TAG, "onConfirmPublish - Publishing new offer");
-        JUSTPOSTED = true;
+
         if (!confirmPublish.checkInputs()) {
             Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
                     getResources().getString(R.string.registration_input_incomplete),
@@ -1210,8 +1206,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 Log.i(LOG_TAG, "onBackToMainFragment - ec = "+ec);
                 int id = fm.getBackStackEntryAt(ec-1).getId();
                 Log.i(LOG_TAG, "onBackToMainFragment - id = "+id);
-                for (int i = 00; i > ec; i++) {
-                    fm.popBackStack(i, fm.POP_BACK_STACK_INCLUSIVE);
+
+                for (int i = 0; i > ec; i++) {
+                    fm.popBackStack(i, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 }
 
                 fm.beginTransaction()
@@ -1317,7 +1314,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public class HandlePictureAsync extends AsyncTask<Bitmap, Void, Bitmap> {
 
         // Crops and scales images
-        public Bitmap cropAndScale (Bitmap source,int scale){
+        private Bitmap cropAndScale (Bitmap source,int scale){
             int factor = source.getHeight() <= source.getWidth() ? source.getHeight(): source.getWidth();
             int longer = source.getHeight() >= source.getWidth() ? source.getHeight(): source.getWidth();
             int x = source.getHeight() >= source.getWidth() ?0:(longer-factor)/2;
@@ -1350,7 +1347,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         private Context context;
         private int pickupaim;
 
-        public HandleGeoCodingAsync(Context ctx, int pickupaim) {
+        private HandleGeoCodingAsync(Context ctx, int pickupaim) {
             context = ctx;
             this.pickupaim = pickupaim;
         }
@@ -1415,6 +1412,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                             res.get(getString(R.string.saved_user_country)));
                     editor.putString(getString(R.string.saved_user_postalcode),
                             res.get(getString(R.string.saved_user_postalcode)));
+                    editor.commit();
             }
 
         }

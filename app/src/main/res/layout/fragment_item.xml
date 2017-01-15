@@ -4,9 +4,44 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="5dp"
-    android:elevation="8dp"
-    android:background="@color/colorBackground">
+    android:elevation="24dp"
+    android:background="@drawable/frameborder"
+    android:layout_margin="2dp">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/therelative"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@mipmap/user_icon_bevel"
+            android:id="@+id/transporter_picture"
+            android:adjustViewBounds="false"
+            android:cropToPadding="false"
+            android:layout_alignParentTop="false"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentStart="false"
+            android:elevation="0dp"
+            android:layout_centerHorizontal="false"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true" />
+
+        <TextView
+            android:text="TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/first_name_sender"
+            android:layout_centerVertical="false"
+            android:layout_centerInParent="false"
+            android:layout_below="@+id/transporter_picture"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp" />
+    </RelativeLayout>
 
     <ImageView
         android:layout_width="wrap_content"
@@ -18,39 +53,8 @@
         android:cropToPadding="true"
         android:scaleType="centerCrop"
         android:adjustViewBounds="true"
-        android:layout_toRightOf="@+id/layout_left_fragment_item"
+        android:layout_toRightOf="@+id/therelative"
         android:layout_marginRight="10dp" />
-
-    <RelativeLayout
-        android:id="@+id/layout_left_fragment_item"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginRight="10dp">
-
-        <TextView
-            android:text="TextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/first_name_sender"
-            tools:text="First name"
-            android:layout_below="@+id/transporter_picture"
-            android:layout_centerHorizontal="true" />
-
-        <ImageView
-            android:layout_width="71dp"
-            android:layout_height="79dp"
-            app:srcCompat="@drawable/user"
-            android:id="@+id/transporter_picture"
-            android:adjustViewBounds="false"
-            android:cropToPadding="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
-    </RelativeLayout>
 
     <ImageView
         android:layout_width="wrap_content"
@@ -58,7 +62,7 @@
         app:srcCompat="@drawable/bar"
         android:id="@+id/bar"
         android:rotation="90"
-        android:layout_toRightOf="@+id/layout_left_fragment_item"
+        android:layout_toRightOf="@+id/therelative"
         android:layout_marginTop="35dp"
         android:layout_marginRight="10dp" />
 
@@ -69,7 +73,7 @@
         android:id="@+id/dotTo"
         android:scaleX="0.5"
         android:scaleY="0.5"
-        android:layout_toRightOf="@+id/layout_left_fragment_item"
+        android:layout_toRightOf="@+id/therelative"
         android:layout_marginTop="69dp"
         android:layout_marginRight="10dp" />
 
@@ -110,11 +114,13 @@
         android:textColor="@color/cast_expanded_controller_progress_text_color"
         android:textAllCaps="false"
         android:textStyle="normal|bold"
-        android:padding="4dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentRight="false"
+        android:textSize="14sp"
+        android:layout_alignParentTop="false"
         android:layout_alignParentEnd="true"
-        android:textSize="14sp" />
+        android:layout_marginTop="3dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginEnd="4dp" />
 
     <ImageView
         android:layout_width="wrap_content"

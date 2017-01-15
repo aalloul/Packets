@@ -46,6 +46,8 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -83,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     protected final int REGISTRATION_AIM = 3;
     protected final int UPDATE_STORED_LOCATION_AIM = 4;
 
-    protected final long SESSION_ID = Utilities.CurrentTimeS();
+    protected final long SESSION_ID = Utilities.CurrentTimeMS();
     protected long MAIN_ACTIVITY_START_TIME;
 
     private String mCurrentPhotoPath;
@@ -156,10 +158,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         return tmp;
     }
 
-    private void storeUserDetails() {
+    private HashMap<String, String> storeUserDetails(String nextFrag) {
         Log.i(LOG_TAG, "storeUserDetails - Enter");
-        storeUserDetails(registrationFragment.getBlob());
+        HashMap<String, String> tmp = registrationFragment.getBlob(nextFrag);
+        storeUserDetails(tmp);
         Log.i(LOG_TAG, "storeUserDetails - Exit");
+        return tmp;
     }
 
     private void storeUserDetails(HashMap<String, String> details) {
@@ -522,7 +526,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity_listview);
 
-        MAIN_ACTIVITY_START_TIME = Utilities.CurrentTimeS();
+        MAIN_ACTIVITY_START_TIME = Utilities.CurrentTimeMS();
 
         searchPerformAction = getIntent();
 
@@ -990,7 +994,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onRegisterMePressed() {
         Log.i(LOG_TAG, "onRegisterMePressed - Enter");
-        u1.clear();
         u0.put(getString(R.string.fName),"registration");
 
         if (registrationFragment == null ) {
@@ -1001,8 +1004,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         // At least one import detail is missing
         if (i == 0) {
-            u1.put(getString(R.string.ferror),getString(R.string.reg_nopers));
-            new HandleReportingAsync().execute(u0,u1);
+            new HandleReportingAsync().execute(u0,registrationFragment.getBlob(
+                    getString(R.string.ferror),getString(R.string.reg_nopers)));
             Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
                     getResources().getString(R.string.registration_input_incomplete),
                     getResources().getString(R.string.okay));
@@ -1011,8 +1014,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         // User location not provided and access not granted
         if (i == 1 && !MAP_PERMISSION_GRANTED) {
-            u1.put(getString(R.string.ferror),getString(R.string.reg_noloc));
-            new HandleReportingAsync().execute(u0,u1);
+            new HandleReportingAsync().execute(u0,registrationFragment.getBlob(
+                    getString(R.string.ferror),getString(R.string.reg_noloc)));
                 Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
                         getResources().getString(R.string.user_location_not_entered),
                         getResources().getString(R.string.okay));
@@ -1021,19 +1024,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         // User location granted but not found yet
         if (i == 1 && MAP_PERMISSION_GRANTED) {
-            u1.put(getString(R.string.ferror),getString(R.string.reg_locnotfound));
-            new HandleReportingAsync().execute(u0,u1);
+            new HandleReportingAsync().execute(u0,registrationFragment.getBlob(
+                    getString(R.string.ferror),getString(R.string.reg_locnotfound)));
             Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
                     getResources().getString(R.string.location_will_come_later),
                     getResources().getString(R.string.okay));
         }
 
         // Store the details in SharedPref
-        storeUserDetails();
+        HashMap<String, String> tmp = storeUserDetails("mainFragment");
         // Report the new data
-        u1.putAll(registrationFragment.getBlob());
-        u1.put(getString(R.string.nextF),"mainFragment");
-        new HandleReportingAsync().execute(u0,u1);
+        new HandleReportingAsync().execute(u0,tmp);
 
 
         // Show a thank you note for 3 seconds
@@ -1373,15 +1374,20 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
             tmp.put(getString(R.string.acName), "mainActivity");
             if (params[0].get(getString(R.string.sEnd)) != null) {
-                long t = Utilities.CurrentTimeS();
+                // If leaving the app
+                long t = Utilities.CurrentTimeMS();
                 tmp.put(getString(R.string.sEnd), Long.toString(t));
                 tmp.put(getString(R.string.sDuration), Long.toString(t-SESSION_ID));
                 tmp.put(getString(R.string.fName), params[0].get(getString(R.string.fName)));
             } else {
+                // If navigating from 1 fragment to another
                 tmp.putAll(params[0]);
+
                 tmp.put(getString(R.string.fActions), gson.toJson(params[1]));
             }
-            Log.i("HandleReportingAsync","data = " + gson.toJson(tmp));
+
+
+            Log.i("HandleReportingAsync","data = "+gson.toJson(tmp));
             DataBuffer.addEvent(gson.toJson(tmp));
             return null;
         }

@@ -156,7 +156,9 @@ Our website search and decision notice search is powered by System Associates. S
     <string name="fName">fragName</string>
     <string name="fActions">fragActions</string>
     <string name="action">action</string>
+    <string name="fStart">fragStart</string>
     <string name="fDuration">fragDuration</string>
+    <string name="fEnd">fragEnd</string>
     <string name="nextF">nextFrag</string>
     <string name="sEnd">sessEnd</string>
     <string name="sDuration">sessDuration</string>

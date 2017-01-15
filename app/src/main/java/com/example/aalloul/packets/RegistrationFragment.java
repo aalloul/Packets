@@ -32,11 +32,12 @@ public class RegistrationFragment extends Fragment {
     private Button registerMe, registerLater;
     private View view;
     private HashMap<String, String> user_detailed_location = new HashMap<>();
-
     private RegistrationFragmentListener mListener;
+    private Long fragment_start_time;
 
     public RegistrationFragment() {
         // Required empty public constructor
+        fragment_start_time = Utilities.CurrentTimeMS();
     }
 
     public static RegistrationFragment newInstance() {
@@ -325,8 +326,18 @@ public class RegistrationFragment extends Fragment {
         return 2;
     }
 
-    public HashMap<String, String> getBlob() {
+    public HashMap<String, String> getBlob(String nextFrag) {
         HashMap<String, String> t = new HashMap<>();
+        long end_time = Utilities.CurrentTimeMS();
+        t.put(getString(R.string.fStart), Long.toString(fragment_start_time));
+        t.put(getString(R.string.fEnd), Long.toString(end_time));
+        t.put(getString(R.string.fDuration), Long.toString(end_time - fragment_start_time));
+
+        if (!nextFrag.equals("")) {
+            //Used for data reporting when switching to another fragment
+            t.put(getString(R.string.nextF), nextFrag);
+        }
+
         t.put(getString(R.string.saved_user_firstname),
                 get_user_firstname());
         t.put(getString(R.string.saved_user_surname),
@@ -338,6 +349,19 @@ public class RegistrationFragment extends Fragment {
         t.put(getString(R.string.saved_user_phonenumber),
                 get_user_phone_number());
         t.putAll(get_user_detailed_location());
+        return t;
+    }
+
+
+
+    public HashMap<String, String> getBlob(String err_field, String err_msg) {
+        HashMap<String, String> t = new HashMap<>();
+        long end_time = Utilities.CurrentTimeMS();
+        t.put(getString(R.string.fStart), Long.toString(fragment_start_time));
+        t.put(getString(R.string.fEnd), Long.toString(end_time));
+        t.put(getString(R.string.fDuration), Long.toString(end_time - fragment_start_time));
+        t.put(err_field,err_msg);
+
         return t;
     }
 

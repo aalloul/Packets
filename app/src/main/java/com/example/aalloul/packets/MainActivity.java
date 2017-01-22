@@ -829,6 +829,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void onCallButtonPress(String phonenumber) {
         Log.i(LOG_TAG, "onCallButtonPress - Start");
         Log.i(LOG_TAG, "onCallButtonPress - Calling " + phonenumber);
+
+        HashMap<String, String> u1 = detailsFragment.getBlob("call");
+        u0.put(getString(R.string.fName),"itemFragment");
+        new HandleReportingAsync().execute(u0,u1);
+
         Uri number = Uri.parse("tel:" + phonenumber);
         Intent callIntent = new Intent(Intent.ACTION_DIAL, number);
         startActivity(callIntent);
@@ -839,6 +844,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void onMessageButtonPress(String phonenumber) {
         Log.i(LOG_TAG, "onMessageButtonPress - Start");
         Log.i(LOG_TAG, "onMessageButtonPress - Calling " + phonenumber);
+
+        HashMap<String, String> u1 = detailsFragment.getBlob("message");
+        u0.put(getString(R.string.fName),"itemFragment");
+        new HandleReportingAsync().execute(u0,u1);
+
         Intent smsIntent = new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", phonenumber, null));
 
         startActivity(smsIntent);

@@ -14,6 +14,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.HashMap;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,6 +47,7 @@ public class OfferDetail extends Fragment {
     private String comments;
     private String destination_country;
     private String source_country;
+    private long fragment_start_time;
 
     private ImageButton callButton;
     private ImageButton sendMessage;
@@ -54,6 +57,7 @@ public class OfferDetail extends Fragment {
 
     public OfferDetail() {
         // Required empty public constructor
+        fragment_start_time = Utilities.CurrentTimeMS();
     }
 
     /**
@@ -116,19 +120,11 @@ public class OfferDetail extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_offer_detail, container, false);
 
         // Initialize the items of the view
-//        final ImageView imageView = (ImageView) view.findViewById(R.id.comic_image);
         final TextView nameTextView = (TextView) view.findViewById(R.id.name);
         final TextView descriptionTextView = (TextView) view.findViewById(R.id.description);
 
-        // get the arguments
-        Log.i(LOG_TAG, "onCreateView - get Arguments");
-        final Bundle args = getArguments();
-//        imageView.setImageResource(args.getInt(ARGUMENT_IMAGE_RES_ID));
-
-        Log.i(LOG_TAG, "onCreateView - set values for the view");
-
         // Display name
-        nameTextView.setText(args.getString(nameAndFirstName));
+        nameTextView.setText(nameAndFirstName);
 
         // Convert date to human readable
         String departure_date = "departure_date";
@@ -137,9 +133,8 @@ public class OfferDetail extends Fragment {
         String mystr = String.format("%s is going from %s (%s) to %s (%s). He will depart at " +
                 "%s and should arrive around %s. \nTo call him, press the phone" +
                 "icon below. \nYou can also send him a message.",
-                args.getString(ARG_NAMEANDFIRSTNAME), args.getString(ARG_SOURCE_CITY),
-                args.getString(ARG_SOURCE_COUNTRY), args.getString(ARG_DESTINATION_CITY),
-                args.getString(ARG_DESTINATION_COUNTRY), departure_date, arrival_date);
+                nameAndFirstName, source_city, source_country, destination_city, destination_country,
+                departure_date, arrival_date);
         descriptionTextView.setText(mystr);
 
         // Call action
@@ -147,7 +142,7 @@ public class OfferDetail extends Fragment {
         callButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onCallButtonPress(args.getString(ARG_PHONE_NUMBER));
+                mListener.onCallButtonPress(phone_number);
             }
         });
 
@@ -156,21 +151,13 @@ public class OfferDetail extends Fragment {
         sendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onMessageButtonPress(args.getString(ARG_PHONE_NUMBER));
+                mListener.onMessageButtonPress(phone_number);
             }
         });
 
         Log.i(LOG_TAG, "onCreateView - Exit");
         return view;
     }
-
-//    public void onButtonPressed(Uri uri) {
-//        Log.i(LOG_TAG, "onButtonPressed - Start");
-////        if (mListener != null) {
-////            mListener.onFragmentInteraction(uri);
-////        }
-//        Log.i(LOG_TAG, "onButtonPressed - Exit");
-//    }
 
     @Override
     public void onAttach(Context context) {
@@ -190,6 +177,23 @@ public class OfferDetail extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    public HashMap<String, String> getBlob(String nextFrag) {
+        HashMap<String, String> t = new HashMap<>();
+
+        long end_time = Utilities.CurrentTimeMS();
+
+        t.put(getString(R.string.fStart), Long.toString(fragment_start_time));
+        t.put(getString(R.string.fEnd), Long.toString(end_time));
+        t.put(getString(R.string.fDuration), Long.toString(end_time - fragment_start_time));
+
+        if (!nextFrag.equals("")) {
+            //Used for data reporting when switching to another fragment
+            t.put(getString(R.string.nextF), nextFrag);
+        }
+
+        return t;
     }
 
     /**

@@ -49,6 +49,7 @@ import com.google.gson.Gson;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -72,7 +73,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     static boolean PICTURE_FOR_CONFIRM=false;
 
     private HashMap<String, String> u0 = new HashMap<>();
-
 
     protected final int PICKUP_AIM = 1;
     protected final int DROPOFF_AIM = 2;
@@ -748,6 +748,36 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         Log.i(LOG_TAG, "onPause - Enter");
         super.onPause();
         stopLocationUpdates();
+
+        u0.put(getString(R.string.fName),"onPause");
+        long end_time = Utilities.CurrentTimeMS();
+        long duration = end_time - SESSION_ID;
+        u0.put(getString(R.string.sEnd), Long.toString(end_time));
+        u0.put(getString(R.string.sDuration), Long.toString(duration));
+
+        FragmentManager fm = getSupportFragmentManager();
+
+        if (registrationFragment != null && registrationFragment.isVisible()) {
+            u0.put(getString(R.string.screen_name), "registrationFragment");
+        }
+        if (mainFragment != null && mainFragment.isVisible()) {
+            u0.put(getString(R.string.screen_name), "mainFragment");
+        }
+        if (confirmPublish != null && confirmPublish.isVisible()) {
+            u0.put(getString(R.string.screen_name), "confirmPublish");
+        }
+        if (thankYou != null && thankYou.isVisible()) {
+            u0.put(getString(R.string.screen_name), "thankYou");
+        }
+        if (itemFragment != null && itemFragment.isVisible()) {
+            u0.put(getString(R.string.screen_name), "itemFragment");
+        }
+        if (detailsFragment != null && detailsFragment.isVisible()) {
+            u0.put(getString(R.string.screen_name), "detailsFragment");
+        }
+
+        new HandleReportingAsync().execute(u0, new HashMap<String, String>());
+
         DataBuffer.clear();
         Log.i(LOG_TAG, "onPause - Exit");
     }
@@ -1485,11 +1515,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
             tmp.put(getString(R.string.fName), params[0].get(getString(R.string.fName)));
 
-            if (params[0].get(getString(R.string.sEnd)) != null) {
+            if (params[1] == null) {
                 // If leaving the app
-                long t = Utilities.CurrentTimeMS();
-                tmp.put(getString(R.string.sEnd), Long.toString(t));
-                tmp.put(getString(R.string.sDuration), Long.toString(t-SESSION_ID));
+                tmp = params[0];
             } else {
                 // If navigating from 1 fragment to another
                 tmp.put(getString(R.string.fActions), gson.toJson(params[1]));

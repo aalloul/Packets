@@ -151,8 +151,13 @@ Our website search and decision notice search is powered by System Associates. S
 
     <!--Data reporting fields-->
     <string name="sID">sID</string>
-    <string name="acStart">acStart</string>
-    <string name="acName">acName</string>
+    <string name="acStart">activity_start</string>
+    <string name="acName">activity_name</string>
+    <string name="sEnd">sessEnd</string>
+    <string name="sDuration">sessDuration</string>
+    <string name="screen_name">left_on_fragment</string>
+
+    <string name="acEnd">activity_end</string>
     <string name="fName">fragName</string>
     <string name="fActions">fragActions</string>
     <string name="action">action</string>
@@ -160,8 +165,7 @@ Our website search and decision notice search is powered by System Associates. S
     <string name="fDuration">fragDuration</string>
     <string name="fEnd">fragEnd</string>
     <string name="nextF">nextFrag</string>
-    <string name="sEnd">sessEnd</string>
-    <string name="sDuration">sessDuration</string>
+
     <string name="ferror">actionError</string>
 
     <!-- @Reporting: Registration Fragment strings -->

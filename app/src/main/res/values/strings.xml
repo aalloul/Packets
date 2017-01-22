@@ -163,8 +163,6 @@ Our website search and decision notice search is powered by System Associates. S
     <string name="sEnd">sessEnd</string>
     <string name="sDuration">sessDuration</string>
     <string name="ferror">actionError</string>
-    <string name="changed_prof_pic">changed_profile_picture</string>
-    <string name="confirm_no_details">not_enough_details_provided</string>
 
     <!-- @Reporting: Registration Fragment strings -->
     <string name="reg_nopers">reg_nopres_detail</string>
@@ -186,6 +184,13 @@ Our website search and decision notice search is powered by System Associates. S
     <string name="n_packages">n_packages_not_set</string>
     <string name="s_packages">size_packages_not_set</string>
 
+    <!-- @Reporting: Confirm Publish strings -->
+    <string name="changed_prof_pic">changed_profile_picture</string>
+    <string name="confirm_no_details">not_enough_details_provided</string>
+
+    <!-- @Reporting: item Fragment strings-->
+    <string name="n_results">query_results</string>
+    <string name="pos">position_selected_element</string>
 
     <string name="title_activity_splash_screen">SplashScreen</string>
     <string name="dummy_button">Dummy Button</string>

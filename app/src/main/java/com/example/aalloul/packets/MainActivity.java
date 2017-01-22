@@ -788,13 +788,28 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void onListFragmentInteraction(String nameAndFirstName, String source_city,
                                           String source_country, String destination_city,
                                           String destination_country, String n_packets,
-                                          String phone_number, String comments) {
+                                          String phone_number, String comments, int thepos) {
         Log.i(LOG_TAG, "onListFragmentInteraction - Received a click - content is");
         Log.i(LOG_TAG, "onListFragmentInteraction - nameAndFirstName = " + nameAndFirstName);
         Log.i(LOG_TAG, "onListFragmentInteraction - source_city = " + source_city);
+
+        u0.put(getString(R.string.fName),"itemFragment");
+
+        HashMap<String, String> u1 = new HashMap<>();
+        long end_time = Utilities.CurrentTimeMS();
+        u1.put(getString(R.string.fStart), Long.toString(itemFragment.getFragment_start_time()));
+        u1.put(getString(R.string.fEnd), Long.toString(end_time));
+        u1.put(getString(R.string.fDuration), Long.toString(
+                end_time - itemFragment.getFragment_start_time()));
+        u1.put(getString(R.string.n_results), Integer.toString(itemFragment.getN_results()));
+        u1.put(getString(R.string.pos), Integer.toString(thepos));
+        u1.put(getString(R.string.nextF), "detailsFragment");
+
+        new HandleReportingAsync().execute(u0,u1);
 
         detailsFragment =
                 OfferDetail.newInstance(nameAndFirstName, source_city, source_country,

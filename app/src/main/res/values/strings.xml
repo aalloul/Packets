@@ -196,6 +196,12 @@ Our website search and decision notice search is powered by System Associates. S
     <string name="n_results">query_results</string>
     <string name="pos">position_selected_element</string>
 
+    <!-- @Reporting: stack traces -->
+    <string name="class_name">class_name</string>
+    <string name="method_name">method_name</string>
+    <string name="stack">stack_trace</string>
+
+
     <string name="title_activity_splash_screen">SplashScreen</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>

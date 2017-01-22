@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.aalloul.packets.DataBaseContracts.Postmen;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -289,9 +290,12 @@ class Postman extends Person {
 
         } catch (JSONException e) {
             Log.e(LOG_TAG, "updateTable - An error with JSON happened, stacktrace follows");
+            DataBuffer.addException(e.getCause().toString(), e.toString(), "Postman", "updateTable");
+
             e.printStackTrace();
         } catch (Exception e){
             Log.e(LOG_TAG, "updateTable - An unknown error happened, stacktrace follows");
+            DataBuffer.addException(e.getCause().toString(), e.toString(), "Postman", "updateTable");
             e.printStackTrace();
         }
 

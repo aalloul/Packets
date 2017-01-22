@@ -335,6 +335,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             gpsOptionsIntent.setClassName("com.android.phone", "com.android.phone.Settings");
             startActivity(gpsOptionsIntent);
         } catch (Exception e) {
+            DataBuffer.addException(e.getCause().toString(), e.toString(), "MainActivity", "goToSettings");
+
             Log.w(LOG_TAG, "goToSettings - could not go to Settings");
         }
     }
@@ -468,8 +470,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                             .build(this);
             startActivityForResult(intent, reqCode);
         } catch (GooglePlayServicesRepairableException e) {
+            DataBuffer.addException(e.getCause().toString(), e.toString(), "MainActivity",
+                    "launchPlaceAutoCompleteRequest");
+
             Log.e(LOG_TAG, "GooglePlayServicesRepairableException Exception");
         } catch (GooglePlayServicesNotAvailableException e) {
+            DataBuffer.addException(e.getCause().toString(), e.toString(), "MainActivity",
+                    "launchPlaceAutoCompleteRequest");
+
             Log.e(LOG_TAG, "GooglePlayServicesNotAvailableException Exception");
         }
     }
@@ -528,7 +536,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             } catch (IOException ex) {
                 // Error occurred while creating the File
                 Log.i(LOG_TAG, "dispatchTakePictureIntent - IOException happened");
-                //TODO handle this exception
+                DataBuffer.addException(ex.getCause().toString(), ex.toString(), "MainActivity",
+                        "dispatchTakePictureIntent");
+
                 ex.printStackTrace();
             }
             // Continue only if the File was successfully created
@@ -1005,9 +1015,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 handlepicture.execute(bitmap);
             } catch (FileNotFoundException e) {
                 // TODO Auto-generated catch block
+                DataBuffer.addException(e.getCause().toString(), e.toString(), "MainActivity",
+                        "handleUserCameraResult");
+
                 e.printStackTrace();
             } catch (IOException e) {
                 // TODO Auto-generated catch block
+                DataBuffer.addException(e.getCause().toString(), e.toString(), "MainActivity",
+                        "handleUserCameraResult");
+
                 Log.w(LOG_TAG, "handleUserCameraResult - IOException");
                 e.printStackTrace();
             }
@@ -1041,6 +1057,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             }
         } catch (Exception e) {
             //TODO handle this exception
+            DataBuffer.addException(e.getCause().toString(), e.toString(), "MainActivity",
+                    "handleUserPickPicture");
+
             Log.i(LOG_TAG, "handleUserPickPicture - Exception caught");
             e.printStackTrace();
         }
@@ -1085,6 +1104,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             dialogFragment.show(fm, "Sample Fragment");
         } catch (Exception ex) {
             Log.i(LOG_TAG, "onUserPicturePressed - Exception caught");
+            DataBuffer.addException(ex.getCause().toString(), ex.toString(), "MainActivity",
+                    "onUserPicturePressed");
+
             ex.printStackTrace();
         } finally {
             Log.i(LOG_TAG, "onUserPicturePressed - Exit");
@@ -1236,7 +1258,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         u0.put(getString(R.string.fName),"confirmPublish");
 
         if (!confirmPublish.checkInputs()) {
-            new HandleReportingAsync().execute(u0,registrationFragment.getBlob(
+            new HandleReportingAsync().execute(u0,confirmPublish.getBlob(
                     getString(R.string.ferror),getString(R.string.confirm_no_details)));
 
             Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
@@ -1246,7 +1268,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             return;
         }
 
-        new HandleReportingAsync().execute(u0,registrationFragment.getBlob("thankYou"));
+        new HandleReportingAsync().execute(u0,confirmPublish.getBlob("thankYou"));
 
         HashMap<String, String> tmp = confirmPublish.getAllDetails();
         /** This might need a bit more thinking -- For example, the user is temporarily in another
@@ -1330,6 +1352,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             super.onBackPressed();
         } catch (Exception e) {
             Log.i(LOG_TAG, "STUCK STUCK STUCK STUCK ");
+            DataBuffer.addException(e.getCause().toString(), e.toString(), "MainActivity",
+                    "onBackPressed");
+
             // If exception, try to detach the mainFragment
             if (mainFragment != null ) fmg.detach(mainFragment);
             /* if we try to detach registrationFragment, then the back button will open a white
@@ -1449,6 +1474,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                         Double.toString(addresses.get(0).getLongitude()));
                 return tmp;
             } catch (IOException e) {
+                DataBuffer.addException(e.getCause().toString(), e.toString(), "MainActivity",
+                        "doInBackground");
+
                 e.printStackTrace();
             }
             return null;

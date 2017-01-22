@@ -1,9 +1,6 @@
 package com.example.aalloul.packets;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.media.Image;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -37,9 +34,9 @@ public class ConfirmPublish extends Fragment {
 
     private HashMap<String, String> mpers_details, mtrip_details;
 
-    private Button confirmAction;
+
     private EditText firstname_edit, surname_edit, phone_edit, comment_user ;
-    private TextView confirm_please, privacyButton, caption_confirm_user_picture;
+    private TextView caption_confirm_user_picture;
     private ImageButton user_picture;
     private OnCofirmPublishListener mListener;
     private Spinner travelling_by;
@@ -71,6 +68,7 @@ public class ConfirmPublish extends Fragment {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
@@ -123,7 +121,7 @@ public class ConfirmPublish extends Fragment {
         caption_confirm_user_picture = (TextView) view.findViewById(
                 R.id.caption_confirm_user_picture);
 
-        confirmAction = (Button) view.findViewById(R.id.confirm_publish);
+        Button confirmAction = (Button) view.findViewById(R.id.confirm_publish);
         confirmAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -134,7 +132,7 @@ public class ConfirmPublish extends Fragment {
         firstname_edit = (EditText) view.findViewById(R.id.confirm_first_name);
         surname_edit = (EditText) view.findViewById(R.id.confirm_surname);
         phone_edit = (EditText) view.findViewById(R.id.confirm_phone_number);
-        confirm_please = (TextView) view.findViewById(R.id.confirm_please);
+        TextView confirm_please = (TextView) view.findViewById(R.id.confirm_please);
         comment_user = (EditText) view.findViewById(R.id.comment_user);
 
         if (!mpers_details.get(getString(R.string.saved_user_firstname)).equals("")) {
@@ -170,7 +168,7 @@ public class ConfirmPublish extends Fragment {
         travelling_by.setAdapter(adapterTravellingBy);
 
         // Privacy button
-        privacyButton = (TextView) view.findViewById(R.id.privacyButton2);
+        TextView privacyButton = (TextView) view.findViewById(R.id.privacyButton2);
         privacyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

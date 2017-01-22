@@ -12,25 +12,25 @@ final class DataBaseContracts {
     private DataBaseContracts() {}
 
     // types and separators
-    public static final String COMMA_SEP = ",";
-    public static final String TEXT_TYPE = " TEXT "; // can be used for date
-    public static final String INTEGER_TYPE = " INTEGER "; // can be used for unix timestamp
+    protected static final String COMMA_SEP = ",";
+    protected static final String TEXT_TYPE = " TEXT "; // can be used for date
+    protected static final String INTEGER_TYPE = " INTEGER "; // can be used for unix timestamp
     public static final String REAL_TYPE = " REAL ";
     public static final String BLOB_TYPE = " BLOB "; // can be used to store anything
 
     // Table defining the customer private data
     public static abstract class UserData implements BaseColumns {
-        public static final String TABLE_NAME = "userdata";
-        public static final String ROW_ID = "_id ";
-        public static final String ROW_ID_TYPE = " INTEGER PRIMARY KEY AUTOINCREMENT";
+        protected static final String TABLE_NAME = "userdata";
+        protected static final String ROW_ID = "_id ";
+        protected static final String ROW_ID_TYPE = " INTEGER PRIMARY KEY AUTOINCREMENT";
 
         // user details
-        public static final String COLUMN_NAME_NAME = "name";
-        public static final String COLUMN_NAME_FIRSTNAME = "firstname";
-        public static final String COLUMN_NAME_CITY = "city";
-        public static final String COLUMN_NAME_STREET = "street";
-        public static final String COLUMN_NAME_COUNTRY = "country";
-        public static final String COLUMN_NAME_PHONENUMBER = "phone_number";
+        protected static final String COLUMN_NAME_NAME = "name";
+        protected static final String COLUMN_NAME_FIRSTNAME = "firstname";
+        protected static final String COLUMN_NAME_CITY = "city";
+        protected static final String COLUMN_NAME_STREET = "street";
+        protected static final String COLUMN_NAME_COUNTRY = "country";
+        protected static final String COLUMN_NAME_PHONENUMBER = "phone_number";
 
 
 
@@ -49,29 +49,29 @@ final class DataBaseContracts {
     }
 
     /* Inner class that defines the table contents */
-    public static abstract class Senders implements BaseColumns {
-        public static final String TABLE_NAME = "senders";
-        public static final String ROW_ID = "_id ";
-        public static final String ROW_ID_TYPE = " INTEGER PRIMARY KEY AUTOINCREMENT";
+    protected static abstract class Senders implements BaseColumns {
+        private static final String TABLE_NAME = "senders";
+        private static final String ROW_ID = "_id ";
+        private static final String ROW_ID_TYPE = " INTEGER PRIMARY KEY AUTOINCREMENT";
 
         // user details
-        public static final String COLUMN_NAME_NAME = "name";
-        public static final String COLUMN_NAME_FIRSTNAME = "firstname";
-        public static final String COLUMN_NAME_CITY = "city";
-        public static final String COLUMN_NAME_STREET = "street";
-        public static final String COLUMN_NAME_COUNTRY = "country";
-        public static final String COLUMN_NAME_PHONENUMBER = "phone_number";
+        private static final String COLUMN_NAME_NAME = "name";
+        private static final String COLUMN_NAME_FIRSTNAME = "firstname";
+        private static final String COLUMN_NAME_CITY = "city";
+        private static final String COLUMN_NAME_STREET = "street";
+        private static final String COLUMN_NAME_COUNTRY = "country";
+        private static final String COLUMN_NAME_PHONENUMBER = "phone_number";
 
 
         // package description
-        public static final String COLUMN_NAME_PACKETDESTINATION = "packet_destination";
-        public static final String COLUMN_NAME_PACKETSOURCE = "packet_source";
-        public static final String COLUMN_NAME_PACKETDESCRIPTION = "packet_description";
-        public static final String COLUMN_NAME_SENDBYDATE = "packet_send_by_date";
-        public static final String COLUMN_NAME_NUMBERPACKAGES = "packet_number_packages";
+        private static final String COLUMN_NAME_PACKETDESTINATION = "packet_destination";
+        private static final String COLUMN_NAME_PACKETSOURCE = "packet_source";
+        private static final String COLUMN_NAME_PACKETDESCRIPTION = "packet_description";
+        private static final String COLUMN_NAME_SENDBYDATE = "packet_send_by_date";
+        private static final String COLUMN_NAME_NUMBERPACKAGES = "packet_number_packages";
 
         // Queries
-        public static final String CREATE_TABLE = "CREATE TABLE " +
+        protected static final String CREATE_TABLE = "CREATE TABLE " +
                 TABLE_NAME + " (" +
                 ROW_ID + ROW_ID_TYPE + COMMA_SEP +
                 COLUMN_NAME_NAME + TEXT_TYPE + COMMA_SEP +
@@ -86,13 +86,13 @@ final class DataBaseContracts {
                 COLUMN_NAME_SENDBYDATE + INTEGER_TYPE + COMMA_SEP +
                 COLUMN_NAME_NUMBERPACKAGES + INTEGER_TYPE +
                 " )";
-        public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
+        protected static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
     }
 
-    public static abstract class Postmen implements BaseColumns {
-        public static final String TABLE_NAME = "postmen";
-        public static final String ROW_ID = "_id ";
-        public static final String ROW_ID_TYPE = " INTEGER PRIMARY KEY AUTOINCREMENT";
+     static abstract class Postmen implements BaseColumns {
+        private static final String TABLE_NAME = "postmen";
+        private static final String ROW_ID = "_id ";
+        private static final String ROW_ID_TYPE = " INTEGER PRIMARY KEY AUTOINCREMENT";
 
         // user details
         public static final String COLUMN_NAME_NAME = "name";

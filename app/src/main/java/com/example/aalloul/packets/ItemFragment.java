@@ -11,8 +11,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
-
 import java.util.HashMap;
 
 /**
@@ -31,6 +29,8 @@ public class ItemFragment extends Fragment {
     private final static String LOG_TAG = ItemFragment.class.getSimpleName();
     private Postman postman;
     public static MyItemRecyclerViewAdapter myItemRecyclerViewAdapter;
+    private long fragment_start_time;
+    private int n_results;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -39,6 +39,7 @@ public class ItemFragment extends Fragment {
     public ItemFragment() {
         queryParams.put("packet_take_by_date","1470002400000");
         queryParams.put("packet_deliver_by_date","1501538400000");
+        fragment_start_time = Utilities.CurrentTimeMS();
     }
 
     public static ItemFragment newInstance(int columnCount) {
@@ -91,6 +92,7 @@ public class ItemFragment extends Fragment {
             Log.i(LOG_TAG, "onCreateView -- Postmen stuff");
             postman = new Postman(context, queryParams);
             theCursor = postman.get_Data_For_ListView(queryParams);
+            n_results = theCursor.getCount();
             Log.i(LOG_TAG, "The query returned " + theCursor.getCount() + " elements");
             myItemRecyclerViewAdapter =
                     new MyItemRecyclerViewAdapter(theCursor, mListener);
@@ -125,6 +127,26 @@ public class ItemFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.i(LOG_TAG, "onPause - start");
+        if (postman != null){
+            Log.i(LOG_TAG, "onPause - database not null, closing it");
+            postman.closeDatabase();
+        }
+        Log.i(LOG_TAG, "onPause - exit");
+
+    }
+
+    public long getFragment_start_time() {
+        return fragment_start_time;
+    }
+
+    public int getN_results(){
+        return n_results;
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -140,18 +162,8 @@ public class ItemFragment extends Fragment {
         void onListFragmentInteraction(String nameAndFirstName, String source_city,
                                        String source_country,  String destination_city,
                                        String destination_country, String n_packets,
-                                       String phone_number, String comments );
+                                       String phone_number, String comments, int thepos );
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.i(LOG_TAG, "onPause - start");
-        if (postman != null){
-            Log.i(LOG_TAG, "onPause - database not null, closing it");
-            postman.closeDatabase();
-        }
-        Log.i(LOG_TAG, "onPause - exit");
 
-    }
 }

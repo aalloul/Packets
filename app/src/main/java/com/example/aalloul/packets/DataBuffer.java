@@ -48,6 +48,18 @@ class DataBuffer {
         Log.i(LOG_TAG, "updateLoggerData - Exit");
     }
 
+    // Generic method to catch exceptions
+    static void addException(String stack, String toString, String className, String method ){
+        Gson gson = new Gson();
+        HashMap<String, String> st = new HashMap<>();
+        st.put("time", Long.toString(Utilities.CurrentTimeMS()));
+        st.put("class_name",className);
+        st.put("method_name",method);
+        st.put("stack_trace",stack);
+        st.put("exception_to_string",toString);
+        addEvent(gson.toJson(st));
+    }
+
     static void clear(){
         loggerData.clear();
     }

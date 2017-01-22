@@ -22,7 +22,7 @@
     <string name="enter_first_name">First name</string>
     <string name="enter_surname">Family name</string>
     <string name="enter_phone_number">Enter phone number</string>
-    <string name="user_current_city">Enter your city name</string>
+    <string name="user_current_city">Enter your location</string>
     <string name="register_me">Register!</string>
     <string name="register_not_now">Later</string>
     <string name="registration_input_incomplete">Please fill in all the blanks</string>
@@ -31,7 +31,7 @@
     <string name="updating_location">Retrieving your location</string>
 
     <!--This okay is displayed when input is missing when searching/posting offers -->
-    <string name="okay">Ok</string>
+    <string name="okay">OK</string>
     <string name="explanation_main_activity">Hey</string>
     <string name="explanation_main_activity2">there</string>
     <string name="explanation_main_activity3">, welcome!</string>
@@ -61,7 +61,7 @@
 
     <string name="comment_indication">Here you can provide more details about your offer like where
         you where you would like tomeet the sender/receiver? When do you want to deliver the package?
-    ... any other relevant information</string>
+    (&#8230;) any other relevant information</string>
 
     <string name="add_profile_picture">Select a profile picture</string>
 
@@ -151,19 +151,56 @@ Our website search and decision notice search is powered by System Associates. S
 
     <!--Data reporting fields-->
     <string name="sID">sID</string>
-    <string name="acStart">acStart</string>
-    <string name="acName">acName</string>
+    <string name="acStart">activity_start</string>
+    <string name="acName">activity_name</string>
+    <string name="sEnd">sessEnd</string>
+    <string name="sDuration">sessDuration</string>
+    <string name="screen_name">left_on_fragment</string>
+
+    <string name="acEnd">activity_end</string>
     <string name="fName">fragName</string>
     <string name="fActions">fragActions</string>
     <string name="action">action</string>
+    <string name="fStart">fragStart</string>
     <string name="fDuration">fragDuration</string>
+    <string name="fEnd">fragEnd</string>
     <string name="nextF">nextFrag</string>
-    <string name="sEnd">sessEnd</string>
-    <string name="sDuration">sessDuration</string>
+
     <string name="ferror">actionError</string>
+
+    <!-- @Reporting: Registration Fragment strings -->
     <string name="reg_nopers">reg_nopres_detail</string>
     <string name="reg_noloc">reg_no_location</string>
     <string name="reg_locnotfound">reg_location_notfound</string>
+    <string name="reg_later">reg_later</string>
+    <string name="user_location_edited">user_edited_location</string>
+    <string name="nprompts">n_prompts_registration</string>
+
+    <!-- @Reporting: Main Fragment strings -->
+    <string name="no_network_error">no_network_error</string>
+    <string name="no_pickup_location">no_pickup_location_error</string>
+    <string name="no_pickup_date">no_pickup_date_error</string>
+    <string name="pickup_location_edited">pickup_location_edited</string>
+
+    <string name="no_dropoff_location">no_dropoff_location_error</string>
+    <string name="no_dropoff_date">no_dropoff_date_error</string>
+
+    <string name="n_packages">n_packages_not_set</string>
+    <string name="s_packages">size_packages_not_set</string>
+
+    <!-- @Reporting: Confirm Publish strings -->
+    <string name="changed_prof_pic">changed_profile_picture</string>
+    <string name="confirm_no_details">not_enough_details_provided</string>
+
+    <!-- @Reporting: item Fragment strings-->
+    <string name="n_results">query_results</string>
+    <string name="pos">position_selected_element</string>
+
+    <!-- @Reporting: stack traces -->
+    <string name="class_name">class_name</string>
+    <string name="method_name">method_name</string>
+    <string name="stack">stack_trace</string>
+
 
     <string name="title_activity_splash_screen">SplashScreen</string>
     <string name="dummy_button">Dummy Button</string>

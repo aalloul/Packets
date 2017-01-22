@@ -149,7 +149,8 @@ class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewA
                     mListener.onListFragmentInteraction(nameAndFirstName.get(thepos),
                             source_city.get(thepos), source_country.get(thepos),
                             destination_city.get(thepos), destination_country.get(thepos),
-                            n_packets.get(thepos), phone_numbers.get(thepos),comments.get(thepos)
+                            n_packets.get(thepos), phone_numbers.get(thepos),comments.get(thepos),
+                            thepos
                             );
                 }
             }

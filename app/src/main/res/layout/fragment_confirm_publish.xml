@@ -32,25 +32,45 @@
         android:layout_below="@+id/confirm_please"
         android:layout_height="160dp">
 
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/user_icon_bevel"
-            android:id="@+id/confirm_user_picture"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="10dp"
-            android:layout_centerInParent="false"
-            android:layout_centerHorizontal="false"
-            android:layout_centerVertical="false"
-            android:layout_marginTop="35dp"
-            android:scaleX="1"
-            android:scaleY="1"
-            android:contentDescription="@string/add_profile_picture"
-            android:elevation="3dp"
-            android:background="@drawable/backgroundstate"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="10dp"
-            android:scaleType="fitXY" />
+        <RelativeLayout
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:id="@+id/conf_lay"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp">
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@mipmap/user_icon_bevel"
+                android:id="@+id/confirm_user_picture"
+                android:layout_centerHorizontal="false"
+                android:layout_centerVertical="false"
+                android:contentDescription="@string/add_profile_picture"
+                android:elevation="3dp"
+                android:background="@drawable/backgroundstate"
+                android:scaleType="fitCenter"
+                android:layout_centerInParent="true"
+                android:scaleX="2"
+                android:scaleY="2"
+                android:layout_marginBottom="10dp" />
+
+            <TextView
+                android:text="@string/add_profile_picture"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/caption_confirm_user_picture"
+                android:gravity="center"
+                android:textSize="10sp"
+                android:layout_below="@+id/confirm_user_picture"
+                android:layout_alignParentLeft="false"
+                android:layout_alignParentStart="false"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="10dp"
+                android:typeface="monospace"
+                android:layout_marginStart="5dp"
+                android:layout_centerHorizontal="true" />
+        </RelativeLayout>
 
         <EditText
             android:layout_width="match_parent"
@@ -67,12 +87,12 @@
             android:textColorHint="@color/regColor"
             android:textColor="@color/regColor"
             android:typeface="monospace"
-            android:layout_toRightOf="@+id/confirm_user_picture"
+            android:layout_toRightOf="@+id/conf_lay"
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:paddingRight="10dp"
-            android:layout_toEndOf="@+id/confirm_user_picture" />
+            android:layout_toEndOf="@+id/conf_lay" />
 
         <EditText
             android:layout_width="match_parent"
@@ -81,8 +101,8 @@
             android:ems="10"
             android:id="@+id/confirm_surname"
             android:layout_alignParentBottom="false"
-            android:layout_toRightOf="@+id/confirm_user_picture"
-            android:layout_toEndOf="@+id/confirm_user_picture"
+            android:layout_toRightOf="@+id/conf_lay"
+            android:layout_toEndOf="@+id/conf_lay"
             android:layout_marginLeft="10dp"
             android:hint="@string/enter_surname"
             android:layout_below="@+id/confirm_first_name"
@@ -101,8 +121,8 @@
             android:id="@+id/confirm_phone_number"
             android:hint="@string/enter_phone_number"
             android:layout_below="@+id/confirm_surname"
-            android:layout_toRightOf="@+id/confirm_user_picture"
-            android:layout_toEndOf="@+id/confirm_user_picture"
+            android:layout_toRightOf="@+id/conf_lay"
+            android:layout_toEndOf="@+id/conf_lay"
             android:layout_marginLeft="10dp"
             android:inputType="phone"
             android:layout_marginBottom="-10dp"
@@ -118,7 +138,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/travelling_by"
             android:layout_below="@+id/confirm_phone_number"
-            android:layout_toRightOf="@+id/confirm_user_picture"
+            android:layout_toRightOf="@+id/conf_lay"
             android:dropDownWidth="match_parent"
             android:gravity="center_vertical|center_horizontal"
             android:layout_centerVertical="false"
@@ -126,22 +146,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginStart="10dp"
-            android:layout_toEndOf="@+id/confirm_user_picture" />
-
-        <TextView
-            android:text="@string/add_profile_picture"
-            android:layout_width="70dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/caption_confirm_user_picture"
-            android:gravity="center"
-            android:textSize="10sp"
-            android:layout_below="@+id/confirm_user_picture"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="15dp"
-            android:typeface="monospace"
-            android:layout_marginStart="5dp" />
+            android:layout_toEndOf="@+id/conf_lay" />
 
     </RelativeLayout>
 

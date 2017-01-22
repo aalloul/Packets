@@ -89,7 +89,7 @@ final class DataBaseContracts {
         public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
     }
 
-    public static abstract class Postmen implements BaseColumns {
+     static abstract class Postmen implements BaseColumns {
         public static final String TABLE_NAME = "postmen";
         public static final String ROW_ID = "_id ";
         public static final String ROW_ID_TYPE = " INTEGER PRIMARY KEY AUTOINCREMENT";

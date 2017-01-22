@@ -2,8 +2,6 @@ package com.example.aalloul.packets;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -13,12 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.google.android.gms.maps.model.LatLng;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 
 
@@ -27,16 +20,17 @@ public class RegistrationFragment extends Fragment {
     private ImageButton picture_ui;
     private String picture_bitmap;
     private EditText firstname_ui, surname_ui, phone_number_ui;
-    private TextView location_ui, caption_user_picture, privacy_button;
+    private TextView location_ui, caption_user_picture;
     private String firstname, surname, phone_number;
-    private Button registerMe, registerLater;
     private View view;
     private HashMap<String, String> user_detailed_location = new HashMap<>();
-
     private RegistrationFragmentListener mListener;
+    private Long fragment_start_time;
+    private boolean edited_location = false;
 
     public RegistrationFragment() {
         // Required empty public constructor
+        fragment_start_time = Utilities.CurrentTimeMS();
     }
 
     public static RegistrationFragment newInstance() {
@@ -44,6 +38,7 @@ public class RegistrationFragment extends Fragment {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(LOG_TAG, "onCreate - called");
@@ -134,6 +129,7 @@ public class RegistrationFragment extends Fragment {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.i(LOG_TAG, "onCreateView - Enter");
@@ -149,7 +145,7 @@ public class RegistrationFragment extends Fragment {
         } else {
             Log.i(LOG_TAG,"onCreateView - savedInstanceState is NOT null");
             restoreUserPicture(savedInstanceState.getString("user_picture"));
-            restoreUserLocation((HashMap) savedInstanceState.getSerializable("user_location"));
+            restoreUserLocation((HashMap<String, String>) savedInstanceState.getSerializable("user_location"));
         }
 
 
@@ -162,7 +158,7 @@ public class RegistrationFragment extends Fragment {
         if (phone_number != null) phone_number_ui.setText(phone_number);
 
         // register buttons
-        registerMe = (Button) view.findViewById(R.id.register_me);
+        Button registerMe = (Button) view.findViewById(R.id.register_me);
         registerMe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -170,7 +166,7 @@ public class RegistrationFragment extends Fragment {
             }
         });
         
-        registerLater = (Button) view.findViewById(R.id.register_not_now);
+        Button registerLater = (Button) view.findViewById(R.id.register_not_now);
         registerLater.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -179,7 +175,7 @@ public class RegistrationFragment extends Fragment {
         });
 
 
-        privacy_button = (TextView) view.findViewById(R.id.privacyButton);
+        TextView privacy_button = (TextView) view.findViewById(R.id.privacyButton);
         privacy_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -197,6 +193,8 @@ public class RegistrationFragment extends Fragment {
         picture_bitmap = Utilities.BitMapToString(imageBitmap);
 //        Log.i(LOG_TAG, "setUserPicture picture_ui_bitmap = " + picture_bitmap);
         picture_ui.setImageBitmap(imageBitmap);
+        picture_ui.setScaleX(1);
+        picture_ui.setScaleY(1);
     }
 
 
@@ -216,6 +214,9 @@ public class RegistrationFragment extends Fragment {
         this.phone_number = phone_number;
     }
 
+    public void setEdited_location() {
+        edited_location = true;
+    }
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -309,6 +310,7 @@ public class RegistrationFragment extends Fragment {
     }
 
     public String get_user_picture() {
+        if (picture_bitmap == null) return "";
         return picture_bitmap;
     }
 
@@ -325,8 +327,18 @@ public class RegistrationFragment extends Fragment {
         return 2;
     }
 
-    public HashMap<String, String> getBlob() {
+    public HashMap<String, String> getBlob(String nextFrag) {
         HashMap<String, String> t = new HashMap<>();
+        long end_time = Utilities.CurrentTimeMS();
+        t.put(getString(R.string.fStart), Long.toString(fragment_start_time));
+        t.put(getString(R.string.fEnd), Long.toString(end_time));
+        t.put(getString(R.string.fDuration), Long.toString(end_time - fragment_start_time));
+
+        if (!nextFrag.equals("")) {
+            //Used for data reporting when switching to another fragment
+            t.put(getString(R.string.nextF), nextFrag);
+        }
+
         t.put(getString(R.string.saved_user_firstname),
                 get_user_firstname());
         t.put(getString(R.string.saved_user_surname),
@@ -337,7 +349,23 @@ public class RegistrationFragment extends Fragment {
                 get_user_phone_number());
         t.put(getString(R.string.saved_user_phonenumber),
                 get_user_phone_number());
+
+        t.put(getString(R.string.user_location_edited), Boolean.toString(edited_location));
+
         t.putAll(get_user_detailed_location());
+        return t;
+    }
+
+
+
+    public HashMap<String, String> getBlob(String err_field, String err_msg) {
+        HashMap<String, String> t = new HashMap<>();
+        long end_time = Utilities.CurrentTimeMS();
+        t.put(getString(R.string.fStart), Long.toString(fragment_start_time));
+        t.put(getString(R.string.fEnd), Long.toString(end_time));
+        t.put(getString(R.string.fDuration), Long.toString(end_time - fragment_start_time));
+        t.put(err_field,err_msg);
+
         return t;
     }
 

@@ -14,9 +14,12 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.google.gson.Gson;
+
 import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -330,6 +333,7 @@ final class Utilities {
         try {
             resu = output.format(input.parse(date));
         } catch (ParseException e) {
+            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "Utilities", "DateToDate");
             e.printStackTrace();
         }
         return resu;
@@ -377,6 +381,7 @@ final class Utilities {
                     encodeByte.length);
             return bitmap;
         } catch (Exception e) {
+            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "Utilities", "StringToBitMap");
             e.getMessage();
             return null;
         }

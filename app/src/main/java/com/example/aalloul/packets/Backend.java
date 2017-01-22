@@ -1,12 +1,8 @@
 package com.example.aalloul.packets;
 
 import android.util.Log;
-
 import org.json.JSONObject;
-import org.json.JSONStringer;
-
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by aalloul on 31/07/16.

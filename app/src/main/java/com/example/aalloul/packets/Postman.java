@@ -290,12 +290,12 @@ class Postman extends Person {
 
         } catch (JSONException e) {
             Log.e(LOG_TAG, "updateTable - An error with JSON happened, stacktrace follows");
-            DataBuffer.addException(e.getCause().toString(), e.toString(), "Postman", "updateTable");
+            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "Postman", "updateTable");
 
             e.printStackTrace();
         } catch (Exception e){
             Log.e(LOG_TAG, "updateTable - An unknown error happened, stacktrace follows");
-            DataBuffer.addException(e.getCause().toString(), e.toString(), "Postman", "updateTable");
+            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "Postman", "updateTable");
             e.printStackTrace();
         }
 

@@ -49,14 +49,14 @@ class DataBuffer {
     }
 
     // Generic method to catch exceptions
-    static void addException(String cause, String toString, String className, String method ){
+    static void addException(String stack, String toString, String className, String method ){
         Gson gson = new Gson();
         HashMap<String, String> st = new HashMap<>();
         st.put("time", Long.toString(Utilities.CurrentTimeMS()));
         st.put("class_name",className);
         st.put("method_name",method);
-        st.put("exception_cause",cause);
-        st.put("stack_trace",toString);
+        st.put("stack_trace",stack);
+        st.put("exception_to_string",toString);
         addEvent(gson.toJson(st));
     }
 

@@ -23,6 +23,7 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Arrays;
 import java.util.HashMap;
 
 
@@ -347,13 +348,13 @@ public class BackendInteraction extends IntentService {
 
         } catch (MalformedURLException e) {
             Log.e(LOG_TAG,"openConnection - MalformedURLException");
-            DataBuffer.addException(e.getCause().toString(), e.toString(), "BackendInteraction",
+            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "BackendInteraction",
                     "openConnection");
 
             e.printStackTrace();
         } catch (IOException e) {
             Log.e(LOG_TAG,"openConnection - IOException");
-            DataBuffer.addException(e.getCause().toString(), e.toString(), "BackendInteraction",
+            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "BackendInteraction",
                     "openConnection");
 
             e.printStackTrace();
@@ -417,13 +418,13 @@ public class BackendInteraction extends IntentService {
             }
         } catch (ProtocolException e) {
             Log.e(LOG_TAG, "doTheNetworkOperation - Protocol exception found");
-            DataBuffer.addException(e.getCause().toString(), e.toString(), "BackendInteraction",
+            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "BackendInteraction",
                     "doTheNetworkOperation");
 
             e.printStackTrace();
         } catch (IOException e) {
             Log.e(LOG_TAG, "doTheNetworkOperation - IO exception found");
-            DataBuffer.addException(e.getCause().toString(), e.toString(), "BackendInteraction",
+            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "BackendInteraction",
                     "doTheNetworkOperation");
 
             e.printStackTrace();

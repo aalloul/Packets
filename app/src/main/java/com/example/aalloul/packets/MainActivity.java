@@ -50,6 +50,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -335,7 +336,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             gpsOptionsIntent.setClassName("com.android.phone", "com.android.phone.Settings");
             startActivity(gpsOptionsIntent);
         } catch (Exception e) {
-            DataBuffer.addException(e.getCause().toString(), e.toString(), "MainActivity", "goToSettings");
+            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "MainActivity", "goToSettings");
 
             Log.w(LOG_TAG, "goToSettings - could not go to Settings");
         }
@@ -470,12 +471,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                             .build(this);
             startActivityForResult(intent, reqCode);
         } catch (GooglePlayServicesRepairableException e) {
-            DataBuffer.addException(e.getCause().toString(), e.toString(), "MainActivity",
+            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "MainActivity",
                     "launchPlaceAutoCompleteRequest");
 
             Log.e(LOG_TAG, "GooglePlayServicesRepairableException Exception");
         } catch (GooglePlayServicesNotAvailableException e) {
-            DataBuffer.addException(e.getCause().toString(), e.toString(), "MainActivity",
+            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "MainActivity",
                     "launchPlaceAutoCompleteRequest");
 
             Log.e(LOG_TAG, "GooglePlayServicesNotAvailableException Exception");
@@ -536,7 +537,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             } catch (IOException ex) {
                 // Error occurred while creating the File
                 Log.i(LOG_TAG, "dispatchTakePictureIntent - IOException happened");
-                DataBuffer.addException(ex.getCause().toString(), ex.toString(), "MainActivity",
+                DataBuffer.addException(Arrays.toString(ex.getStackTrace()), ex.toString(), "MainActivity",
                         "dispatchTakePictureIntent");
 
                 ex.printStackTrace();
@@ -1015,13 +1016,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 handlepicture.execute(bitmap);
             } catch (FileNotFoundException e) {
                 // TODO Auto-generated catch block
-                DataBuffer.addException(e.getCause().toString(), e.toString(), "MainActivity",
+                DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "MainActivity",
                         "handleUserCameraResult");
 
                 e.printStackTrace();
             } catch (IOException e) {
                 // TODO Auto-generated catch block
-                DataBuffer.addException(e.getCause().toString(), e.toString(), "MainActivity",
+                DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "MainActivity",
                         "handleUserCameraResult");
 
                 Log.w(LOG_TAG, "handleUserCameraResult - IOException");
@@ -1057,7 +1058,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             }
         } catch (Exception e) {
             //TODO handle this exception
-            DataBuffer.addException(e.getCause().toString(), e.toString(), "MainActivity",
+            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "MainActivity",
                     "handleUserPickPicture");
 
             Log.i(LOG_TAG, "handleUserPickPicture - Exception caught");
@@ -1352,7 +1353,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             super.onBackPressed();
         } catch (Exception e) {
             Log.i(LOG_TAG, "STUCK STUCK STUCK STUCK ");
-            DataBuffer.addException(e.getCause().toString(), e.toString(), "MainActivity",
+//            e.printStackTrace();
+            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "MainActivity",
                     "onBackPressed");
 
             // If exception, try to detach the mainFragment
@@ -1474,7 +1476,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                         Double.toString(addresses.get(0).getLongitude()));
                 return tmp;
             } catch (IOException e) {
-                DataBuffer.addException(e.getCause().toString(), e.toString(), "MainActivity",
+                DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "MainActivity",
                         "doInBackground");
 
                 e.printStackTrace();

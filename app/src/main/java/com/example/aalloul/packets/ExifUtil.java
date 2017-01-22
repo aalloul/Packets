@@ -9,6 +9,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import android.graphics.Bitmap;
@@ -64,12 +65,12 @@ public class ExifUtil {
                 bitmap.recycle();
                 return oriented;
             } catch (OutOfMemoryError e) {
-                DataBuffer.addException(e.getCause().toString(), e.toString(), "ExifUtil", "rotateBitmap");
+                DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "ExifUtil", "rotateBitmap");
                 e.printStackTrace();
                 return bitmap;
             }
         } catch (IOException e) {
-            DataBuffer.addException(e.getCause().toString(), e.toString(), "ExifUtil", "rotateBitmap");
+            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "ExifUtil", "rotateBitmap");
 
             e.printStackTrace();
         }
@@ -96,36 +97,36 @@ public class ExifUtil {
                 orientation = (Integer) getAttributeInt.invoke(exifInstance, new Object[] { tagOrientation, 1});
             }
         } catch (ClassNotFoundException e) {
-            DataBuffer.addException(e.getCause().toString(), e.toString(), "ExifUtil", "getExifOrientation");
+            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "ExifUtil", "getExifOrientation");
             
             e.printStackTrace();
         } catch (SecurityException e) {
             Gson gson = new Gson();
-            DataBuffer.addException(e.getCause().toString(), e.toString(), "ExifUtil", "getExifOrientation");
+            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "ExifUtil", "getExifOrientation");
             
             e.printStackTrace();
         } catch (NoSuchMethodException e) {
-            DataBuffer.addException(e.getCause().toString(), e.toString(), "ExifUtil", "getExifOrientation");
+            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "ExifUtil", "getExifOrientation");
             
             e.printStackTrace();
         } catch (IllegalArgumentException e) {
-            DataBuffer.addException(e.getCause().toString(), e.toString(), "ExifUtil", "getExifOrientation");
+            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "ExifUtil", "getExifOrientation");
             
             e.printStackTrace();
         } catch (InstantiationException e) {
-            DataBuffer.addException(e.getCause().toString(), e.toString(), "ExifUtil", "getExifOrientation");
+            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "ExifUtil", "getExifOrientation");
             
             e.printStackTrace();
         } catch (IllegalAccessException e) {
-            DataBuffer.addException(e.getCause().toString(), e.toString(), "ExifUtil", "getExifOrientation");
+            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "ExifUtil", "getExifOrientation");
             
             e.printStackTrace();
         } catch (InvocationTargetException e) {
-            DataBuffer.addException(e.getCause().toString(), e.toString(), "ExifUtil", "getExifOrientation");
+            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "ExifUtil", "getExifOrientation");
             
             e.printStackTrace();
         } catch (NoSuchFieldException e) {
-            DataBuffer.addException(e.getCause().toString(), e.toString(), "ExifUtil", "getExifOrientation");
+            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "ExifUtil", "getExifOrientation");
             
             e.printStackTrace();
         }

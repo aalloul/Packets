@@ -163,6 +163,8 @@ Our website search and decision notice search is powered by System Associates. S
     <string name="sEnd">sessEnd</string>
     <string name="sDuration">sessDuration</string>
     <string name="ferror">actionError</string>
+    <string name="changed_prof_pic">changed_profile_picture</string>
+    <string name="confirm_no_details">not_enough_details_provided</string>
 
     <!-- @Reporting: Registration Fragment strings -->
     <string name="reg_nopers">reg_nopres_detail</string>

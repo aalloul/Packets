@@ -1,6 +1,7 @@
 package com.example.aalloul.packets;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -31,7 +32,6 @@ public class ConfirmPublish extends Fragment {
     private static final String ARG_PERSONAL_DETAILS = "pers_details";
     private static final String ARG_TRIP_DETAILS= "trip_details";
     private final static String LOG_TAG = ConfirmPublish.class.getSimpleName();
-
     private HashMap<String, String> mpers_details, mtrip_details;
 
 
@@ -43,10 +43,13 @@ public class ConfirmPublish extends Fragment {
     private FragmentActivity myContext;
     private String user_picture_string = "";
     private String user_picture_path;
+    private boolean changed_profile_picture=false;
     private View view;
+    private Long fragment_start_time;
 
     public ConfirmPublish() {
         // Required empty public constructor
+        fragment_start_time = Utilities.CurrentTimeMS();
     }
 
     /**
@@ -87,23 +90,36 @@ public class ConfirmPublish extends Fragment {
     private void restoreUserPicture(String val, String val2) {
         user_picture_string = val;
         user_picture_path = val2;
+        user_picture = (ImageButton) view.findViewById(R.id.confirm_user_picture);
         if (!user_picture_string.equals("")) {
-            user_picture = (ImageButton) view.findViewById(R.id.confirm_user_picture);
             caption_confirm_user_picture.setText(null);
             user_picture.setImageBitmap(Utilities.StringToBitMap(
                     mpers_details.get(getString(R.string.saved_user_picture))));
 
         }
+        user_picture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onUserPicturePressed_Confirm();
+            }
+        });
     }
 
     private void getUserPicture(){
+        user_picture = (ImageButton) view.findViewById(R.id.confirm_user_picture);
+
         if (!user_picture_string.equals("")) {
-            user_picture = (ImageButton) view.findViewById(R.id.confirm_user_picture);
             caption_confirm_user_picture.setText(null);
             user_picture.setImageBitmap(Utilities.StringToBitMap(
                     mpers_details.get(getString(R.string.saved_user_picture))));
 
         }
+        user_picture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onUserPicturePressed_Confirm();
+            }
+        });
     }
 
     @Override
@@ -210,6 +226,17 @@ public class ConfirmPublish extends Fragment {
         return out;
     }
 
+    public void setUserPicture(Bitmap imageBitmap){
+        Log.i(LOG_TAG, "setUserPicture - enter");
+
+        // This method is only called when the user chooses to edit his profile picture
+        // before publishing a new offer
+        changed_profile_picture=true;
+        user_picture_string = Utilities.BitMapToString(imageBitmap);
+//        Log.i(LOG_TAG, "setUserPicture picture_ui_bitmap = " + picture_bitmap);
+        user_picture.setImageBitmap(imageBitmap);
+    }
+
     public boolean checkInputs() {
 
         Log.i(LOG_TAG, "checkInputs - Enter");
@@ -230,6 +257,36 @@ public class ConfirmPublish extends Fragment {
         return true;
     }
 
+    public HashMap<String, String> getBlob(String nextFrag){
+        HashMap<String, String> t = new HashMap<>();
+        long end_time = Utilities.CurrentTimeMS();
+
+        t.put(getString(R.string.fStart), Long.toString(fragment_start_time));
+        t.put(getString(R.string.fEnd), Long.toString(end_time));
+        t.put(getString(R.string.fDuration), Long.toString(end_time - fragment_start_time));
+
+        if (!nextFrag.equals("")) {
+            //Used for data reporting when switching to another fragment
+            t.put(getString(R.string.nextF), nextFrag);
+        }
+
+        t.put(getString(R.string.changed_prof_pic), Boolean.toString(changed_profile_picture));
+
+        return t;
+    }
+
+    public HashMap<String, String> getBlob(String err_field, String err_msg) {
+        HashMap<String, String> t = new HashMap<>();
+        long end_time = Utilities.CurrentTimeMS();
+        t.put(getString(R.string.fStart), Long.toString(fragment_start_time));
+        t.put(getString(R.string.fEnd), Long.toString(end_time));
+        t.put(getString(R.string.fDuration), Long.toString(end_time - fragment_start_time));
+        t.put(getString(R.string.changed_prof_pic), Boolean.toString(changed_profile_picture));
+        t.put(err_field,err_msg);
+
+        return t;
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -242,6 +299,7 @@ public class ConfirmPublish extends Fragment {
      */
     public interface OnCofirmPublishListener {
         void onConfirmPublish();
+        void onUserPicturePressed_Confirm();
         void OnPrivacyButtonPressed2();
     }
 }

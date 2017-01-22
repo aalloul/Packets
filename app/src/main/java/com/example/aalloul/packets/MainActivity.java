@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         DatePickerFragment.TheListener, RegistrationFragment.RegistrationFragmentListener,
         ConfirmPublish.OnCofirmPublishListener, CameraOrGalleryDialog.CameraOrGalleryInterface{
 
-    // Map permission -- make sure 1 is always for position permission
     protected final int MAP_PERMISSION = 1;
     protected final int DROP_OFF_LOCATION_REQUEST = 2;
     protected final int PICK_UP_LOCATION_REQUEST = 3;
@@ -70,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     static final int REQUEST_WRITE_FILES_FROM_CAMERA = 6;
     static final int REQUEST_WRITE_FILES_FROM_GALLERY = 7;
     static final int REQUEST_PICK_PICTURE= 8;
+    static boolean PICTURE_FOR_CONFIRM=false;
 
     private HashMap<String, String> u0 = new HashMap<>();
 
@@ -1037,6 +1037,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     @Override
+    public void onUserPicturePressed_Confirm() {
+        PICTURE_FOR_CONFIRM=true;
+        onUserPicturePressed();
+
+    }
+
+    @Override
     public void onUserLocationPressed() {
         Log.i(LOG_TAG, "onDropOffLocationPressed - Enter");
         registrationFragment.setEdited_location();
@@ -1167,16 +1174,25 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void onConfirmPublish() {
         Log.i(LOG_TAG, "onConfirmPublish - Publishing new offer");
 
+        u0.put(getString(R.string.fName),"confirmPublish");
+
         if (!confirmPublish.checkInputs()) {
+            new HandleReportingAsync().execute(u0,registrationFragment.getBlob(
+                    getString(R.string.ferror),getString(R.string.confirm_no_details)));
+
             Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
                     getResources().getString(R.string.registration_input_incomplete),
                     getResources().getString(R.string.okay)
             );
             return;
         }
+
+        new HandleReportingAsync().execute(u0,registrationFragment.getBlob("thankYou"));
+
         HashMap<String, String> tmp = confirmPublish.getAllDetails();
         /** This might need a bit more thinking -- For example, the user is temporarily in another
          * city/country but doesn't us to consider this place as his new home.
@@ -1332,6 +1348,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
 
         protected void onPostExecute(Bitmap result) {
+            if (PICTURE_FOR_CONFIRM && confirmPublish!=null){
+                confirmPublish.setUserPicture(result);
+                PICTURE_FOR_CONFIRM=false;
+            }
             if (registrationFragment != null) {
                 registrationFragment.setUserPicture(result);
                 registrationFragment.unsetCaption_user_picture();

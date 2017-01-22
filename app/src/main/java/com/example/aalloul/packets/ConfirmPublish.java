@@ -95,6 +95,8 @@ public class ConfirmPublish extends Fragment {
             caption_confirm_user_picture.setText(null);
             user_picture.setImageBitmap(Utilities.StringToBitMap(
                     mpers_details.get(getString(R.string.saved_user_picture))));
+            user_picture.setScaleY(1);
+            user_picture.setScaleX(1);
 
         }
         user_picture.setOnClickListener(new View.OnClickListener() {
@@ -112,6 +114,8 @@ public class ConfirmPublish extends Fragment {
             caption_confirm_user_picture.setText(null);
             user_picture.setImageBitmap(Utilities.StringToBitMap(
                     mpers_details.get(getString(R.string.saved_user_picture))));
+            user_picture.setScaleY(1);
+            user_picture.setScaleX(1);
 
         }
         user_picture.setOnClickListener(new View.OnClickListener() {
@@ -235,6 +239,8 @@ public class ConfirmPublish extends Fragment {
         user_picture_string = Utilities.BitMapToString(imageBitmap);
 //        Log.i(LOG_TAG, "setUserPicture picture_ui_bitmap = " + picture_bitmap);
         user_picture.setImageBitmap(imageBitmap);
+        user_picture.setScaleX(1);
+        user_picture.setScaleY(1);
     }
 
     public boolean checkInputs() {

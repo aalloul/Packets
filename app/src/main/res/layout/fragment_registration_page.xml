@@ -67,27 +67,47 @@
         android:layout_marginTop="20dp"
         android:layout_height="160dp">
 
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/user_icon_bevel"
-            android:id="@+id/user_picture"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="10dp"
-            android:layout_centerInParent="false"
-            android:layout_centerHorizontal="false"
-            android:layout_centerVertical="false"
-            android:layout_marginTop="35dp"
-            android:scaleX="1"
-            android:scaleY="1"
-            android:contentDescription="@string/add_profile_picture"
-            android:elevation="3dp"
-            android:background="@drawable/backgroundstate"
-            android:layout_marginEnd="10dp"
-            android:layout_marginStart="20dp"
-            android:cropToPadding="false"
-            android:adjustViewBounds="false"
-            android:scaleType="fitXY" />
+        <RelativeLayout
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:id="@+id/reg_rel_lay"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp">
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@mipmap/user_icon_bevel"
+                android:id="@+id/user_picture"
+                android:layout_centerVertical="false"
+                android:contentDescription="@string/add_profile_picture"
+                android:elevation="3dp"
+                android:background="@drawable/backgroundstate"
+                android:cropToPadding="false"
+                android:adjustViewBounds="false"
+                android:scaleType="fitCenter"
+                android:layout_centerHorizontal="false"
+                android:layout_centerInParent="true"
+                android:scaleX="2"
+                android:scaleY="2"
+                android:layout_marginBottom="10dp" />
+
+            <TextView
+                android:text="@string/add_profile_picture"
+                android:layout_height="wrap_content"
+                android:id="@+id/caption_user_picture"
+                android:gravity="center"
+                android:textSize="10sp"
+                android:layout_below="@+id/user_picture"
+                android:layout_alignParentLeft="false"
+                android:layout_alignParentStart="false"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="10dp"
+                android:typeface="monospace"
+                android:layout_marginStart="5dp"
+                android:layout_width="80dp"
+                android:layout_centerHorizontal="true" />
+        </RelativeLayout>
 
         <EditText
             android:layout_width="match_parent"
@@ -97,17 +117,19 @@
             android:id="@+id/user_first_name"
             android:hint="@string/enter_first_name"
             android:layout_alignParentTop="true"
-            android:layout_alignLeft="@+id/user_surname"
             android:layout_alignStart="@+id/user_surname"
             android:textSize="18sp"
             android:layout_marginBottom="-10dp"
             android:layout_marginTop="0dp"
-            android:paddingLeft="10dp"
+            android:paddingLeft="5dp"
             android:textColorHint="@color/regColor"
             android:textColor="@color/regColor"
             android:typeface="monospace"
             android:paddingRight="10dp"
-            android:textStyle="normal|bold" />
+            android:textStyle="normal|bold"
+            android:paddingStart="5dp"
+            android:paddingEnd="10dp"
+            android:layout_alignLeft="@+id/user_surname" />
 
         <EditText
             android:layout_width="match_parent"
@@ -116,19 +138,21 @@
             android:ems="10"
             android:id="@+id/user_surname"
             android:layout_alignParentBottom="false"
-            android:layout_toRightOf="@+id/user_picture"
-            android:layout_toEndOf="@+id/user_picture"
+            android:layout_toRightOf="@+id/reg_rel_lay"
+            android:layout_toEndOf="@+id/reg_rel_lay"
             android:layout_marginLeft="10dp"
             android:hint="@string/enter_surname"
             android:layout_below="@+id/user_first_name"
             android:layout_marginBottom="-10dp"
-            android:paddingLeft="10dp"
+            android:paddingLeft="5dp"
             android:textColorHint="@color/regColor"
             android:textColor="@color/regColor"
             android:typeface="monospace"
             android:paddingRight="10dp"
             android:layout_marginStart="10dp"
-            android:textStyle="normal|bold" />
+            android:textStyle="normal|bold"
+            android:paddingStart="5dp"
+            android:paddingEnd="10dp" />
 
         <EditText
             android:layout_width="match_parent"
@@ -137,29 +161,31 @@
             android:id="@+id/user_phone_number"
             android:hint="@string/enter_phone_number"
             android:layout_below="@+id/user_surname"
-            android:layout_toRightOf="@+id/user_picture"
-            android:layout_toEndOf="@+id/user_picture"
+            android:layout_toRightOf="@+id/reg_rel_lay"
+            android:layout_toEndOf="@+id/reg_rel_lay"
             android:layout_marginLeft="10dp"
             android:inputType="phone"
             android:layout_marginBottom="-10dp"
-            android:paddingLeft="10dp"
+            android:paddingLeft="5dp"
             android:textColor="@color/regColor"
             android:textColorHint="@color/regColor"
             android:typeface="monospace"
             android:paddingRight="10dp"
             android:layout_marginStart="10dp"
-            android:textStyle="normal|bold" />
+            android:textStyle="normal|bold"
+            android:paddingStart="5dp"
+            android:paddingEnd="10dp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/user_location"
-            android:layout_toRightOf="@+id/user_picture"
+            android:layout_toRightOf="@+id/reg_rel_lay"
             android:layout_below="@+id/user_phone_number"
             android:layout_marginLeft="15dp"
             android:hint="@string/user_current_city"
             android:paddingTop="10dp"
-            android:layout_toEndOf="@+id/user_picture"
+            android:layout_toEndOf="@+id/reg_rel_lay"
             android:textSize="18sp"
             android:paddingLeft="5dp"
             android:textColor="@color/regColor"
@@ -170,21 +196,6 @@
             android:paddingEnd="10dp"
             android:paddingStart="5dp"
             android:textStyle="normal|bold" />
-
-        <TextView
-            android:text="@string/add_profile_picture"
-            android:layout_height="wrap_content"
-            android:id="@+id/caption_user_picture"
-            android:gravity="center"
-            android:textSize="10sp"
-            android:layout_below="@+id/user_picture"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="15dp"
-            android:typeface="monospace"
-            android:layout_marginStart="5dp"
-            android:layout_width="80dp" />
 
     </RelativeLayout>
 

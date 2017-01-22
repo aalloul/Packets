@@ -662,6 +662,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             return;
         }
 
+        if (!registrationFragment.isVisible()) {
+            Log.i(LOG_TAG, "onConnected - Registration Fragment is not visible");
+            return;
+        }
+
         Location userLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         Log.i(LOG_TAG, "onConnected - Requested last location");
 

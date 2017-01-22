@@ -193,6 +193,8 @@ public class RegistrationFragment extends Fragment {
         picture_bitmap = Utilities.BitMapToString(imageBitmap);
 //        Log.i(LOG_TAG, "setUserPicture picture_ui_bitmap = " + picture_bitmap);
         picture_ui.setImageBitmap(imageBitmap);
+        picture_ui.setScaleX(1);
+        picture_ui.setScaleY(1);
     }
 
 

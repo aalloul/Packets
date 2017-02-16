@@ -7,63 +7,51 @@
 
     <RelativeLayout
         tools:context="com.example.aalloul.packets.MainFragment"
-        android:background="@android:color/white"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp">
-        <TextView
-            android:text="@string/explanation_main_activity"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:layout_editor_absoluteY="33dp"
-            tools:layout_editor_absoluteX="36dp"
-            android:id="@+id/explanationText"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:textSize="24sp"
-            android:layout_marginLeft="0dp"
-            android:layout_marginTop="0dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:background="@drawable/backgroundstate"
-            android:textColor="@color/regColor"
-            android:typeface="monospace"
-            android:textStyle="normal|bold"
-            android:layout_marginBottom="20dp"
-            android:layout_marginStart="10dp" />
+        android:background="@drawable/frog_background"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:text="@string/explanation_main_activity_pt2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/explanationText2"
-            android:layout_below="@+id/explanationText"
-            android:textColor="@color/regColor"
-            android:typeface="monospace"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp" />
+        <!--<TextView-->
+            <!--android:text="@string/explanation_main_activity_pt2"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/explanationText2"-->
+            <!--android:layout_below="@+id/explanationText"-->
+            <!--android:textColor="@android:color/black"-->
+            <!--android:layout_marginBottom="5dp"-->
+            <!--android:layout_marginLeft="10dp"-->
+            <!--android:layout_marginStart="10dp"-->
+            <!--android:background="@drawable/frameborder2"-->
+            <!--android:alpha="0.8"-->
+            <!--android:layout_marginEnd="10dp"-->
+            <!--android:layout_marginRight="10dp"-->
+            <!--android:backgroundTint="@color/white" />-->
 
-        <TextView
-            android:text="@string/explanation_main_activity_pt3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/explanationText3"
-            android:layout_below="@+id/explanationText2"
-            android:textColor="@color/regColor"
-            android:typeface="monospace"
-            android:layout_marginStart="10dp"
-            android:layout_marginLeft="10dp"/>
+        <!--<TextView-->
+            <!--android:text="@string/explanation_main_activity_pt3"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/explanationText3"-->
+            <!--android:layout_below="@+id/explanationText2"-->
+            <!--android:textColor="@android:color/black"-->
+            <!--android:layout_marginStart="10dp"-->
+            <!--android:layout_marginLeft="10dp"-->
+            <!--android:background="@drawable/frameborder2"-->
+            <!--android:alpha="0.8"-->
+            <!--android:layout_marginEnd="10dp"-->
+            <!--android:layout_marginRight="10dp"-->
+            android:backgroundTint="@color/white" />
 
         <RelativeLayout
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/explanationText3"
-            android:layout_marginTop="20dp"
             android:id="@+id/layout2_main_activity"
-            android:layout_marginStart="25dp"
-            android:layout_marginLeft="25dp">
+            android:background="@drawable/frameborder"
+            android:layout_width="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:elevation="24dp"
+            android:backgroundTint="@color/white"
+            android:layout_centerVertical="true">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -98,7 +86,7 @@
                 tools:ignore="ContentDescription" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:id="@+id/dropofflocation_mainactivity"
@@ -109,9 +97,8 @@
                 android:background="@drawable/backgroundstate"
                 android:clickable="true"
                 android:layout_alignBottom="@+id/dot2_main_activity"
-                android:textColor="@color/regColor"
-                android:textColorHint="@color/regColor"
-                android:typeface="monospace"
+                android:textColor="@android:color/black"
+                android:textColorHint="@android:color/black"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_toEndOf="@+id/dot2_main_activity" />
@@ -160,9 +147,8 @@
                 android:layout_toRightOf="@+id/setdate_mainActivity"
                 android:layout_below="@+id/pickuplocation_main_activity"
                 android:layout_marginTop="20dp"
-                android:textColor="@color/regColor"
-                android:typeface="monospace"
-                android:textColorHint="@color/regColor"
+                android:textColor="@android:color/black"
+                android:textColorHint="@android:color/black"
                 android:layout_toEndOf="@+id/setdate_mainActivity" />
 
             <TextView
@@ -175,11 +161,10 @@
                 android:layout_toEndOf="@+id/dot1_main_activity"
                 android:background="@drawable/backgroundstate"
                 android:layout_alignBottom="@+id/dot1_main_activity"
-                android:layout_width="220dp"
+                android:layout_width="wrap_content"
                 android:layout_marginTop="15dp"
-                android:textColorHint="@color/regColor"
-                android:typeface="monospace"
-                android:textColor="@color/regColor"
+                android:textColorHint="@android:color/black"
+                android:textColor="@android:color/black"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"/>
 
@@ -203,10 +188,9 @@
             android:id="@+id/layout3_main_activity"
             android:layout_below="@+id/layout2_main_activity"
             android:layout_centerInParent="false"
-            android:layout_marginTop="30dp"
-            android:paddingBottom="20dp"
-            android:layout_marginStart="40dp"
-            android:layout_marginLeft="40dp">
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp">
 
             <Button
                 android:text="@string/postbutton_main_activity"
@@ -221,7 +205,8 @@
                 android:layout_toRightOf="@+id/searchbutton_main_activity"
                 android:layout_marginStart="50dp"
                 android:layout_marginLeft="50dp"
-                android:layout_toEndOf="@+id/searchbutton_main_activity" />
+                android:layout_toEndOf="@+id/searchbutton_main_activity"
+                android:elevation="24dp" />
 
             <Button
                 android:text="@string/searchbutton_main_activity"
@@ -235,7 +220,8 @@
                 android:textStyle="normal|bold"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
+                android:layout_alignParentStart="true"
+                android:elevation="24dp" />
         </RelativeLayout>
     </RelativeLayout>
 

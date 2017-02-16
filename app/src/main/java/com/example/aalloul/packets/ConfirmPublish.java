@@ -152,12 +152,13 @@ public class ConfirmPublish extends Fragment {
         firstname_edit = (EditText) view.findViewById(R.id.confirm_first_name);
         surname_edit = (EditText) view.findViewById(R.id.confirm_surname);
         phone_edit = (EditText) view.findViewById(R.id.confirm_phone_number);
-        TextView confirm_please = (TextView) view.findViewById(R.id.confirm_please);
+//        TextView confirm_please = (TextView) view.findViewById(R.id.confirm_please);
         comment_user = (EditText) view.findViewById(R.id.comment_user);
 
         if (!mpers_details.get(getString(R.string.saved_user_firstname)).equals("")) {
 //            Log.i(LOG_TAG, "onCreateView - mpers_details = "+mpers_details.toString());
-            confirm_please.setText(getString(R.string.please_register));
+//            confirm_please.setText(getString(R.string.please_register));
+            getActivity().setTitle(getString(R.string.please_confirm));
             firstname_edit.setText(mpers_details.get(getString(R.string.saved_user_firstname)));
             surname_edit.setText(mpers_details.get(getString(R.string.saved_user_surname)));
             phone_edit.setText(mpers_details.get(getString(R.string.saved_user_phonenumber)));
@@ -166,6 +167,8 @@ public class ConfirmPublish extends Fragment {
 
             Log.i(LOG_TAG, "onCreateView - user_picture_path = "+user_picture_path);
 //            Log.i(LOG_TAG, "onCreateView - user_picture_path = "+user_picture_string);
+        } else {
+            getActivity().setTitle(getString(R.string.please_register));
         }
 
         if (savedInstanceState != null) {
@@ -241,6 +244,7 @@ public class ConfirmPublish extends Fragment {
         user_picture.setImageBitmap(imageBitmap);
         user_picture.setScaleX(1);
         user_picture.setScaleY(1);
+        caption_confirm_user_picture.setText(null);
     }
 
     public boolean checkInputs() {

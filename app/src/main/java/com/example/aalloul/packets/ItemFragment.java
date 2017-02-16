@@ -74,6 +74,7 @@ public class ItemFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_item_list, container, false);
 
+        getActivity().setTitle(getString(R.string.offers_towards));
         // Set the adapter
         if (view instanceof RecyclerView) {
             Log.i(LOG_TAG, "onCreateView - get Context");

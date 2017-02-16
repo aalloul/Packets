@@ -3,23 +3,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.aalloul.packets.RegistrationThanks"
-    android:background="@android:color/white">
+    android:background="@drawable/frog_background2">
 
     <TextView
-        android:text="@string/thankyou_registration_pt1"
+        android:text="@string/explanation_main_activity_pt2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/thank_you_registering"
-        android:layout_above="@+id/thank_you_registering_pt2"
+        android:layout_centerVertical="true"
+        android:textColor="@color/white"
+        android:textSize="36sp"
+        android:textStyle="normal|bold"
+        android:backgroundTintMode="src_in"
         android:layout_centerHorizontal="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/thank_you_registering_pt2"
-        android:text="@string/thankyou_registration"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:gravity="center_vertical|center_horizontal" />
+    <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/thank_you_registering_pt2"-->
+        <!--android:text="@string/thankyou_registration"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:gravity="center_vertical|center_horizontal"-->
+        <!--android:textColor="@color/white"-->
+        <!--android:textColorHighlight="@color/white" />-->
 
 </RelativeLayout>

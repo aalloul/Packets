@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#4e8e54</color>
+    <color name="colorPrimary">#7AB509</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#ffbf0d</color>
 
     <color name="black_overlay">#66000000</color>
-    <color name="cardColor">#f6f7e5</color>
-    <color name="regColor">#5e5c72</color>
+    <color name="cardColor">#d8eed8</color>
+    <color name="regColor">#ffff</color>
     <color name="colorBackground">#f0f7e9</color>
     <color name="colorPublish">#c3615b</color>
     <color name="goldColord">#D4AF37</color>
+    <color name="regTextColor">#ffffff</color>
+    <color name="white">#ffffff</color>
+    <color name="vert">#91b67f</color>
+    <color name="marron">#c28f55</color>
 </resources>

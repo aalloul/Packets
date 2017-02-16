@@ -1,77 +1,166 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:ignore="RtlHardcoded"
-    android:background="@android:color/white">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <LinearLayout
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center|top"
-        android:orientation="vertical">
+        tools:context="com.example.aalloul.packets.OfferDetail"
+        android:background="@drawable/frog_background">
 
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="0dp"
-            android:layout_marginTop="@dimen/rage_comic_name_margin_top"
-            style="@style/TextAppearance.AppCompat.Title"/>
-
-        <ImageView
-            android:id="@+id/theimage"
-            android:src="@drawable/delivery"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/rage_comic_image_size"
-            android:layout_marginBottom="@dimen/rage_comic_image_margin_vertical"
-            android:layout_marginTop="@dimen/rage_comic_image_margin_vertical"
-            android:adjustViewBounds="true"
-            android:contentDescription="@null"
-            android:scaleType="centerCrop"/>
-
-        <TextView
-            android:id="@+id/description"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="@dimen/rage_comic_description_margin_bottom"
-            android:layout_marginLeft="@dimen/rage_comic_description_margin_left"
-            android:layout_marginRight="@dimen/rage_comic_description_margin_right"
-            android:layout_marginTop="0dp"
-            android:autoLink="web"
-            style="@style/TextAppearance.AppCompat.Body1"/>
+            android:layout_marginTop="20dp"
+            android:background="@color/white"
+            android:id="@+id/relative_detail_1"
+            android:layout_marginEnd="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginStart="15dp"
+            android:elevation="24dp"
+            android:layout_height="120dp">
 
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:gravity="center|center_vertical|bottom"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
-        <ImageButton
-            android:src="@drawable/message"
-            android:id="@+id/messageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_marginBottom="100dp"
-            android:layout_marginTop="10dp"
-            android:adjustViewBounds="true"
-            android:layout_gravity="left"
-            android:background="@drawable/backgroundstate"
-            android:clickable="true"
-            android:paddingRight="50dp" />
-        <ImageButton
-            android:src="@drawable/phone"
-            android:id="@+id/callButton"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_marginBottom="100dp"
-            android:layout_marginTop="10dp"
-            android:adjustViewBounds="true"
-            android:layout_gravity="right"
-            android:background="@drawable/backgroundstate" />
-    </LinearLayout>
-</RelativeLayout>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@mipmap/user_icon_bevel"
+                android:id="@+id/theimage"
+                android:scaleX="2"
+                android:scaleY="2"
+                android:layout_marginStart="30dp"
+                android:layout_marginLeft="30dp"
+                android:layout_centerVertical="true" />
+
+            <TextView
+                android:text="first name "
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/name"
+                android:layout_toRightOf="@+id/theimage"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="20dp" />
+
+            <TextView
+                android:text="departure city"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/going_from"
+                android:layout_toRightOf="@+id/theimage"
+                android:layout_below="@+id/name"
+                android:layout_marginLeft="30dp"
+                android:layout_marginStart="30dp"
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:text="e"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/going_to"
+                android:layout_below="@+id/going_from"
+                android:layout_toRightOf="@+id/theimage"
+                android:layout_marginLeft="30dp"
+                android:layout_marginStart="30dp"
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/car"
+                android:id="@+id/travel_by"
+                android:layout_below="@+id/theimage"
+                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_toLeftOf="@+id/pickup_date_offer" />
+
+            <TextView
+                android:text="Feb 20"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/pickup_date_offer"
+                android:layout_below="@+id/theimage"
+                android:textColor="@android:color/black"
+                android:layout_marginTop="5dp"
+                android:layout_alignParentBottom="false"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/relative_detail_1"
+            android:background="@color/white"
+            android:id="@+id/relative_detail_2"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginStart="20dp"
+            android:fadingEdge="horizontal|vertical"
+            android:fadingEdgeLength="100dp">
+
+            <TextView
+                android:text="TextView"
+                android:layout_width="match_parent"
+                android:id="@+id/description"
+                android:inputType="textMultiLine"
+                android:elevation="24dp"
+                android:paddingLeft="10dp"
+                android:paddingStart="10dp"
+                android:paddingTop="10dp"
+                android:fadingEdge="horizontal|vertical"
+                android:fadingEdgeLength="100dp"
+                android:layout_height="250dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="200dp"
+            android:layout_below="@+id/relative_detail_2"
+            android:layout_centerHorizontal="true"
+            android:layout_height="match_parent">
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@android:drawable/sym_action_email"
+                android:id="@+id/messageButton"
+                android:background="@drawable/backgroundstate"
+                android:layout_centerInParent="false"
+                android:scaleX="2"
+                android:scaleY="2"
+                android:layout_marginRight="30dp"
+                android:layout_marginEnd="30dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="40dp"
+                android:layout_marginStart="40dp" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@android:drawable/stat_sys_phone_call"
+                android:id="@+id/callButton"
+                android:layout_toRightOf="@+id/messageButton"
+                android:layout_centerInParent="false"
+                android:rotation="90"
+                android:scaleX="2"
+                android:scaleY="2"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"
+                android:backgroundTintMode="src_in"
+                android:background="@drawable/backgroundstate" />
+        </RelativeLayout>
+    </RelativeLayout>
+</ScrollView>

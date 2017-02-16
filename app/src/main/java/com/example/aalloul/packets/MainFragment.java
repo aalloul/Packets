@@ -261,7 +261,6 @@ public class MainFragment extends Fragment {
         }
 
 
-        TextView welcome_text = (TextView) view.findViewById(R.id.explanationText);
         String text = getString(R.string.explanation_main_activity);
 
         if (first_name.equals("")) {
@@ -271,7 +270,7 @@ public class MainFragment extends Fragment {
             text += " "+first_name;
             text += getString(R.string.explanation_main_activity3);
         }
-        welcome_text.setText(text);
+        getActivity().setTitle(text);
         return view;
     }
 

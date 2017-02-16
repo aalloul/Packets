@@ -34,7 +34,7 @@
     </style>
 
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:background">@color/black_overlay</item>
-        <item name="android:foreground">@drawable/drawable_splash_screen</item>
+        <!--<item name="android:background">@color/white</item>-->
+        <item name="android:background">@drawable/splash_screen_frog</item>
     </style>
 </resources>

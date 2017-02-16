@@ -10,27 +10,18 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context="com.example.aalloul.packets.ConfirmPublish"
-    android:layout_marginRight="10dp"
-    android:layout_marginLeft="10dp"
-    android:layout_marginTop="10dp"
-    android:background="@android:color/white">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/please_confirm"
-        android:id="@+id/confirm_please"
-        android:layout_marginBottom="10dp" />
+    android:background="@drawable/frog_background">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:id="@+id/relativeLayout_confirm"
-        android:background="@color/cardColor"
-        android:elevation="14dp"
-        android:layout_below="@+id/confirm_please"
-        android:layout_height="160dp">
+        android:background="@color/white"
+        android:elevation="24dp"
+        android:layout_height="160dp"
+        android:alpha="0.8"
+        android:layout_marginTop="25dp">
 
         <RelativeLayout
             android:layout_width="100dp"
@@ -69,7 +60,8 @@
                 android:layout_marginTop="10dp"
                 android:typeface="monospace"
                 android:layout_marginStart="5dp"
-                android:layout_centerHorizontal="true" />
+                android:layout_centerHorizontal="true"
+                android:textColor="@android:color/black" />
         </RelativeLayout>
 
         <EditText
@@ -84,9 +76,8 @@
             android:layout_marginBottom="-10dp"
             android:layout_marginTop="0dp"
             android:paddingLeft="10dp"
-            android:textColorHint="@color/regColor"
-            android:textColor="@color/regColor"
-            android:typeface="monospace"
+            android:textColorHint="@android:color/black"
+            android:textColor="@android:color/black"
             android:layout_toRightOf="@+id/conf_lay"
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
@@ -108,9 +99,8 @@
             android:layout_below="@+id/confirm_first_name"
             android:layout_marginBottom="-10dp"
             android:paddingLeft="10dp"
-            android:textColorHint="@color/regColor"
-            android:textColor="@color/regColor"
-            android:typeface="monospace"
+            android:textColorHint="@android:color/black"
+            android:textColor="@android:color/black"
             android:layout_marginStart="10dp"
             android:paddingRight="10dp" />
 
@@ -127,9 +117,8 @@
             android:inputType="phone"
             android:layout_marginBottom="-10dp"
             android:paddingLeft="10dp"
-            android:textColor="@color/regColor"
-            android:textColorHint="@color/regColor"
-            android:typeface="monospace"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/black"
             android:layout_marginStart="10dp"
             android:paddingRight="10dp" />
 
@@ -154,7 +143,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/relativeLayout_confirm"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/cast_expanded_controller_actionbar_bg_gradient_light"
+        android:backgroundTint="@color/white">
 
         <EditText
             android:layout_width="match_parent"
@@ -163,14 +158,20 @@
             android:id="@+id/comment_user"
             android:paddingBottom="50dp"
             android:hint="@string/comment_indication"
-            android:inputType="textMultiLine"
-            android:typeface="monospace"
+            android:inputType="textCapSentences|textMultiLine"
             android:gravity="top|center_vertical"
             android:hapticFeedbackEnabled="false"
             android:textSize="14sp"
             android:lineSpacingExtra="2sp"
-            android:textColor="@color/regColor"
-            android:textColorHint="@color/regColor" />
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/black"
+            android:textIsSelectable="false"
+            android:textColorHighlight="?android:attr/colorAccent"
+            android:paddingTop="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp" />
 
         <Button
             android:text="@string/publish"
@@ -185,7 +186,9 @@
             android:layout_below="@+id/comment_user"
             android:layout_centerInParent="false"
             android:layout_centerVertical="false"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:backgroundTint="@color/vert"
+            android:elevation="24dp" />
 
         <TextView
             android:text="@string/privacy_button"
@@ -196,7 +199,9 @@
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/confirm_publish"
             android:layout_marginTop="20dp"
-            android:paddingBottom="10dp" />
+            android:paddingBottom="10dp"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
     </RelativeLayout>
 </RelativeLayout>
 </ScrollView>

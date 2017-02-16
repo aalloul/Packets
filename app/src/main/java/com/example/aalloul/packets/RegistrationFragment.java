@@ -136,6 +136,8 @@ public class RegistrationFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_registration_page, container, false);
 
+        getActivity().setTitle(getString(R.string.join_the_community));
+
         if (savedInstanceState == null){
             Log.i(LOG_TAG,"onCreateView - savedInstanceState is null");
             // User picture
@@ -147,6 +149,7 @@ public class RegistrationFragment extends Fragment {
             restoreUserPicture(savedInstanceState.getString("user_picture"));
             restoreUserLocation((HashMap<String, String>) savedInstanceState.getSerializable("user_location"));
         }
+
 
 
         // surname, first name and phone 

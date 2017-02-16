@@ -14,6 +14,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.HashMap;
 
 
@@ -31,22 +33,22 @@ public class OfferDetail extends Fragment {
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_NAMEANDFIRSTNAME = "nameAndFirstName";
-    private static final String ARG_SOURCE_CITY = "source_city";
-    private static final String ARG_DESTINATION_CITY = "destination_city";
+    private static final String ARG_PICKUP_CITY = "pickup_city";
+    private static final String ARG_DROPOFF_CITY = "dropoff_city";
     private static final String ARG_N_PACKETS = "n_packets";
     private static final String ARG_PHONE_NUMBER = "phone_number";
     private static final String ARG_COMMENTS = "comments";
-    private static final String ARG_SOURCE_COUNTRY = "source_country";
-    private static final String ARG_DESTINATION_COUNTRY = "destination_country";
+    private static final String ARG_PICKUP_COUNTRY = "pickup_country";
+    private static final String ARG_DROPOFF_COUNTRY = "dropoff_country";
 
     private String nameAndFirstName;
-    private String source_city;
-    private String destination_city;
+    private String pickup_city;
+    private String dropoff_city;
     private String n_packets;
     private String phone_number;
     private String comments;
-    private String destination_country;
-    private String source_country;
+    private String dropoff_country;
+    private String pickup_country;
     private long fragment_start_time;
 
     private ImageButton callButton;
@@ -65,27 +67,27 @@ public class OfferDetail extends Fragment {
      * this fragment using the provided parameters.
      *
      * @param nameAndFirstName Parameter 1.
-     * @param source_city Parameter 2.
+     * @param pickup_city Parameter 2.
      * @return A new instance of fragment OfferDetail.
      */
     // TODO: Rename and change types and number of parameters
-    public static OfferDetail newInstance(String nameAndFirstName, String source_city,
-                                          String source_country, String destination_city,
-                                          String destination_country,String n_packets,
+    public static OfferDetail newInstance(String nameAndFirstName, String pickup_city,
+                                          String pickup_country, String dropoff_city,
+                                          String dropoff_country,String n_packets,
                                           String phone_number, String comments) {
         Log.i(LOG_TAG, "newInstance - Start");
         OfferDetail fragment = new OfferDetail();
         Bundle args = new Bundle();
         Log.i(LOG_TAG, "newInstance - nameAndFirstName = " + nameAndFirstName);
         args.putString(ARG_NAMEANDFIRSTNAME, nameAndFirstName);
-        Log.i(LOG_TAG, "newInstance - nameAndFirstName = " + source_city);
-        args.putString(ARG_SOURCE_CITY, source_city);
-        args.putString(ARG_DESTINATION_CITY, destination_city);
+        Log.i(LOG_TAG, "newInstance - nameAndFirstName = " + pickup_city);
+        args.putString(ARG_PICKUP_CITY, pickup_city);
+        args.putString(ARG_DROPOFF_CITY, dropoff_city);
         args.putString(ARG_N_PACKETS, n_packets);
         args.putString(ARG_PHONE_NUMBER, phone_number);
         args.putString(ARG_COMMENTS, comments);
-        args.putString(ARG_SOURCE_COUNTRY, source_country);
-        args.putString(ARG_DESTINATION_COUNTRY, destination_country);
+        args.putString(ARG_PICKUP_COUNTRY, pickup_country);
+        args.putString(ARG_DROPOFF_COUNTRY, dropoff_country);
 
         fragment.setArguments(args);
         Log.i(LOG_TAG, "newInstance - Exit");
@@ -100,13 +102,13 @@ public class OfferDetail extends Fragment {
             Log.i(LOG_TAG, "onCreate - getArguments is not null");
             nameAndFirstName = getArguments().getString(ARG_NAMEANDFIRSTNAME);
             Log.i(LOG_TAG, "onCreate - nameAndFirstName = "+ nameAndFirstName);
-            source_city = getArguments().getString(ARG_SOURCE_CITY);
-            destination_city = getArguments().getString(ARG_DESTINATION_CITY);
+            pickup_city = getArguments().getString(ARG_PICKUP_CITY);
+            dropoff_city = getArguments().getString(ARG_DROPOFF_CITY);
             n_packets = getArguments().getString(ARG_N_PACKETS);
             phone_number = getArguments().getString(ARG_PHONE_NUMBER);
             comments = getArguments().getString(ARG_COMMENTS);
-            destination_country = getArguments().getString(ARG_DESTINATION_COUNTRY);
-            source_country = getArguments().getString(ARG_SOURCE_COUNTRY);
+            dropoff_country = getArguments().getString(ARG_DROPOFF_COUNTRY);
+            pickup_country = getArguments().getString(ARG_PICKUP_COUNTRY);
         }
         Log.i(LOG_TAG, "onCreate - Exit");
     }
@@ -121,11 +123,17 @@ public class OfferDetail extends Fragment {
 
         // Initialize the items of the view
         final TextView nameTextView = (TextView) view.findViewById(R.id.name);
-        final TextView descriptionTextView = (TextView) view.findViewById(R.id.description);
-
         // Display name
         nameTextView.setText(nameAndFirstName);
 
+        final TextView dropoffcity = (TextView) view.findViewById(R.id.going_to);
+        dropoffcity.setText(dropoff_city);
+
+        final TextView pickup_date = (TextView) view.findViewById(R.id.pickup_date_offer);
+        pickup_date.setText("Feb 20");
+
+
+        final TextView descriptionTextView = (TextView) view.findViewById(R.id.description);
         // Convert date to human readable
         String departure_date = "departure_date";
         String arrival_date = "arrival_date";
@@ -133,7 +141,7 @@ public class OfferDetail extends Fragment {
         String mystr = String.format("%s is going from %s (%s) to %s (%s). He will depart at " +
                 "%s and should arrive around %s. \nTo call him, press the phone" +
                 "icon below. \nYou can also send him a message.",
-                nameAndFirstName, source_city, source_country, destination_city, destination_country,
+                nameAndFirstName, pickup_city, pickup_country, dropoff_city, dropoff_country,
                 departure_date, arrival_date);
         descriptionTextView.setText(mystr);
 

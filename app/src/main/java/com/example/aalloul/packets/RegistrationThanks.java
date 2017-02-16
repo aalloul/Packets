@@ -48,7 +48,7 @@ public class RegistrationThanks extends Fragment {
         thankyoumessage = (TextView) view.findViewById(R.id.thank_you_registering);
         String t = getString(R.string.thankyou_registration_pt1) + " ";
         t += mname+" ";
-        t += getString(R.string.thankyou_registration_pt2);
+//        t += getString(R.string.thankyou_registration_pt2);
         thankyoumessage.setText(t);
 
         return view;

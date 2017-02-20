@@ -1147,7 +1147,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
         int i = registrationFragment.isInputOk();
 
-        // At least one import detail is missing
+        // At least one important detail is missing
         if (i == 0) {
             new HandleReportingAsync().execute(u0,registrationFragment.getBlob(
                     getString(R.string.ferror),getString(R.string.reg_nopers)));

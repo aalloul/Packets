@@ -1,4 +1,5 @@
 package com.example.aalloul.packets;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import java.util.HashMap;
-
 
 
 public class MainFragment extends Fragment {
@@ -32,8 +32,8 @@ public class MainFragment extends Fragment {
     private HashMap<String, String> drop_off_detailed_location, pick_up_detailed_location;
     private long fragment_start_time;
     private Boolean edited_pickup_location = false;
-
     private OnFragmentInteractionListener mListener;
+    private final static boolean DEBUG = false;
 
     public MainFragment() {
         // Required empty public constructor
@@ -48,11 +48,11 @@ public class MainFragment extends Fragment {
      * @return A new instance of fragment MainFragment.
      */
     public static MainFragment newInstance(HashMap<String, String> inlocation, String first_name) {
-        Log.i("MainFragment","newInstsance - Enter");
+        if (DEBUG) Log.i("MainFragment","newInstsance - Enter");
         MainFragment fragment = new MainFragment();
         Bundle args = new Bundle();
 
-        Log.i("MainFragment","newInstsance - "+ inlocation.toString());
+        if (DEBUG) Log.i("MainFragment","newInstsance - "+ inlocation.toString());
         args.putSerializable(ARG_CITY_STATE, inlocation);
         args.putString(ARG_FIRST_NAME, first_name);
         fragment.setArguments(args);
@@ -92,7 +92,6 @@ public class MainFragment extends Fragment {
     }
 
     private void getPostButton() {
-
         Button postButton= (Button) view.findViewById(R.id.postbutton_main_activity);
         postButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -172,7 +171,7 @@ public class MainFragment extends Fragment {
     private void getPickUpLocationButton() {
         pickup_location = (TextView) view.findViewById(R.id.pickuplocation_main_activity);
         _setPickup_location();
-        Log.i(LOG_TAG, "pickup_location = "+pickup_location.getText().toString());
+        if (DEBUG) Log.i(LOG_TAG, "pickup_location = "+pickup_location.getText().toString());
         pickup_location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -183,7 +182,7 @@ public class MainFragment extends Fragment {
     private void restorePickupLocation(HashMap<String, String> val){
         pickup_location = (TextView) view.findViewById(R.id.pickuplocation_main_activity);
         setPickup_location(val);
-        Log.i(LOG_TAG, "restorePickupLocation - pickup_location = "+pickup_location.getText().toString());
+        if (DEBUG) Log.i(LOG_TAG, "restorePickupLocation - pickup_location = "+pickup_location.getText().toString());
         pickup_location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -236,21 +235,21 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        Log.i(LOG_TAG, "onCreateView - Enter");
+        if (DEBUG) Log.i(LOG_TAG, "onCreateView - Enter");
 
         view= inflater.inflate(R.layout.fragment_main, container, false);
         getSearchButton();
         getPostButton();
 
         if (savedInstanceState == null) {
-            Log.i(LOG_TAG, "onCreateView - savedInstance is null");
+            if (DEBUG) Log.i(LOG_TAG, "onCreateView - savedInstance is null");
             getPickUpDateButton();
             getNumberPackagesButton();
             getSizePackagesButton();
             getPickUpLocationButton();
             getDropOffLocationButton();
         } else {
-            Log.i(LOG_TAG, "onCreateView - savedInstance is not null");
+            if (DEBUG) Log.i(LOG_TAG, "onCreateView - savedInstance is not null");
             restorePickUpDateButton(savedInstanceState.getString("pick_up_date"));
             restoreNumberPackagesButton(savedInstanceState.getString("number_packages"));
             restoreSizePackagesButton(savedInstanceState.getString("size_packages"));
@@ -303,10 +302,10 @@ public class MainFragment extends Fragment {
 
     public HashMap<String, String> getPickupLocation(){
 //        if (pick_up_detailed_location == null || pickup_location.getText() == null ) {
-//            Log.i(LOG_TAG, "getPickupLocation - pickup_location is null");
+//            if (DEBUG) Log.i(LOG_TAG, "getPickupLocation - pickup_location is null");
 //            return null;
 //        }
-        Log.i(LOG_TAG, "getPickupLocation - pickup_location is NOT null");
+        if (DEBUG) Log.i(LOG_TAG, "getPickupLocation - pickup_location is NOT null");
         return pick_up_detailed_location;
     }
 
@@ -314,7 +313,7 @@ public class MainFragment extends Fragment {
 //        if (drop_off_location == null || drop_off_location.getText() == null){
 //            return null;
 //        }
-        Log.i(LOG_TAG, "getDropOffLocation - drop_off_detailed_location = "+drop_off_detailed_location);
+        if (DEBUG) Log.i(LOG_TAG, "getDropOffLocation - drop_off_detailed_location = "+drop_off_detailed_location);
         return drop_off_detailed_location;
     }
 
@@ -322,7 +321,7 @@ public class MainFragment extends Fragment {
         if (pickupdate == null) {
             return null;
         }
-        return pickupdate;
+        return Utilities.Date2EpochMillis(pickupdate, "yyyy-MM-dd");
     }
 
     public String getNumberPackages(){
@@ -364,7 +363,7 @@ public class MainFragment extends Fragment {
         if (!pick_up_detailed_location.containsKey(getString(R.string.saved_user_city))) return;
         if (!pick_up_detailed_location.containsKey(getString(R.string.saved_user_state))) return;
 
-        Log.i(LOG_TAG, "_setPickup_location - city = "+
+        if (DEBUG) Log.i(LOG_TAG, "_setPickup_location - city = "+
                 pick_up_detailed_location.get(getString(R.string.saved_user_city)));
         String tmp = pick_up_detailed_location.get(getString(R.string.saved_user_city));
 
@@ -384,7 +383,7 @@ public class MainFragment extends Fragment {
                         pick_up_detailed_location.get(getString(R.string.saved_user_country))) + ")";
             }
         }
-        Log.i(LOG_TAG, "_setPickup_location - tmp = "+tmp);
+        if (DEBUG) Log.i(LOG_TAG, "_setPickup_location - tmp = "+tmp);
 
         pickup_location.setText(tmp);
     }
@@ -471,7 +470,7 @@ public class MainFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onSearchButtonPressed();
         void onPostButtonPressed();

@@ -16,20 +16,21 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 
     // create a local variable for identifying the class where the log statements come from
     private final static String LOG_TAG = DatePickerFragment.class.getSimpleName();
+    private final static boolean DEBUG = true;
 
     private TheListener listener;
 
-    public interface TheListener{
+    interface TheListener{
         void returnDate(String date);
     }
 
     public void onAttach(Context context){
         super.onAttach(context);
         try {
-            Log.i(LOG_TAG, "IS instance");
+            if (DEBUG) Log.i(LOG_TAG, "IS instance");
             listener =  (TheListener) context;
         } catch (ClassCastException e){
-            Log.i(LOG_TAG, "is not instance");
+            if (DEBUG) Log.i(LOG_TAG, "is not instance");
             throw new ClassCastException(context.toString() + "must implement TheListener");
         }
 
@@ -44,7 +45,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         int month = c.get(Calendar.MONTH);
         int day = c.get(Calendar.DAY_OF_MONTH);
 //        listener = (TheListener) getParentFragment();
-        Log.i(LOG_TAG, "listener = "+listener);
+        if (DEBUG) Log.i(LOG_TAG, "listener = "+listener);
 
         // Create a new instance of DatePickerDialog and return it
         DatePickerDialog datePickerDialog = new
@@ -56,19 +57,19 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     @Override
     public void onDateSet(DatePicker view, int year, int month, int day) {
         // Do something with the date chosen by the user
-        Log.i(LOG_TAG, "onDateSet - start");
+        if (DEBUG) Log.i(LOG_TAG, "onDateSet - start");
         Calendar c = Calendar.getInstance();
         c.set(year, month, day);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String formattedDate = sdf.format(c.getTime());
-        Log.i(LOG_TAG, "onDateSet - formattedDate = "+formattedDate);
+        if (DEBUG) Log.i(LOG_TAG, "onDateSet - formattedDate = "+formattedDate);
 
         if (listener != null)
         {
-            Log.i(LOG_TAG, "onDateSet - Listener not null");
+            if (DEBUG) Log.i(LOG_TAG, "onDateSet - Listener not null");
             listener.returnDate(formattedDate);
 
         }
-        Log.i(LOG_TAG, "onDateSet - exit");
+        if (DEBUG) Log.i(LOG_TAG, "onDateSet - exit");
     }
 }

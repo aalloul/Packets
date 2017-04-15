@@ -1,35 +1,37 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.aalloul.packets.ThankYou"
     android:layout_centerHorizontal="true"
     android:layout_centerInParent="false"
-    android:background="@android:color/white">
+    android:background="@drawable/share_with_friends"
+    tools:context="com.example.aalloul.packets.ThankYou">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/goldColord"
-        android:textStyle="normal|bold"
-        android:textSize="24sp"
-        android:id="@+id/spread_the_word"
-        android:layout_alignParentTop="false"
-        android:layout_marginTop="20dp"
-        android:layout_centerHorizontal="true"
-        android:text="@string/share_with_friends"
-        android:layout_centerVertical="false"
-        android:layout_below="@+id/thank_you_text" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/goldColord"
-        android:textStyle="normal|bold"
-        android:textSize="48sp"
         android:id="@+id/thank_you_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="false"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:maxLines="2"
         android:text="@string/thank_you"
+        android:textColor="@color/white"
+        android:textSize="48sp"
+        android:textStyle="normal|bold" />
+
+    <TextView
+        android:id="@+id/share_button"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:fontFamily="sans-serif-condensed"
+        android:textAlignment="center"
+        android:textColor="@color/goldColord"
+        android:textColorLink="@color/goldColord"
+        android:textSize="36sp"
+        android:textStyle="bold" />
+
 </RelativeLayout>

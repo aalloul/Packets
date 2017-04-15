@@ -15,7 +15,6 @@ import android.support.v7.app.AlertDialog;
 
 public class CameraOrGalleryDialog extends DialogFragment {
 
-
     CameraOrGalleryInterface mListener;
 
     @Override
@@ -48,7 +47,7 @@ public class CameraOrGalleryDialog extends DialogFragment {
     }
 
 
-    public interface CameraOrGalleryInterface {
+    interface CameraOrGalleryInterface {
         void onCameraOrGallerySelected(DialogInterface dialog, int which);
     }
 }

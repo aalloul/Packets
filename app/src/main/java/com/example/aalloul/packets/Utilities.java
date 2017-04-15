@@ -1,21 +1,14 @@
 package com.example.aalloul.packets;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-
-import com.google.gson.Gson;
-
 import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -27,12 +20,11 @@ import java.util.HashMap;
  * Created by aalloul on 02/07/16.
  */
 final class Utilities {
-    static HashMap<String, String> countries = new HashMap<>();
+    private static HashMap<String, String> countries = new HashMap<>();
     final static String LOG_TAG = "Utilities";
 
     public Bitmap getImage(byte[] theimage){
-        byte[] imgByte = theimage;
-        return BitmapFactory.decodeByteArray(imgByte, 0, imgByte.length);
+        return BitmapFactory.decodeByteArray(theimage, 0, theimage.length);
     }
 
     // Maps country name to its code
@@ -322,6 +314,25 @@ final class Utilities {
         return format.format(updatedate);
     }
 
+    static String Date2EpochMillis(String date, String formatString) {
+        SimpleDateFormat df = new SimpleDateFormat(formatString);
+        try {
+            Date ddate = df.parse(date);
+            long epoch = ddate.getTime();
+            return Long.toString(epoch);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return "";
+    }
+
+    static String Date2EpochSeconds(String date, String formatString) {
+        String millis = Date2EpochMillis(date, formatString);
+        if (millis.equals("")) return "";
+        return Long.toString(Long.getLong(millis)/1000);
+    }
+
     static String getTomorrow(String format) {
         return Epoch2DateStringMillis(CurrentTimeMS() + 24*3600*1000, format);
     }
@@ -368,18 +379,15 @@ final class Utilities {
     static String BitMapToString(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        byte[] b = baos.toByteArray();
-        String temp = Base64.encodeToString(b, Base64.DEFAULT);
-        return temp;
+        return Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
     }
 
     // String to BitMap
+    @Nullable
     static Bitmap StringToBitMap(String encodedString) {
         try {
             byte[] encodeByte = Base64.decode(encodedString, Base64.DEFAULT);
-            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0,
-                    encodeByte.length);
-            return bitmap;
+            return BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
         } catch (Exception e) {
             DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "Utilities", "StringToBitMap");
             e.getMessage();

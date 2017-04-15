@@ -1,9 +1,6 @@
 package com.example.aalloul.packets;
 
 import android.content.Context;
-import android.content.Intent;
-import android.media.Image;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -11,11 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
-
 import java.util.HashMap;
 
 
@@ -30,7 +23,6 @@ import java.util.HashMap;
 public class OfferDetail extends Fragment {
     // create a local variable for identifying the class where the log statements come from
     private final static String LOG_TAG = OfferDetail.class.getSimpleName();
-
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_NAMEANDFIRSTNAME = "nameAndFirstName";
     private static final String ARG_PICKUP_CITY = "pickup_city";
@@ -40,7 +32,6 @@ public class OfferDetail extends Fragment {
     private static final String ARG_COMMENTS = "comments";
     private static final String ARG_PICKUP_COUNTRY = "pickup_country";
     private static final String ARG_DROPOFF_COUNTRY = "dropoff_country";
-
     private String nameAndFirstName;
     private String pickup_city;
     private String dropoff_city;
@@ -50,12 +41,10 @@ public class OfferDetail extends Fragment {
     private String dropoff_country;
     private String pickup_country;
     private long fragment_start_time;
-
     private ImageButton callButton;
     private ImageButton sendMessage;
-
-
     private OnFragmentInteractionListener mListener;
+    private final static boolean DEBUG = false;
 
     public OfferDetail() {
         // Required empty public constructor
@@ -75,12 +64,12 @@ public class OfferDetail extends Fragment {
                                           String pickup_country, String dropoff_city,
                                           String dropoff_country,String n_packets,
                                           String phone_number, String comments) {
-        Log.i(LOG_TAG, "newInstance - Start");
+        if (DEBUG) Log.i(LOG_TAG, "newInstance - Start");
         OfferDetail fragment = new OfferDetail();
         Bundle args = new Bundle();
-        Log.i(LOG_TAG, "newInstance - nameAndFirstName = " + nameAndFirstName);
+        if (DEBUG) Log.i(LOG_TAG, "newInstance - nameAndFirstName = " + nameAndFirstName);
         args.putString(ARG_NAMEANDFIRSTNAME, nameAndFirstName);
-        Log.i(LOG_TAG, "newInstance - nameAndFirstName = " + pickup_city);
+        if (DEBUG) Log.i(LOG_TAG, "newInstance - nameAndFirstName = " + pickup_city);
         args.putString(ARG_PICKUP_CITY, pickup_city);
         args.putString(ARG_DROPOFF_CITY, dropoff_city);
         args.putString(ARG_N_PACKETS, n_packets);
@@ -90,18 +79,18 @@ public class OfferDetail extends Fragment {
         args.putString(ARG_DROPOFF_COUNTRY, dropoff_country);
 
         fragment.setArguments(args);
-        Log.i(LOG_TAG, "newInstance - Exit");
+        if (DEBUG) Log.i(LOG_TAG, "newInstance - Exit");
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i(LOG_TAG, "onCreate - Start");
+        if (DEBUG) Log.i(LOG_TAG, "onCreate - Start");
         if (getArguments() != null) {
-            Log.i(LOG_TAG, "onCreate - getArguments is not null");
+            if (DEBUG) Log.i(LOG_TAG, "onCreate - getArguments is not null");
             nameAndFirstName = getArguments().getString(ARG_NAMEANDFIRSTNAME);
-            Log.i(LOG_TAG, "onCreate - nameAndFirstName = "+ nameAndFirstName);
+            if (DEBUG) Log.i(LOG_TAG, "onCreate - nameAndFirstName = "+ nameAndFirstName);
             pickup_city = getArguments().getString(ARG_PICKUP_CITY);
             dropoff_city = getArguments().getString(ARG_DROPOFF_CITY);
             n_packets = getArguments().getString(ARG_N_PACKETS);
@@ -110,13 +99,13 @@ public class OfferDetail extends Fragment {
             dropoff_country = getArguments().getString(ARG_DROPOFF_COUNTRY);
             pickup_country = getArguments().getString(ARG_PICKUP_COUNTRY);
         }
-        Log.i(LOG_TAG, "onCreate - Exit");
+        if (DEBUG) Log.i(LOG_TAG, "onCreate - Exit");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        Log.i(LOG_TAG, "onCreateView - Start");
+        if (DEBUG) Log.i(LOG_TAG, "onCreateView - Start");
 
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_offer_detail, container, false);
@@ -163,7 +152,7 @@ public class OfferDetail extends Fragment {
             }
         });
 
-        Log.i(LOG_TAG, "onCreateView - Exit");
+        if (DEBUG) Log.i(LOG_TAG, "onCreateView - Exit");
         return view;
     }
 
@@ -171,14 +160,14 @@ public class OfferDetail extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        Log.i(LOG_TAG, "onAttach - Start");
+        if (DEBUG) Log.i(LOG_TAG, "onAttach - Start");
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
-        Log.i(LOG_TAG, "onAttach - Exit");
+        if (DEBUG) Log.i(LOG_TAG, "onAttach - Exit");
     }
 
     @Override
@@ -214,7 +203,7 @@ public class OfferDetail extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onCallButtonPress(String phoneNumber);
         void onMessageButtonPress(String phonenumber);

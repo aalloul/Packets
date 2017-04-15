@@ -57,7 +57,8 @@
     <string name="publish">Publish</string>
     <string name="please_confirm">Anything to add?</string>
     <string name="please_register">One final step</string>
-    <string name="thank_you">Thank you!</string>
+    <string name="thank_you">All packed</string>
+    <string name="enjoy">Tell your friends!</string>
     <string name="back_to_main">Back</string>
 
     <string name="comment_indication">Here you can provide more details about your offer like where
@@ -86,8 +87,12 @@ Our website search and decision notice search is powered by System Associates. S
     <string name="thankyou_registration_pt1">Welcome</string>
     <string name="thankyou_registration_pt2">and Welcome!</string>
     <string name="thankyou_registration">Thank you very much for registering with Shippy</string>
-    <string name="share_with_friends">Share with your friends</string>
+    <string name="share_with_friends">Thank you for sharing</string>
     <string name="thank_you_firstname">Thank you</string>
+    <string name="share_link_pt1">I\'m going to</string>
+    <string name="share_link_pt2">and can deliver for you any small thing you would like to send :)
+    http://play.google.com/store/apps/details?id=com.example.aalloul.packets</string>
+
 
 
     <!-- ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~  -->
@@ -126,15 +131,15 @@ Our website search and decision notice search is powered by System Associates. S
     <string name="saved_user_firstname">userFirstName</string>
     <string name="saved_user_picture">userPicture</string>
     <string name="saved_user_phonenumber">userPhoneNumber</string>
-    <string name="saved_user_latitude">userLatitude</string>
-    <string name="saved_user_longitude">userLongitude</string>
-    <string name="saved_user_address">userAddress</string>
-    <string name="saved_user_city">userCity</string>
-    <string name="saved_user_state">userState</string>
-    <string name="saved_user_country">userCountry</string>
-    <string name="saved_user_postalcode">userPostalCode</string>
+    <string name="saved_user_latitude">pickup_latitude</string>
+    <string name="saved_user_longitude">pickup_longitude</string>
+    <string name="saved_user_address">pickup_address</string>
+    <string name="saved_user_city">pickup_city</string>
+    <string name="saved_user_state">pickup_state</string>
+    <string name="saved_user_country">pickup_country</string>
+    <string name="saved_user_postalcode">pickup_postalCode</string>
     <string name="saved_user_npromptstoregister">userNPromptsToRegister</string>
-    <string name="date_for_pickup">date_for_pickup</string>
+    <string name="date_for_pickup">pickup_date</string>
     <string name="number_packages">number_packages</string>
     <string name="size_packages">size_packages</string>
     <string name="travels_by">travels_by</string>
@@ -146,12 +151,14 @@ Our website search and decision notice search is powered by System Associates. S
     <string name="drop_off_city">drop_off_city</string>
     <string name="drop_off_state">drop_off_state</string>
     <string name="drop_off_country">drop_off_country</string>
-    <string name="drop_off_postalcode">drop_off_postalcode</string>
+    <string name="drop_off_postalcode">drop_off_postalCode</string>
     <string name="saved_user_picture_path">absolute_path_to_user_picture</string>
     <string name="user_picture_file">user_picture</string>
 
     <!--Data reporting fields-->
-    <string name="sID">sID</string>
+    <string name="deviceid">deviceid</string>
+    <string name="devicetype">devicetype</string>
+    <string name="sID">sessID</string>
     <string name="acStart">activity_start</string>
     <string name="acName">activity_name</string>
     <string name="sEnd">sessEnd</string>

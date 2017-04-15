@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:elevation="24dp"
@@ -83,14 +82,14 @@
         android:layout_marginRight="10dp" />
 
     <TextView
-        android:text="thecity"
+        android:id="@+id/pickup_city"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/source_city_country"
-        android:layout_toRightOf="@+id/dotfrom"
         android:layout_marginTop="13dp"
-        android:textSize="14sp"
-        android:textColor="@android:color/black" />
+        android:layout_toRightOf="@+id/dotfrom"
+        android:text="thecity"
+        android:textColor="@android:color/black"
+        android:textSize="14sp" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -101,33 +100,33 @@
         android:layout_marginTop="35dp" />
 
     <TextView
-        android:text="theotherCity"
+        android:id="@+id/dropoff_city"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/destination_city_country"
-        android:layout_toRightOf="@+id/dotTo"
-        android:layout_marginTop="83dp"
         android:layout_centerInParent="false"
         android:layout_centerVertical="false"
-        android:textSize="14sp"
-        android:textColor="@android:color/black" />
+        android:layout_marginTop="83dp"
+        android:layout_toRightOf="@+id/dotTo"
+        android:text="theotherCity"
+        android:textColor="@android:color/black"
+        android:textSize="14sp" />
 
     <TextView
-        android:text="Sep 10"
+        android:id="@+id/pickup_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/sender_departure_date"
-        android:background="@drawable/backgroundstate"
-        android:textColor="@android:color/black"
-        android:textAllCaps="false"
-        android:textStyle="normal|bold"
-        android:layout_alignParentRight="false"
-        android:textSize="14sp"
-        android:layout_alignParentTop="false"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="3dp"
+        android:layout_alignParentRight="false"
+        android:layout_alignParentTop="false"
+        android:layout_marginEnd="4dp"
         android:layout_marginRight="4dp"
-        android:layout_marginEnd="4dp" />
+        android:layout_marginTop="3dp"
+        android:background="@drawable/backgroundstate"
+        android:text="Sep 10"
+        android:textAllCaps="false"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"
+        android:textStyle="normal|bold" />
 
     <ImageView
         android:layout_width="wrap_content"

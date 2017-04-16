@@ -22,10 +22,12 @@ import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.FileProvider;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.support.annotation.NonNull;
@@ -35,6 +37,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -214,7 +217,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private void handleNetworkResult(String queryResult) {
         if (queryResult.equals("ok")) {
             if (DEBUG) Log.i(LOG_TAG, "handleNetworkResult - Notifying dataset change");
-            itemFragment.updateData();
+            if (itemFragment == null) {
+                if (DEBUG) Log.i(LOG_TAG, "handleNetworkResult - itemFragment is null");
+            } else {
+                itemFragment.updateData();
+            }
         } else {
             if (DEBUG) Log.i(LOG_TAG, "handleNetworkResult - An error happened with the network");
         }
@@ -574,6 +581,23 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         startActivityForResult(i,REQUEST_PICK_PICTURE );
     }
 
+    private void informNetworkError(final Fragment fragment) {
+        new AlertDialog.Builder(this)
+                .setTitle(getResources().getString(R.string.network_error))
+                .setMessage(getResources().getString(R.string.network_erro2))
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .detach(itemFragment)
+                                .add(fragment, fragment.getTag())
+                                .commit();
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
     /**
      * This method is used to setup a GsonRequest towards the back-end, i.e. it expects a result
      * as a JSON.
@@ -586,10 +610,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         String url = "http://192.168.178.206:3000/offers";
 
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Content-Type","application/json");
+        headers.put("deviceID",DataBuffer.getDeviceId());
+        headers.put("deviceType",DataBuffer.getDeviceType());
+
 //        Map<String, String> headers = new HashMap<>();
         if (DEBUG) Log.i(LOG_TAG, "searchRequest - searchParams = " + searchParams);
 
-        GsonRequest request = new GsonRequest(url, searchParams, SearchResponse[].class, null,
+        GsonRequest request = new GsonRequest(url, searchParams, SearchResponse[].class, headers,
                 Request.Method.GET, new Response.Listener<SearchResponse[]>() {
                     @Override
                     public void onResponse(SearchResponse[] response) {
@@ -603,13 +632,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // TODO retry / back-off procedue
-                        if (DEBUG) Log.w(LOG_TAG, "searchRequest - Error answer");
-                        if (DEBUG) Log.w(LOG_TAG, "searchRequest - "+error.getMessage());
+                        DataBuffer.addException("searchRequestError", error.getMessage(), "mainFragment",
+                                "search");
+                        informNetworkError(mainFragment);
                     }
                 }
         );
         request.setTag("searchOfferTAG");
+        // 1st argument is initial timeout, 2nd is number of retries, 3rd is multiplier
+        request.setRetryPolicy(new DefaultRetryPolicy(1000, 3, 3.0f));
 
         if (DEBUG) Log.i(LOG_TAG, "searchRequest - Adding request to queue");
         volleyQueue.add(request);
@@ -621,11 +652,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
      * @param dataToPost is the HashMap containing the data we want to post to the back-end
      */
     @SuppressWarnings("unchecked")
-    private void postUsageRequest(ArrayList<HashMap<String, String>> dataToPost) {
+    private void postUsageRequest(final ArrayList<HashMap<String, String>> dataToPost) {
         String url = "http://192.168.178.206:3000/usage";
         if (DEBUG) Log.i(LOG_TAG, "postUsageRequest - Enter");
+
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type","application/json");
+        headers.put("deviceID",DataBuffer.getDeviceId());
+        headers.put("deviceType",DataBuffer.getDeviceType());
+
         Log.i(LOG_TAG, "dataToPost = " + dataToPost);
 
         GsonRequest request = new GsonRequest(url, dataToPost, String.class, headers, Request.Method.POST,
@@ -636,11 +671,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     }
                 },
                 new Response.ErrorListener() {
-
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // TODO retry / back-off procedue
-                        if (DEBUG) Log.w(LOG_TAG, "postUsageRequest - Got positive answer");
+                        DataBuffer.addException("postUsageRequestError", error.getMessage(),
+                                "postUsage", "postUsage");
+                        DataBuffer.addEvent(dataToPost);
                     }
                 }
         );
@@ -655,10 +690,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
      */
     @SuppressWarnings("unchecked")
     private void postOfferRequest(HashMap<String, String> dataToPost) {
-        String url = "http://192.168.178.206:3000/posts";
+        String url = "http://192.168.178.206:3000/werwe";
         if (DEBUG) Log.i(LOG_TAG, "postUsageRequest - Enter");
+
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type","application/json");
+        headers.put("deviceID",DataBuffer.getDeviceId());
+        headers.put("deviceType",DataBuffer.getDeviceType());
 
         GsonRequest request = new GsonRequest(url, dataToPost, String.class, headers, Request.Method.POST,
                 new Response.Listener<Gson>() {
@@ -671,8 +709,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // TODO retry / back-off procedue
-                        if (DEBUG) Log.w(LOG_TAG, "postUsageRequest - Got positive answer");
+                        DataBuffer.addException("postOfferRequestError", error.getMessage(),
+                                "ConfirmPublish", "postOffer");
+                        informNetworkError(confirmPublish);
                     }
                 }
         );
@@ -924,7 +963,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         new HandleReportingAsync().execute(u0, null);
 
-        DataBuffer.clear();
         if (DEBUG) Log.i(LOG_TAG, "onPause - Exit");
     }
 
@@ -1729,22 +1767,20 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         @Override
         protected Void doInBackground(HashMap<String, String>... params) {
-            HashMap<String, String> tmp = new HashMap<>();
 
             Gson gson = new Gson();
-            tmp.put(getString(R.string.sID), Long.toString(SESSION_ID));
-            tmp.put(getString(R.string.acStart), Long.toString(MAIN_ACTIVITY_START_TIME));
-            tmp.put(getString(R.string.acName), "mainActivity");
-            tmp.put(getString(R.string.fName), params[0].get(getString(R.string.fName)));
-
             if (params[1] == null) {
                 if (DEBUG) Log.i(LOG_TAG, "HandleReportingAsync - Leaving the app");
                 // If leaving the app
-                tmp = params[0];
-                DataBuffer.addEvent(tmp);
+                DataBuffer.addEvent(params[0]);
                 postUsageRequest(DataBuffer.getTheData());
             } else {
                 if (DEBUG) Log.i(LOG_TAG, "HandleReportingAsync - Navigate around");
+                HashMap<String, String> tmp = new HashMap<>();
+                tmp.put(getString(R.string.sID), Long.toString(SESSION_ID));
+                tmp.put(getString(R.string.acStart), Long.toString(MAIN_ACTIVITY_START_TIME));
+                tmp.put(getString(R.string.acName), "mainActivity");
+                tmp.put(getString(R.string.fName), params[0].get(getString(R.string.fName)));
                 // If navigating from 1 fragment to another
                 tmp.put(getString(R.string.fActions), gson.toJson(params[1]));
                 DataBuffer.addEvent(tmp);

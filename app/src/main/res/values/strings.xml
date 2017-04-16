@@ -92,19 +92,15 @@ Our website search and decision notice search is powered by System Associates. S
     <string name="share_link_pt1">I\'m going to</string>
     <string name="share_link_pt2">and can deliver for you any small thing you would like to send :)
     http://play.google.com/store/apps/details?id=com.example.aalloul.packets</string>
-
+    <string name="network_error">Oops</string>
+    <string name="network_erro2">A network error happened, please retry again.</string>
 
 
     <!-- ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~  -->
     <!--                       Parameters that don't need to be localized                        -->
     <!-- ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~  -->
     <string name="google_key">AIzaSyBsMFAjzpz-9YZkwzO3bO0MlvUwN04iRBs</string>
-    <!-- Minimum time between 2 post of usage data (in ms) -->
-    <integer name="time_to_post_usage_data">120000</integer>
-    <!-- Connection read time out (in ms) -->
-    <integer name="connection_read_time_out">20000</integer>
-    <!-- Connection time out (in ms) -->
-    <integer name="connection_time_out">20000</integer>
+
     <!-- Endpoint URLs -->
     <string name="backend_url">http://jsonplaceholder.typicode.com/posts</string>
     <string name="api_key">the_key_goes_here</string>
@@ -213,6 +209,7 @@ Our website search and decision notice search is powered by System Associates. S
     <string name="title_activity_splash_screen">SplashScreen</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+
 
 
 </resources>

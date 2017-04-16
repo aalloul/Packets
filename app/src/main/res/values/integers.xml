@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Connection read time out (in ms) -->
+    <integer name="connection_read_time_out">20000</integer>
+    <!-- Connection time out (in ms) -->
+    <integer name="connection_time_out">20000</integer>
+</resources>

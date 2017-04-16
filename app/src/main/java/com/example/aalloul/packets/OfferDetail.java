@@ -1,7 +1,5 @@
 package com.example.aalloul.packets;
-
 import android.content.Context;
-import android.graphics.Picture;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -14,14 +12,6 @@ import android.widget.TextView;
 import java.util.HashMap;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link OfferDetail.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link OfferDetail#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class OfferDetail extends Fragment {
     // create a local variable for identifying the class where the log statements come from
     private final static String LOG_TAG = OfferDetail.class.getSimpleName();
@@ -52,20 +42,15 @@ public class OfferDetail extends Fragment {
     private ImageButton callButton;
     private ImageButton sendMessage;
     private OnFragmentInteractionListener mListener;
-    private final static boolean DEBUG = true;
+    private final static boolean DEBUG = false;
+
+    //TODO refactor the view here
 
     public OfferDetail() {
         // Required empty public constructor
         fragment_start_time = Utilities.CurrentTimeMS();
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     * @param nameAndFirstName Parameter 1.
-     * @param pickup_city Parameter 2.
-     * @return A new instance of fragment OfferDetail.
-     */
     public static OfferDetail newInstance(String nameAndFirstName, String pickup_city,
                                           String pickup_country, String pickup_date,
                                           String dropoff_city, String dropoff_country,

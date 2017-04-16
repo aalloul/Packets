@@ -34,6 +34,8 @@ import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -55,7 +57,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -80,7 +81,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     static final int REQUEST_PICK_PICTURE= 8;
     static final int REQUEST_SHARE_APP = 9;
     static boolean PICTURE_FOR_CONFIRM=false;
-    private static boolean DEBUG = false;
     private HashMap<String, String> u0 = new HashMap<>();
     protected final int PICKUP_AIM = 1;
     protected final int DROPOFF_AIM = 2;
@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     // create a local variable for identifying the class where the log statements come from
     private final static String LOG_TAG = MainActivity.class.getSimpleName();
+    private static boolean DEBUG = true;
 
     private boolean isAlreadyRegistered() {
         if (DEBUG) Log.i(LOG_TAG, "isAlreadyRegistered - Enter");
@@ -589,7 +590,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (DEBUG) Log.i(LOG_TAG, "searchRequest - searchParams = " + searchParams);
 
         GsonRequest request = new GsonRequest(url, searchParams, SearchResponse[].class, null,
-                new Response.Listener<SearchResponse[]>() {
+                Request.Method.GET, new Response.Listener<SearchResponse[]>() {
                     @Override
                     public void onResponse(SearchResponse[] response) {
                         if (DEBUG) Log.i(LOG_TAG, "searchRequest - Got "+response.length + " entries");
@@ -598,7 +599,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                         newdata.putExtra("queryResult", "ok");
                         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(newdata);
                     }
-                },
+        },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
@@ -607,8 +608,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                         if (DEBUG) Log.w(LOG_TAG, "searchRequest - "+error.getMessage());
                     }
                 }
-                );
-        request.setTag("searchTAG");
+        );
+        request.setTag("searchOfferTAG");
 
         if (DEBUG) Log.i(LOG_TAG, "searchRequest - Adding request to queue");
         volleyQueue.add(request);
@@ -621,10 +622,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
      */
     @SuppressWarnings("unchecked")
     private void postUsageRequest(ArrayList<HashMap<String, String>> dataToPost) {
-        String url = "www.google.com";
+        String url = "http://192.168.178.206:3000/usage";
         if (DEBUG) Log.i(LOG_TAG, "postUsageRequest - Enter");
-//        Map<String, String> headers = new HashMap<>();
-        GsonRequest request = new GsonRequest(url, dataToPost, String.class, null,
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type","application/json");
+        Log.i(LOG_TAG, "dataToPost = " + dataToPost);
+
+        GsonRequest request = new GsonRequest(url, dataToPost, String.class, headers, Request.Method.POST,
                 new Response.Listener<Gson>() {
                     @Override
                     public void onResponse(Gson response) {
@@ -637,16 +641,44 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     public void onErrorResponse(VolleyError error) {
                         // TODO retry / back-off procedue
                         if (DEBUG) Log.w(LOG_TAG, "postUsageRequest - Got positive answer");
-
                     }
                 }
         );
-        request.setTag("postTAG");
-//        volleyQueue.add(request);
+        request.setTag("usageStatsTag");
+        Log.i(LOG_TAG, "postUsageRequest - Adding to request queue");
+        volleyQueue.add(request);
     }
 
+    /**
+     * This method is çalled when the user wants to publish an offer
+     * @param dataToPost this is simply the data
+     */
+    @SuppressWarnings("unchecked")
     private void postOfferRequest(HashMap<String, String> dataToPost) {
-        postUsageRequest(new ArrayList<>(Collections.singleton(dataToPost)));
+        String url = "http://192.168.178.206:3000/posts";
+        if (DEBUG) Log.i(LOG_TAG, "postUsageRequest - Enter");
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type","application/json");
+
+        GsonRequest request = new GsonRequest(url, dataToPost, String.class, headers, Request.Method.POST,
+                new Response.Listener<Gson>() {
+                    @Override
+                    public void onResponse(Gson response) {
+                        if (DEBUG) Log.i(LOG_TAG, "postUsageRequest - Got positive answer");
+                    }
+                },
+                new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO retry / back-off procedue
+                        if (DEBUG) Log.w(LOG_TAG, "postUsageRequest - Got positive answer");
+                    }
+                }
+        );
+        request.setTag("postOfferTag");
+        if (DEBUG) Log.i(LOG_TAG, "postUsageRequest - Adding to request queue");
+        volleyQueue.add(request);
     }
 
     /* ***************** ***************** ***************** *****************
@@ -691,7 +723,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
 
         if (savedInstanceState == null) {
-
             if (DEBUG) Log.i(LOG_TAG, "onCreate - savedInstanceState is null");
             FragmentTransaction fmg = getSupportFragmentManager().beginTransaction();
             if (isalreadyregistered) {
@@ -935,13 +966,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @Override
     @SuppressWarnings("unchecked")
-    public void onListFragmentInteraction(String nameAndFirstName, String source_city,
-                                          String source_country, String destination_city,
-                                          String destination_country, String n_packets,
-                                          String phone_number, String comments, int thepos) {
+    public void onListFragmentInteraction(String nameAndFirstName, String pickup_city,
+                                          String pickup_country,String pickup_date, String dropoff_city,
+                                          String dropoff_country, String n_packets,
+                                          String package_size, String picture, String phone_number,
+                                          String comments, int thepos) {
         if (DEBUG) Log.i(LOG_TAG, "onListFragmentInteraction - Received a click - content is");
         if (DEBUG) Log.i(LOG_TAG, "onListFragmentInteraction - nameAndFirstName = " + nameAndFirstName);
-        if (DEBUG) Log.i(LOG_TAG, "onListFragmentInteraction - source_city = " + source_city);
+        if (DEBUG) Log.i(LOG_TAG, "onListFragmentInteraction - source_city = " + pickup_city);
 
         u0.put(getString(R.string.fName),"itemFragment");
 
@@ -958,8 +990,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         new HandleReportingAsync().execute(u0,u1);
 
         detailsFragment =
-                OfferDetail.newInstance(nameAndFirstName, source_city, source_country,
-                        destination_city, destination_country, n_packets,
+                OfferDetail.newInstance(nameAndFirstName, pickup_city, pickup_country, pickup_date,
+                        dropoff_city, dropoff_country, n_packets, package_size, picture,
                         phone_number, comments);
         getSupportFragmentManager()
                 .beginTransaction()

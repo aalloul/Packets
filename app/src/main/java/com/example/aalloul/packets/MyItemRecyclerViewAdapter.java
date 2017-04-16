@@ -28,7 +28,7 @@ import static com.example.aalloul.packets.DataBaseContracts.Postmen.COLUMN_NAME_
 class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewAdapter.ViewHolder> {
 
     private final static String LOG_TAG = MyItemRecyclerViewAdapter.class.getSimpleName();
-    private final static boolean DEBUG = true;
+    private final static boolean DEBUG = false;
 
 //    private Cursor cursor;
     private final ArrayList<String> firstnames = new ArrayList<>();
@@ -92,6 +92,7 @@ class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewA
                 pictures.add(cursor.getString(cursor.getColumnIndex(COLUMN_NAME_PICTURE)));
             } else {
                 if (DEBUG) Log.i(LOG_TAG, "MyItemRecyclerViewAdapter - Picture not found");
+                pictures.add(null);
             }
 
             dropoff_cities.add(cursor.getString(cursor.getColumnIndex(COLUMN_NAME_DROPOFFCITY)));
@@ -159,9 +160,9 @@ class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewA
 
         holder.pickup_city.setText(pickup_cities.get(holder.getAdapterPosition()));
         holder.dropoff_city.setText(dropoff_cities.get(holder.getAdapterPosition()));
+
         holder.pickup_date.setText(
-                Utilities.Epoch2DateStringMillis(
-                        pickup_dates.get(holder.getAdapterPosition()),"dd MMM"));
+                Utilities.Epoch2Date(pickup_dates.get(holder.getAdapterPosition()),"dd MMM"));
 
         temp = transport_methods.get(position);
         if (temp.equals("Car")) {
@@ -178,6 +179,22 @@ class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewA
             holder.transport_icon.setImageResource(R.drawable.car);
         }
 
+        // Set the picture, if available
+        if (pictures.get(holder.getAdapterPosition()) == null ||
+                pictures.get(holder.getAdapterPosition()).equals("")
+                ) {
+            if (DEBUG) Log.i(LOG_TAG, "onBindViewHolder - picture is not null");
+            holder.transporter_pic.setImageResource(R.mipmap.user_icon_bevel);
+        } else {
+            if (DEBUG) Log.i(LOG_TAG, "onBindViewHolder - picture is not null");
+            holder.transporter_pic.setImageBitmap(
+                    Utilities.StringToBitMap(
+                            pictures.get(holder.getAdapterPosition())
+                    )
+            );
+
+        }
+
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -186,12 +203,16 @@ class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewA
                     // fragment is attached to one) that an item has been selected.
                     if (DEBUG) Log.i(LOG_TAG, " onBindViewHolder - The click is on");
                     if (DEBUG) Log.i(LOG_TAG, " onBindViewHolder - "+firstnames.get(holder.getAdapterPosition()));
-                    mListener.onListFragmentInteraction(firstnames.get(holder.getAdapterPosition()),
+                    mListener.onListFragmentInteraction(
+                            firstnames.get(holder.getAdapterPosition()),
                             pickup_cities.get(holder.getAdapterPosition()),
                             pickup_countries.get(holder.getAdapterPosition()),
+                            pickup_dates.get(holder.getAdapterPosition()),
                             dropoff_cities.get(holder.getAdapterPosition()),
                             dropoff_countries.get(holder.getAdapterPosition()),
                             n_packets.get(holder.getAdapterPosition()),
+                            package_sizes.get(holder.getAdapterPosition()),
+                            pictures.get(holder.getAdapterPosition()),
                             phone_numbers.get(holder.getAdapterPosition()),
                             comments.get(holder.getAdapterPosition()), holder.getAdapterPosition());
                 }

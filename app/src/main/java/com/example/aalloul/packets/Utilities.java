@@ -1,6 +1,4 @@
 package com.example.aalloul.packets;
-import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.Nullable;
@@ -8,7 +6,6 @@ import android.support.design.widget.Snackbar;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -22,10 +19,6 @@ import java.util.HashMap;
 final class Utilities {
     private static HashMap<String, String> countries = new HashMap<>();
     final static String LOG_TAG = "Utilities";
-
-    public Bitmap getImage(byte[] theimage){
-        return BitmapFactory.decodeByteArray(theimage, 0, theimage.length);
-    }
 
     // Maps country name to its code
     static String CountryToCountryCode(String country){
@@ -290,28 +283,48 @@ final class Utilities {
 
     }
 
-    // Epoch to date
-    static String Epoch2DateStringSeconds(long epochSeconds, String formatString) {
-        Date updatedate = new Date(epochSeconds * 1000);
-        SimpleDateFormat format = new SimpleDateFormat(formatString);
-        return format.format(updatedate);
+    /**
+     * This function converts a String into a date formatted as required by formatString.
+     * Check performed:
+     *   if year > 2017 && year < 2100 -> date was in milliseconds
+     *   else date was in seconds
+     * @param epoch the epoch timestamp formatted as a String
+     * @param formatString the output format
+     * @return formatted string
+     */
+    static String Epoch2Date(String epoch, String formatString){
+        Date updatedate;
+        SimpleDateFormat out_format = new SimpleDateFormat(formatString);
+        SimpleDateFormat test_format = new SimpleDateFormat("yyyy");
+
+        long epoch_long = Long.parseLong(epoch);
+        updatedate = new Date(epoch_long);
+        if (Integer.parseInt(test_format.format(updatedate)) > 2017 &&
+                Integer.parseInt(test_format.format(updatedate)) < 2100) {
+            return (out_format.format(updatedate));
+        } else {
+            return out_format.format(new Date(epoch_long*1000));
+        }
     }
-    static String Epoch2DateStringSeconds(String epochSeconds, String formatString) {
-        Long epochSeconds2 = Long.parseLong(epochSeconds);
-        Date updatedate = new Date(epochSeconds2 * 1000);
-        SimpleDateFormat format = new SimpleDateFormat(formatString);
-        return format.format(updatedate);
-    }
-    static String Epoch2DateStringMillis(long epochSeconds, String formatString) {
-        Date updatedate = new Date(epochSeconds);
-        SimpleDateFormat format = new SimpleDateFormat(formatString);
-        return format.format(updatedate);
-    }
-    static String Epoch2DateStringMillis(String epochSeconds, String formatString) {
-        Long epochSeconds2 = Long.parseLong(epochSeconds);
-        Date updatedate = new Date(epochSeconds2);
-        SimpleDateFormat format = new SimpleDateFormat(formatString);
-        return format.format(updatedate);
+
+    /**
+     * Same as above but the input is now a long instead of a String
+     * @param epoch Unix epoch in seconds or milliseconds
+     * @param formatString output format
+     * @return formatted String
+     */
+    static String Epoch2Date(long epoch, String formatString){
+        Date updatedate;
+        SimpleDateFormat out_format = new SimpleDateFormat(formatString);
+        SimpleDateFormat test_format = new SimpleDateFormat("yyyy");
+
+        updatedate = new Date(epoch);
+        if (Integer.parseInt(test_format.format(updatedate)) > 2017 &&
+                Integer.parseInt(test_format.format(updatedate)) < 2100) {
+            return (out_format.format(updatedate));
+        } else {
+            return out_format.format(new Date(epoch*1000));
+        }
     }
 
     static String Date2EpochMillis(String date, String formatString) {
@@ -327,14 +340,8 @@ final class Utilities {
         return "";
     }
 
-    static String Date2EpochSeconds(String date, String formatString) {
-        String millis = Date2EpochMillis(date, formatString);
-        if (millis.equals("")) return "";
-        return Long.toString(Long.getLong(millis)/1000);
-    }
-
     static String getTomorrow(String format) {
-        return Epoch2DateStringMillis(CurrentTimeMS() + 24*3600*1000, format);
+        return Epoch2Date(CurrentTimeMS() + 24*3600*1000, format);
     }
 
     static String DateToDate(String date, String inputFormat,String outputFormat) {
@@ -353,14 +360,6 @@ final class Utilities {
     // Gets the current time in ms
     static long CurrentTimeMS() {
         return System.currentTimeMillis();
-    }
-
-    static long CurrentTimeS() { return Math.round(System.currentTimeMillis()/1000); }
-
-    // Hide the keyboard
-    static void hideKeyboardFrom(Context context, View view) {
-        InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     // The snackbar

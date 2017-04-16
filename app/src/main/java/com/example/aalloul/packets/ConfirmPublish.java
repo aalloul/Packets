@@ -152,7 +152,7 @@ public class ConfirmPublish extends Fragment {
         firstname_edit = (EditText) view.findViewById(R.id.confirm_first_name);
         surname_edit = (EditText) view.findViewById(R.id.confirm_surname);
         phone_edit = (EditText) view.findViewById(R.id.confirm_phone_number);
-        comment_user = (EditText) view.findViewById(R.id.comment_user);
+        comment_user = (EditText) view.findViewById(R.id.comment_transporter);
 
         if (!mpers_details.get(getString(R.string.saved_user_firstname)).equals("")) {
 //            if(DEBUG) Log.i(LOG_TAG, "onCreateView - mpers_details = "+mpers_details.toString());

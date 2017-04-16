@@ -1,6 +1,7 @@
 package com.example.aalloul.packets;
 
 import android.content.Context;
+import android.graphics.Picture;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import java.util.HashMap;
 
@@ -32,6 +34,9 @@ public class OfferDetail extends Fragment {
     private static final String ARG_COMMENTS = "comments";
     private static final String ARG_PICKUP_COUNTRY = "pickup_country";
     private static final String ARG_DROPOFF_COUNTRY = "dropoff_country";
+    private static final String ARG_PACKAGE_SIZE = "package_size";
+    private static final String ARG_PICTURE = "picture";
+    private static final String ARG_PICKUP_DATE = "pickup_date";
     private String nameAndFirstName;
     private String pickup_city;
     private String dropoff_city;
@@ -40,11 +45,14 @@ public class OfferDetail extends Fragment {
     private String comments;
     private String dropoff_country;
     private String pickup_country;
+    private String picture;
+    private String package_size;
+    private String pickup_date;
     private long fragment_start_time;
     private ImageButton callButton;
     private ImageButton sendMessage;
     private OnFragmentInteractionListener mListener;
-    private final static boolean DEBUG = false;
+    private final static boolean DEBUG = true;
 
     public OfferDetail() {
         // Required empty public constructor
@@ -54,15 +62,14 @@ public class OfferDetail extends Fragment {
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-     *
      * @param nameAndFirstName Parameter 1.
      * @param pickup_city Parameter 2.
      * @return A new instance of fragment OfferDetail.
      */
-    // TODO: Rename and change types and number of parameters
     public static OfferDetail newInstance(String nameAndFirstName, String pickup_city,
-                                          String pickup_country, String dropoff_city,
-                                          String dropoff_country,String n_packets,
+                                          String pickup_country, String pickup_date,
+                                          String dropoff_city, String dropoff_country,
+                                          String n_packets, String package_size, String picture,
                                           String phone_number, String comments) {
         if (DEBUG) Log.i(LOG_TAG, "newInstance - Start");
         OfferDetail fragment = new OfferDetail();
@@ -77,6 +84,9 @@ public class OfferDetail extends Fragment {
         args.putString(ARG_COMMENTS, comments);
         args.putString(ARG_PICKUP_COUNTRY, pickup_country);
         args.putString(ARG_DROPOFF_COUNTRY, dropoff_country);
+        args.putString(ARG_PACKAGE_SIZE, package_size);
+        args.putString(ARG_PICTURE, picture);
+        args.putString(ARG_PICKUP_DATE, pickup_date);
 
         fragment.setArguments(args);
         if (DEBUG) Log.i(LOG_TAG, "newInstance - Exit");
@@ -98,6 +108,9 @@ public class OfferDetail extends Fragment {
             comments = getArguments().getString(ARG_COMMENTS);
             dropoff_country = getArguments().getString(ARG_DROPOFF_COUNTRY);
             pickup_country = getArguments().getString(ARG_PICKUP_COUNTRY);
+            package_size = getArguments().getString(ARG_PACKAGE_SIZE);
+            picture = getArguments().getString(ARG_PICTURE);
+            pickup_date = getArguments().getString(ARG_PICKUP_DATE);
         }
         if (DEBUG) Log.i(LOG_TAG, "onCreate - Exit");
     }
@@ -118,21 +131,32 @@ public class OfferDetail extends Fragment {
         final TextView dropoffcity = (TextView) view.findViewById(R.id.going_to);
         dropoffcity.setText(dropoff_city);
 
-        final TextView pickup_date = (TextView) view.findViewById(R.id.pickup_date_offer);
-        pickup_date.setText("Feb 20");
+        final TextView pickup_date_ui = (TextView) view.findViewById(R.id.pickup_date_offer);
+        pickup_date_ui.setText(Utilities.Epoch2Date(pickup_date, "dd MMM"));
 
+        final ImageView picture_ui = (ImageView) view.findViewById(R.id.transporter_picture_detail);
 
-        final TextView descriptionTextView = (TextView) view.findViewById(R.id.description);
-        // Convert date to human readable
-        String departure_date = "departure_date";
-        String arrival_date = "arrival_date";
-        // Build description
-        String mystr = String.format("%s is going from %s (%s) to %s (%s). He will depart at " +
-                "%s and should arrive around %s. \nTo call him, press the phone" +
-                "icon below. \nYou can also send him a message.",
-                nameAndFirstName, pickup_city, pickup_country, dropoff_city, dropoff_country,
-                departure_date, arrival_date);
-        descriptionTextView.setText(mystr);
+        if (picture != null && !picture.equals("")) {
+            picture_ui.setImageBitmap(Utilities.StringToBitMap(picture));
+            picture_ui.setScaleX(1);
+            picture_ui.setScaleY(1);
+        }
+
+        final TextView descriptionTextView = (TextView) view.findViewById(R.id.comment_transporter);
+        if (comments == null || comments.equals("") ) {
+            // Convert date to human readable
+            String departure_date = "departure_date";
+            String arrival_date = "arrival_date";
+            // Build description
+            String mystr = String.format("%s is going from %s (%s) to %s (%s). He will depart at " +
+                            "%s and should arrive around %s. \nTo call him, press the phone" +
+                            "icon below. \nYou can also send him a message.",
+                    nameAndFirstName, pickup_city, pickup_country, dropoff_city, dropoff_country,
+                    departure_date, arrival_date);
+            descriptionTextView.setText(mystr);
+        } else {
+            descriptionTextView.setText(comments);
+        }
 
         // Call action
         callButton = (ImageButton) view.findViewById(R.id.callButton);
@@ -193,16 +217,6 @@ public class OfferDetail extends Fragment {
         return t;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onCallButtonPress(String phoneNumber);

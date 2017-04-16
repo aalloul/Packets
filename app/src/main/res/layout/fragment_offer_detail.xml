@@ -26,103 +26,110 @@
             android:layout_height="120dp">
 
             <ImageView
+                android:id="@+id/transporter_picture_detail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@mipmap/user_icon_bevel"
-                android:id="@+id/theimage"
-                android:scaleX="2"
-                android:scaleY="2"
-                android:layout_marginStart="30dp"
+                android:layout_centerVertical="false"
                 android:layout_marginLeft="30dp"
-                android:layout_centerVertical="true" />
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="20dp"
+                android:scaleX="1.5"
+                android:scaleY="1.5"
+                app:srcCompat="@mipmap/user_icon_bevel" />
 
             <TextView
-                android:text="first name "
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:id="@+id/name"
-                android:layout_toRightOf="@+id/theimage"
-                android:textColor="@android:color/black"
-                android:textSize="18sp"
-                android:layout_marginLeft="30dp"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="20dp" />
-
-            <TextView
-                android:text="departure city"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="20dp"
+                android:layout_toRightOf="@+id/transporter_picture_detail"
+                android:text="first name "
+                android:textColor="@android:color/black"
+                android:textSize="14sp" />
+
+            <TextView
                 android:id="@+id/going_from"
-                android:layout_toRightOf="@+id/theimage"
-                android:layout_below="@+id/name"
-                android:layout_marginLeft="30dp"
-                android:layout_marginStart="30dp"
-                android:textColor="@android:color/black"
-                android:textSize="18sp" />
-
-            <TextView
-                android:text="e"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/going_to"
-                android:layout_below="@+id/going_from"
-                android:layout_toRightOf="@+id/theimage"
+                android:layout_below="@+id/name"
+                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="30dp"
                 android:layout_marginStart="30dp"
+                android:layout_toRightOf="@+id/transporter_picture_detail"
+                android:text="departure city"
                 android:textColor="@android:color/black"
-                android:textSize="18sp" />
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/going_to"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/going_from"
+                android:layout_marginLeft="30dp"
+                android:layout_marginStart="30dp"
+                android:layout_toRightOf="@+id/transporter_picture_detail"
+                android:text="e"
+                android:textColor="@android:color/black"
+                android:textSize="14sp" />
 
             <ImageView
+                android:id="@+id/travel_by"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/car"
-                android:id="@+id/travel_by"
-                android:layout_below="@+id/theimage"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@+id/name"
+                android:layout_marginEnd="20dp"
                 android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:layout_marginStart="20dp"
-                android:layout_toLeftOf="@+id/pickup_date_offer" />
+                android:layout_marginTop="48dp"
+                app:srcCompat="@drawable/car" />
 
             <TextView
-                android:text="Feb 20"
+                android:id="@+id/pickup_date_offer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/pickup_date_offer"
-                android:layout_below="@+id/theimage"
-                android:textColor="@android:color/black"
-                android:layout_marginTop="5dp"
                 android:layout_alignParentBottom="false"
-                android:layout_alignParentEnd="true"
+                android:layout_alignParentEnd="false"
+                android:layout_below="@+id/name"
                 android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp" />
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="55dp"
+                android:layout_toStartOf="@+id/travel_by"
+                android:text="Feb 20"
+                android:textColor="@android:color/black" />
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/relative_detail_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/relative_detail_1"
-            android:background="@color/white"
-            android:id="@+id/relative_detail_2"
-            android:layout_marginTop="40dp"
             android:layout_marginBottom="20dp"
             android:layout_marginEnd="20dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginStart="20dp"
+            android:layout_marginTop="40dp"
+            android:background="@color/white"
             android:fadingEdge="horizontal|vertical"
             android:fadingEdgeLength="100dp">
 
             <TextView
-                android:text="TextView"
+                android:id="@+id/comment_transporter"
                 android:layout_width="match_parent"
-                android:id="@+id/description"
-                android:inputType="textMultiLine"
+                android:layout_height="250dp"
                 android:elevation="24dp"
+                android:fadingEdge="horizontal|vertical"
+                android:fadingEdgeLength="100dp"
+                android:inputType="textMultiLine"
                 android:paddingLeft="10dp"
                 android:paddingStart="10dp"
                 android:paddingTop="10dp"
-                android:fadingEdge="horizontal|vertical"
-                android:fadingEdgeLength="100dp"
-                android:layout_height="250dp" />
+                android:text="TextView" />
         </RelativeLayout>
 
         <RelativeLayout

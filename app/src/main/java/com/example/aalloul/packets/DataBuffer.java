@@ -44,6 +44,7 @@ class DataBuffer {
             first_update = Utilities.CurrentTimeMS();
         }
 
+        if (DEBUG) Log.i(LOG_TAG, "updateLoggerData - loggerData "+loggerData);
         if (DEBUG) Log.i(LOG_TAG, "updateLoggerData - Exit");
     }
 
@@ -68,17 +69,18 @@ class DataBuffer {
     static ArrayList<HashMap<String,String>> getTheData() {
         if (DEBUG) Log.i(LOG_TAG, "getTheData - Enter");
 
+        if (DEBUG) Log.i(LOG_TAG, "getTheData - loggerData = " + loggerData);
         if (loggerData.isEmpty()) {
             return null;
         }
-
+        ArrayList<HashMap<String, String>> jsonData = new ArrayList<>();
         final ReentrantLock posterlock = new ReentrantLock();
-        ArrayList<HashMap<String, String>> jsonData;
+
         if (DEBUG) Log.i(LOG_TAG, "acquiring lock");
 
         posterlock.lock();
         try {
-            jsonData = loggerData;
+            jsonData.addAll(loggerData);
             loggerData.clear();
         } finally {
             posterlock.unlock();
@@ -89,7 +91,7 @@ class DataBuffer {
         if (DEBUG) Log.i(LOG_TAG, "getTheData - Update the timer");
         resetTheTime();
 
-        if (DEBUG) Log.i(LOG_TAG, "getTheData - Exit");
+        if (DEBUG) Log.i(LOG_TAG, "getTheData - jsonData = " + jsonData);
         return jsonData;
     }
 

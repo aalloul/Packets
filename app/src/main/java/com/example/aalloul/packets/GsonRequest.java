@@ -28,19 +28,19 @@ class GsonRequest<T> extends Request<T> {
     private final Response.Listener<T> listener;
     private final Object dataIn;
     private final static String LOG_TAG = GsonRequest.class.getSimpleName();
-    private final static boolean DEBUG = false;
+    private final static boolean DEBUG = true;
 
     /**
-     * Make a GET request and return a parsed object from JSON.
+     * Make a request and return a parsed object from JSON.
      * We allow for ArrayList of HashMaps and also a single HashMap
      * @param url URL of the request to make
      * @param clazz Relevant class object, for Gson's reflection
      * @param headers Map of request headers
      */
     GsonRequest(String url, ArrayList<HashMap<String, String>> dataIn, Class<T> clazz,
-                Map<String, String> headers, Response.Listener<T> listener,
+                Map<String, String> headers, int method, Response.Listener<T> listener,
                 Response.ErrorListener errorListener) {
-        super(Method.GET, url, errorListener);
+        super(method, url, errorListener);
 
         this.dataIn = dataIn;
         this.clazz = clazz;
@@ -50,9 +50,9 @@ class GsonRequest<T> extends Request<T> {
     }
 
     GsonRequest(String url, HashMap<String, String> dataIn, Class<T> clazz,
-                Map<String, String> headers, Response.Listener<T> listener,
+                Map<String, String> headers, int method, Response.Listener<T> listener,
                 Response.ErrorListener errorListener) {
-        super(Method.GET, url, errorListener);
+        super(method, url, errorListener);
 
         this.dataIn = dataIn;
         this.clazz = clazz;
@@ -74,22 +74,33 @@ class GsonRequest<T> extends Request<T> {
         if (DEBUG) Log.i(LOG_TAG, "deliverResponse - Exit");
     }
 
-//    @Override
-//    public byte[] getBody() throws AuthFailureError {
-//        if (DEBUG) Log.i(LOG_TAG, "getBody - Enter");
-//        return null;
-////        return gson.toJson(dataIn).getBytes();
-//    }
+    @Override
+    public byte[] getBody() throws AuthFailureError {
+        if (DEBUG) Log.i(LOG_TAG, "getBody - Enter");
+        return gson.toJson(dataIn).getBytes();
+    }
 
+    /**
+     * This method is called to parse the NetworkResponse --
+     *   if the method is a POST, we ignore the response from the back-end as it's supposed to be
+     *   an HTTP 200 type.
+     *   if the method is a GET, it means we're trying to get new offers and the response should be
+     *   parsed accordingly
+     * @param response
+     * @return the parsed response
+     */
     @Override
     protected Response<T> parseNetworkResponse(NetworkResponse response) {
         if (DEBUG) Log.i(LOG_TAG, "parseNetworkResponse - Enter");
-
         try {
             String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
             if (DEBUG) Log.i(LOG_TAG, "parseNetworkResponse - json = " + json);
-            return Response.success(gson.fromJson(json, clazz),
-                    HttpHeaderParser.parseCacheHeaders(response));
+            if (getMethod() == Method.POST) {
+                return Response.success(null, HttpHeaderParser.parseCacheHeaders(response));
+            } else {
+                return Response.success(gson.fromJson(json, clazz),
+                        HttpHeaderParser.parseCacheHeaders(response));
+            }
         } catch (UnsupportedEncodingException e) {
             return Response.error(new ParseError(e));
         } catch (JsonSyntaxException e) {

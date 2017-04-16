@@ -72,7 +72,8 @@ class Postman {
                 Postmen.COLUMN_NAME_DROPOFFCITY, Postmen.COLUMN_NAME_DROPOFFCOUNTRY,
                 Postmen.COLUMN_NAME_PICKUPDATE, Postmen.COLUMN_NAME_DROPOFFDATE,
                 Postmen.COLUMN_NAME_USERCOMMENT, Postmen.COLUMN_NAME_PHONENUMBER,
-                Postmen.COLUMN_NAME_SIZEPACKAGES, Postmen.COLUMN_NAME_TRAVELBY};
+                Postmen.COLUMN_NAME_SIZEPACKAGES, Postmen.COLUMN_NAME_TRAVELBY,
+                Postmen.COLUMN_NAME_PICTURE};
 
         // Sort order
         String sortOrder = Postmen.COLUMN_NAME_PICKUPDATE+ " ASC";

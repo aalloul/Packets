@@ -142,11 +142,11 @@ public class ItemFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(String nameAndFirstName, String source_city,
-                                       String source_country,  String destination_city,
-                                       String destination_country, String pickup_date,
-                                       String n_packets, String package_size, String picture,
-                                       String phone_number, String comments, int thepos );
+        void onOfferSelected(String nameAndFirstName, String source_city, String source_country,
+                             String destination_city, String destination_country, String pickup_date,
+                             String n_packets, String package_size, String picture,
+                             String phone_number, String transport_methods, String comments,
+                             int thepos);
     }
 
 

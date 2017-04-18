@@ -32,7 +32,7 @@ public class ConfirmPublish extends Fragment {
     private static final String ARG_TRIP_DETAILS= "trip_details";
     private final static String LOG_TAG = ConfirmPublish.class.getSimpleName();
     private HashMap<String, String> mpers_details, mtrip_details;
-    private final static boolean DEBUG = true;
+    private final static boolean DEBUG = false;
 
     private EditText firstname_edit, surname_edit, phone_edit, comment_user ;
     private TextView caption_confirm_user_picture;
@@ -135,7 +135,7 @@ public class ConfirmPublish extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.i(LOG_TAG, "onCreateView - start");
+        if (DEBUG) Log.i(LOG_TAG, "onCreateView - start");
         // Inflate the layout for this fragment
         view =  inflater.inflate(R.layout.fragment_confirm_publish, container, false);
         caption_confirm_user_picture = (TextView) view.findViewById(
@@ -232,7 +232,7 @@ public class ConfirmPublish extends Fragment {
     }
 
     public void setUserPicture(Bitmap imageBitmap){
-        Log.i(LOG_TAG, "setUserPicture - enter");
+        if (DEBUG) Log.i(LOG_TAG, "setUserPicture - enter");
 
         // This method is only called when the user chooses to edit his profile picture
         // before publishing a new offer
@@ -247,7 +247,7 @@ public class ConfirmPublish extends Fragment {
 
     public boolean checkInputs() {
 
-        Log.i(LOG_TAG, "checkInputs - Enter");
+        if (DEBUG) Log.i(LOG_TAG, "checkInputs - Enter");
 
         if (firstname_edit.getText() == null || firstname_edit.getText().toString().equals("")) {
             return false;

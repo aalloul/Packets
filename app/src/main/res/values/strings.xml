@@ -4,7 +4,12 @@
     <string name="mainActivity">Shippy - The delivery community</string>
     <string name="permission_position_explanation">Hey! can we know where you are?</string>
     <string name="permission_position_explanation_ok">Fair enough</string>
-    <string name="explain_usage_search">Please use the search bar to find deliverers.</string>
+    <string name="explain_usage_search">The below square is your main interaction point with the Shippy Community:</string>
+    <string name="explain_usage_search2"> 1- Choose a pick-up city</string>
+    <string name="explain_usage_search3"> 2- Choose a pick-up date</string>
+    <string name="explain_usage_search4"> 3- Choose the number and size of the packages</string>
+    <string name="explain_usage_search5"> 4- Choose a drop-off city</string>
+    <string name="explain_usage_search6">Then either hit the \"Search\" button if you want to see the available offers for this trip or the \"Publish\" button if you want to offer this trip.</string>
     <string name="sendfromtext">Send From</string>
     <string name="sendtotext">Send To</string>
     <string name="title_activity_the_search">Search for available offers</string>

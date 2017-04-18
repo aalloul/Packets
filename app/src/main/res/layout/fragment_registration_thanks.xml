@@ -6,16 +6,17 @@
     android:background="@drawable/frog_background2">
 
     <TextView
-        android:text="@string/explanation_main_activity_pt2"
+        android:id="@+id/thank_you_registering"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/thank_you_registering"
-        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="false"
+        android:layout_marginTop="20dp"
+        android:backgroundTintMode="src_in"
+        android:text="@string/explanation_main_activity_pt2"
         android:textColor="@color/white"
         android:textSize="36sp"
-        android:textStyle="normal|bold"
-        android:backgroundTintMode="src_in"
-        android:layout_centerHorizontal="true" />
+        android:textStyle="normal|bold" />
 
     <!--<TextView-->
         <!--android:layout_width="wrap_content"-->

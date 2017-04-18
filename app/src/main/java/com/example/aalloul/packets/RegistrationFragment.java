@@ -91,7 +91,7 @@ public class RegistrationFragment extends Fragment {
             picture_ui.setImageBitmap(Utilities.StringToBitMap(bnp));
             picture_bitmap = bnp;
             caption_user_picture = (TextView) view.findViewById(R.id.caption_user_picture);
-            caption_user_picture.setText("");
+            caption_user_picture.setText(null);
         } else {
             if (DEBUG) Log.i(LOG_TAG, "restoreUserPicture - bnp is null");
             caption_user_picture = (TextView) view.findViewById(R.id.caption_user_picture);
@@ -249,21 +249,13 @@ public class RegistrationFragment extends Fragment {
 
         user_detailed_location = details;
         if (details == null) {
-            location_ui.setText(getString(R.string.updating_location));
             return;
         }
 
-        if (DEBUG) Log.i(LOG_TAG, "set_user_detailed_location - details = " + details.toString());
         String tmp = details.get(getString(R.string.saved_user_city));
         if (DEBUG) Log.i(LOG_TAG, "set_user_detailed_location - city = " + tmp);
 
-        if (tmp == null) {
-            location_ui.setText(getString(R.string.updating_location));
-            return;
-        }
-
-        if (tmp.equals("")) {
-            location_ui.setText(getString(R.string.updating_location));
+        if (tmp == null || tmp.equals("")) {
             return;
         }
 
@@ -278,7 +270,6 @@ public class RegistrationFragment extends Fragment {
             tmp += " (" + tmp2 + ")";
         }
 
-//        setLocation(tmp);
         location_ui.setText(tmp);
     }
 

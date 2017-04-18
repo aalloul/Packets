@@ -9,6 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.android.gms.vision.text.Text;
+
 import java.util.HashMap;
 
 
@@ -27,6 +30,7 @@ public class OfferDetail extends Fragment {
     private static final String ARG_PACKAGE_SIZE = "package_size";
     private static final String ARG_PICTURE = "picture";
     private static final String ARG_PICKUP_DATE = "pickup_date";
+    private static final String ARG_TRANSPORT_METHOD = "transport_method";
     private String nameAndFirstName;
     private String pickup_city;
     private String dropoff_city;
@@ -39,12 +43,9 @@ public class OfferDetail extends Fragment {
     private String package_size;
     private String pickup_date;
     private long fragment_start_time;
-    private ImageButton callButton;
-    private ImageButton sendMessage;
     private OnFragmentInteractionListener mListener;
     private final static boolean DEBUG = false;
-
-    //TODO refactor the view here
+    private String transport_method;
 
     public OfferDetail() {
         // Required empty public constructor
@@ -55,7 +56,8 @@ public class OfferDetail extends Fragment {
                                           String pickup_country, String pickup_date,
                                           String dropoff_city, String dropoff_country,
                                           String n_packets, String package_size, String picture,
-                                          String phone_number, String comments) {
+                                          String phone_number, String transport_methods,
+                                          String comments) {
         if (DEBUG) Log.i(LOG_TAG, "newInstance - Start");
         OfferDetail fragment = new OfferDetail();
         Bundle args = new Bundle();
@@ -72,6 +74,7 @@ public class OfferDetail extends Fragment {
         args.putString(ARG_PACKAGE_SIZE, package_size);
         args.putString(ARG_PICTURE, picture);
         args.putString(ARG_PICKUP_DATE, pickup_date);
+        args.putString(ARG_TRANSPORT_METHOD, transport_methods);
 
         fragment.setArguments(args);
         if (DEBUG) Log.i(LOG_TAG, "newInstance - Exit");
@@ -96,6 +99,7 @@ public class OfferDetail extends Fragment {
             package_size = getArguments().getString(ARG_PACKAGE_SIZE);
             picture = getArguments().getString(ARG_PICTURE);
             pickup_date = getArguments().getString(ARG_PICKUP_DATE);
+            transport_method = getArguments().getString(ARG_TRANSPORT_METHOD);
         }
         if (DEBUG) Log.i(LOG_TAG, "onCreate - Exit");
     }
@@ -125,6 +129,8 @@ public class OfferDetail extends Fragment {
             picture_ui.setImageBitmap(Utilities.StringToBitMap(picture));
             picture_ui.setScaleX(1);
             picture_ui.setScaleY(1);
+            picture_ui.setBackground(null);
+            picture_ui.setScaleType(ImageView.ScaleType.CENTER_CROP);
         }
 
         final TextView descriptionTextView = (TextView) view.findViewById(R.id.comment_transporter);
@@ -143,8 +149,34 @@ public class OfferDetail extends Fragment {
             descriptionTextView.setText(comments);
         }
 
+        switch (package_size) {
+            case "Small":
+                ((TextView) view.findViewById(R.id.size_package_detail)).setText("S");
+                break;
+            case "Medium":
+                ((TextView) view.findViewById(R.id.size_package_detail)).setText("M");
+                break;
+            case "Large":
+                ((TextView) view.findViewById(R.id.size_package_detail)).setText("L");
+                break;
+        }
+
+        ((TextView) view.findViewById(R.id.number_packages_detail)).setText("x"+n_packets);
+
+        switch (transport_method) {
+            case "Car":
+                ((ImageView) view.findViewById(R.id.travel_by)).setImageResource(R.drawable.car);
+                break;
+            case "Train":
+                ((ImageView) view.findViewById(R.id.travel_by)).setImageResource(R.drawable.train);
+                break;
+            case "Plane":
+                ((ImageView) view.findViewById(R.id.travel_by)).setImageResource(R.drawable.plane);
+                break;
+        }
+
         // Call action
-        callButton = (ImageButton) view.findViewById(R.id.callButton);
+        ImageButton callButton = (ImageButton) view.findViewById(R.id.callButton);
         callButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -153,7 +185,7 @@ public class OfferDetail extends Fragment {
         });
 
         // Message action
-        sendMessage = (ImageButton) view.findViewById(R.id.messageButton);
+        ImageButton sendMessage = (ImageButton) view.findViewById(R.id.messageButton);
         sendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -13,108 +13,188 @@
         tools:context="com.example.aalloul.packets.OfferDetail"
         android:background="@drawable/frog_background">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_marginTop="20dp"
-            android:background="@color/white"
-            android:id="@+id/relative_detail_1"
-            android:layout_marginEnd="15dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginStart="15dp"
-            android:elevation="24dp"
-            android:layout_height="120dp">
+        <FrameLayout
+            android:id="@+id/frame1"
+            android:layout_width="wrap_content"
+            android:layout_height="120dp"
+            android:layout_margin="10dp"
+            android:alpha="0.8"
+            android:background="@drawable/frameborder"
+            android:backgroundTint="@color/white">
 
-            <ImageView
-                android:id="@+id/transporter_picture_detail"
+            <RelativeLayout
+                android:id="@+id/relative_detail_1"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="false"
-                android:layout_marginLeft="30dp"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="20dp"
-                android:scaleX="1.5"
-                android:scaleY="1.5"
-                app:srcCompat="@mipmap/user_icon_bevel" />
+                android:layout_height="120dp"
+                android:elevation="24dp">
 
-            <TextView
-                android:id="@+id/name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_marginLeft="30dp"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="20dp"
-                android:layout_toRightOf="@+id/transporter_picture_detail"
-                android:text="first name "
-                android:textColor="@android:color/black"
-                android:textSize="14sp" />
+                <TextView
+                    android:id="@+id/number_packages_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginBottom="6dp"
+                    android:layout_marginEnd="5dp"
+                    android:text="x2"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/going_from"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/name"
-                android:layout_marginBottom="5dp"
-                android:layout_marginLeft="30dp"
-                android:layout_marginStart="30dp"
-                android:layout_toRightOf="@+id/transporter_picture_detail"
-                android:text="departure city"
-                android:textColor="@android:color/black"
-                android:textSize="14sp" />
+                <ImageView
+                    android:id="@+id/package_icon_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="false"
+                    android:layout_alignParentLeft="false"
+                    android:layout_alignParentRight="false"
+                    android:layout_alignParentStart="false"
+                    android:layout_alignParentTop="false"
+                    android:layout_toLeftOf="@+id/number_packages"
+                    android:layout_toStartOf="@+id/number_packages_detail"
+                    android:background="@drawable/packageicon" />
 
-            <TextView
-                android:id="@+id/going_to"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/going_from"
-                android:layout_marginLeft="30dp"
-                android:layout_marginStart="30dp"
-                android:layout_toRightOf="@+id/transporter_picture_detail"
-                android:text="e"
-                android:textColor="@android:color/black"
-                android:textSize="14sp" />
+                <TextView
+                    android:id="@+id/size_package_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_toLeftOf="@+id/number_packages_detail"
+                    android:text="S"
+                    android:textColor="@android:color/black" />
 
-            <ImageView
-                android:id="@+id/travel_by"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_below="@+id/name"
-                android:layout_marginEnd="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="48dp"
-                app:srcCompat="@drawable/car" />
+                <RelativeLayout
+                    android:id="@+id/relative_detail_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_marginBottom="-5dp"
+                    android:layout_marginLeft="5dp">
 
-            <TextView
-                android:id="@+id/pickup_date_offer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="false"
-                android:layout_alignParentEnd="false"
-                android:layout_below="@+id/name"
-                android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="55dp"
-                android:layout_toStartOf="@+id/travel_by"
-                android:text="Feb 20"
-                android:textColor="@android:color/black" />
-        </RelativeLayout>
+                    <ImageView
+                        android:id="@+id/transporter_picture_detail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerInParent="false"
+                        android:layout_centerVertical="true"
+                        android:layout_marginBottom="4dp"
+                        android:scaleType="centerCrop"
+                        android:scaleX="1.5"
+                        android:scaleY="1.5"
+                        app:srcCompat="@mipmap/user_icon_bevel" />
+
+                    <TextView
+                        android:id="@+id/name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/transporter_picture_detail"
+                        android:layout_centerHorizontal="true"
+                        android:text="first name "
+                        android:textColor="@android:color/black"
+                        android:textSize="14sp" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/going_from"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_toRightOf="@+id/dot_from_detail"
+                    android:text="departure city"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/going_to"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/bar_detail"
+                    android:layout_toRightOf="@+id/dot_to_detail"
+                    android:text="arrival_city"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:id="@+id/travel_by"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="false"
+                    android:layout_below="@+id/going_from"
+                    android:layout_toRightOf="@+id/bar_detail"
+                    app:srcCompat="@drawable/car" />
+
+                <ImageView
+                    android:id="@+id/dot_from_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginStart="-5dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_toRightOf="@+id/relative_detail_1"
+                    android:adjustViewBounds="true"
+                    android:cropToPadding="true"
+                    android:scaleType="centerCrop"
+                    android:scaleX="0.5"
+                    android:scaleY="0.5"
+                    app:srcCompat="@drawable/dot" />
+
+                <ImageView
+                    android:id="@+id/bar_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginStart="-5dp"
+                    android:layout_marginTop="40dp"
+                    android:layout_toRightOf="@+id/relative_detail_1"
+                    android:rotation="90"
+                    app:srcCompat="@drawable/bar" />
+
+                <ImageView
+                    android:id="@+id/dot_to_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/bar_detail"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginStart="-5dp"
+                    android:layout_marginTop="-15dp"
+                    android:layout_toRightOf="@+id/relative_detail_1"
+                    android:adjustViewBounds="true"
+                    android:cropToPadding="true"
+                    android:scaleType="centerCrop"
+                    android:scaleX="0.5"
+                    android:scaleY="0.5"
+                    app:srcCompat="@drawable/dot" />
+
+                <TextView
+                    android:id="@+id/pickup_date_offer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="false"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="false"
+                    android:layout_marginEnd="7dp"
+                    android:text="Feb 20"
+                    android:textColor="@android:color/black" />
+            </RelativeLayout>
+        </FrameLayout>
 
         <RelativeLayout
             android:id="@+id/relative_detail_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/relative_detail_1"
+            android:layout_below="@+id/frame1"
             android:layout_marginBottom="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginStart="20dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="40dp"
-            android:background="@color/white"
+            android:alpha="0.8"
+            android:background="@drawable/frameborder"
+            android:elevation="11dp"
             android:fadingEdge="horizontal|vertical"
             android:fadingEdgeLength="100dp">
 
@@ -122,6 +202,7 @@
                 android:id="@+id/comment_transporter"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
+                android:background="@drawable/frameborder"
                 android:elevation="24dp"
                 android:fadingEdge="horizontal|vertical"
                 android:fadingEdgeLength="100dp"
@@ -129,7 +210,8 @@
                 android:paddingLeft="10dp"
                 android:paddingStart="10dp"
                 android:paddingTop="10dp"
-                android:text="TextView" />
+                android:text="TextView"
+                android:textColor="@android:color/black" />
         </RelativeLayout>
 
         <RelativeLayout

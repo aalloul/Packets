@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.aalloul.packets.ItemFragment.OnListFragmentInteractionListener;
+import com.google.android.gms.vision.text.Text;
+
 import java.util.ArrayList;
 import static com.example.aalloul.packets.DataBaseContracts.Postmen.COLUMN_NAME_DROPOFFDATE;
 import static com.example.aalloul.packets.DataBaseContracts.Postmen.COLUMN_NAME_FIRSTNAME ;
@@ -132,31 +134,11 @@ class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewA
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         if (DEBUG) Log.i(LOG_TAG, "onBindViewHolder - Start");
+        String temp;
 
         holder.firstName.setText(firstnames.get(holder.getAdapterPosition()));
-        String temp =n_packets.get(holder.getAdapterPosition());
-
-        switch (Integer.parseInt(temp)) {
-            case 1:
-                holder.package_icon.setImageResource(R.drawable.packageicon1);
-                break;
-            case 2:
-                holder.package_icon.setImageResource(R.drawable.packageicon2);
-                break;
-            case 3:
-                holder.package_icon.setImageResource(R.drawable.packageicon3);
-                break;
-            case 4:
-                holder.package_icon.setImageResource(R.drawable.packageicon4);
-                break;
-            case 5:
-                holder.package_icon.setImageResource(R.drawable.packageicon5);
-                break;
-            default:
-                holder.package_icon.setImageResource(R.drawable.packageicon);
-        }
-
-        holder.package_icon.setImageResource(R.drawable.packageicon1);
+//        String temp =n_packets.get(holder.getAdapterPosition());
+        holder.number_packages.setText("x"+n_packets.get(holder.getAdapterPosition()));
 
         holder.pickup_city.setText(pickup_cities.get(holder.getAdapterPosition()));
         holder.dropoff_city.setText(dropoff_cities.get(holder.getAdapterPosition()));
@@ -164,19 +146,38 @@ class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewA
         holder.pickup_date.setText(
                 Utilities.Epoch2Date(pickup_dates.get(holder.getAdapterPosition()),"dd MMM"));
 
-        temp = transport_methods.get(position);
-        if (temp.equals("Car")) {
-            Log.d(LOG_TAG, "onBindViewHolder - Transport method = car");
-            holder.transport_icon.setImageResource(R.drawable.car);
-        } else if (temp.equals("Plane")) {
-            Log.d(LOG_TAG, "onBindViewHolder - Transport method = plane");
-            holder.transport_icon.setImageResource(R.drawable.plane);
-        } else if (temp.equals("Train")) {
-            Log.d(LOG_TAG, "onBindViewHolder - Transport method = train");
-            holder.transport_icon.setImageResource(R.drawable.train);
-        } else {
-            Log.d(LOG_TAG, "onBindViewHolder - Transport method unknown");
-            holder.transport_icon.setImageResource(R.drawable.car);
+        temp = transport_methods.get(holder.getAdapterPosition());
+        Log.i(LOG_TAG, "onBindViewHolder - Transport method = "+temp);
+        switch (temp) {
+            case "Car":
+                if (DEBUG) Log.d(LOG_TAG, "onBindViewHolder - Transport method = car");
+                holder.transport_icon.setImageResource(R.drawable.car);
+                break;
+            case "Plane":
+                if (DEBUG) Log.d(LOG_TAG, "onBindViewHolder - Transport method = plane");
+                holder.transport_icon.setImageResource(R.drawable.plane);
+                break;
+            case "Train":
+                if (DEBUG) Log.d(LOG_TAG, "onBindViewHolder - Transport method = train");
+                holder.transport_icon.setImageResource(R.drawable.train);
+                break;
+            default:
+                if (DEBUG) Log.d(LOG_TAG, "onBindViewHolder - Transport method unknown");
+                holder.transport_icon.setImageResource(R.drawable.car);
+                break;
+        }
+
+        temp = package_sizes.get(holder.getAdapterPosition());
+        switch (temp) {
+            case "Small":
+                holder.package_size.setText("S");
+                break;
+            case "Medium":
+                holder.package_size.setText("M");
+                break;
+            case "Large":
+                holder.package_size.setText("L");
+                break;
         }
 
         // Set the picture, if available
@@ -203,7 +204,7 @@ class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewA
                     // fragment is attached to one) that an item has been selected.
                     if (DEBUG) Log.i(LOG_TAG, " onBindViewHolder - The click is on");
                     if (DEBUG) Log.i(LOG_TAG, " onBindViewHolder - "+firstnames.get(holder.getAdapterPosition()));
-                    mListener.onListFragmentInteraction(
+                    mListener.onOfferSelected(
                             firstnames.get(holder.getAdapterPosition()),
                             pickup_cities.get(holder.getAdapterPosition()),
                             pickup_countries.get(holder.getAdapterPosition()),
@@ -214,6 +215,7 @@ class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewA
                             package_sizes.get(holder.getAdapterPosition()),
                             pictures.get(holder.getAdapterPosition()),
                             phone_numbers.get(holder.getAdapterPosition()),
+                            transport_methods.get(holder.getAdapterPosition()),
                             comments.get(holder.getAdapterPosition()), holder.getAdapterPosition());
                 }
             }
@@ -235,7 +237,8 @@ class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewA
         final TextView pickup_date;
         final ImageView transport_icon;
         final ImageView transporter_pic;
-        final ImageView package_icon;
+        final TextView package_size;
+        final TextView number_packages;
 
         ViewHolder(View view) {
             super(view);
@@ -245,9 +248,10 @@ class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewA
             pickup_city = (TextView) view.findViewById(R.id.pickup_city);
             dropoff_city = (TextView) view.findViewById(R.id.dropoff_city);
             pickup_date = (TextView) view.findViewById(R.id.pickup_date);
-            package_icon = (ImageView) view.findViewById(R.id.package_icom);
+            package_size = (TextView) view.findViewById(R.id.package_size);
             transport_icon = (ImageView) view.findViewById(R.id.transport_method);
             transporter_pic = (ImageView) view.findViewById(R.id.transporter_picture);
+            number_packages = (TextView) view.findViewById(R.id.number_packages);
             if (DEBUG) Log.i(LOG_TAG, "ViewHolder - Constructor End");
         }
 

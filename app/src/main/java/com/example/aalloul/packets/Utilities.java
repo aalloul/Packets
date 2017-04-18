@@ -20,6 +20,7 @@ final class Utilities {
     private static HashMap<String, String> countries = new HashMap<>();
     final static String LOG_TAG = "Utilities";
 
+
     // Maps country name to its code
     static String CountryToCountryCode(String country){
         Log.i(LOG_TAG, "CountryToCountryCode - Start");

@@ -1,145 +1,184 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:elevation="24dp"
-    android:background="@color/white"
     android:layout_marginEnd="10dp"
     android:layout_marginLeft="10dp"
-    android:layout_marginTop="10dp"
     android:layout_marginRight="10dp"
-    android:layout_marginStart="10dp">
+    android:layout_marginStart="10dp"
+    android:layout_marginTop="10dp"
+    android:elevation="0dp">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.8"
+        android:background="@drawable/frameborder"
+        android:backgroundTint="@color/white">
+
+    </FrameLayout>
 
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/therelative"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/user_icon_bevel"
-            android:id="@+id/transporter_picture"
-            android:adjustViewBounds="false"
-            android:cropToPadding="false"
-            android:layout_alignParentTop="false"
-            android:layout_alignParentLeft="false"
-            android:layout_alignParentStart="false"
-            android:elevation="0dp"
-            android:layout_centerHorizontal="false"
-            android:layout_centerInParent="true"
-            android:layout_centerVertical="true" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="1">
 
         <TextView
-            android:text="TextView"
+            android:id="@+id/pickup_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/first_name_sender"
-            android:layout_centerVertical="false"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="false"
+            android:layout_alignParentTop="false"
+            android:layout_marginEnd="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginTop="3dp"
+            android:background="@drawable/backgroundstate"
+            android:text="Sep 10"
+            android:textAllCaps="false"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            android:textStyle="normal|bold" />
+
+        <ImageView
+            android:id="@+id/package_icom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="false"
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentRight="false"
+            android:layout_alignParentStart="false"
+            android:layout_alignParentTop="false"
+            android:layout_marginTop="70dp"
+            android:layout_toLeftOf="@+id/number_packages"
+            android:background="@drawable/packageicon" />
+
+        <TextView
+            android:id="@+id/package_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="86dp"
+            android:layout_toLeftOf="@+id/number_packages"
+            android:text="S"
+            android:textColor="@android:color/black"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/number_packages"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="false"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="false"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="85dp"
+            android:text="x1"
+            android:textColor="@android:color/black"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/dropoff_city"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="false"
-            android:layout_below="@+id/transporter_picture"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
-            android:textColor="@android:color/black" />
+            android:layout_centerVertical="false"
+            android:layout_marginTop="83dp"
+            android:layout_toRightOf="@+id/dotTo"
+            android:text="theotherCity"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/pickup_city"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="13dp"
+            android:layout_toRightOf="@+id/dotfrom"
+            android:text="thecity"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
+
+        <ImageView
+            android:id="@+id/dotfrom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:layout_toRightOf="@+id/therelative"
+            android:adjustViewBounds="true"
+            android:cropToPadding="true"
+            android:scaleType="centerCrop"
+            android:scaleX="0.5"
+            android:scaleY="0.5"
+            app:srcCompat="@drawable/dot" />
+
+        <ImageView
+            android:id="@+id/transport_method"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="35dp"
+            android:layout_toRightOf="@+id/bar"
+            app:srcCompat="@drawable/car" />
+
+        <RelativeLayout
+            android:id="@+id/therelative"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp">
+
+            <ImageView
+                android:id="@+id/transporter_picture"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="false"
+                android:layout_alignParentStart="false"
+                android:layout_alignParentTop="false"
+                android:layout_centerHorizontal="false"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="false"
+                android:adjustViewBounds="false"
+                android:cropToPadding="false"
+                android:elevation="21dp"
+                app:srcCompat="@mipmap/user_icon_bevel" />
+
+            <TextView
+                android:id="@+id/first_name_sender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/transporter_picture"
+                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="false"
+                android:layout_centerVertical="false"
+                android:layout_marginTop="15dp"
+                android:text="TextView"
+                android:textColor="@android:color/black" />
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/dotTo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="69dp"
+            android:layout_toRightOf="@+id/therelative"
+            android:scaleX="0.5"
+            android:scaleY="0.5"
+            app:srcCompat="@drawable/dot" />
+
+        <ImageView
+            android:id="@+id/bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="35dp"
+            android:layout_toRightOf="@+id/therelative"
+            android:rotation="90"
+            app:srcCompat="@drawable/bar" />
     </RelativeLayout>
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/dot"
-        android:id="@+id/dotfrom"
-        android:scaleX="0.5"
-        android:scaleY="0.5"
-        android:cropToPadding="true"
-        android:scaleType="centerCrop"
-        android:adjustViewBounds="true"
-        android:layout_toRightOf="@+id/therelative"
-        android:layout_marginRight="10dp" />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/bar"
-        android:id="@+id/bar"
-        android:rotation="90"
-        android:layout_toRightOf="@+id/therelative"
-        android:layout_marginTop="35dp"
-        android:layout_marginRight="10dp" />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/dot"
-        android:id="@+id/dotTo"
-        android:scaleX="0.5"
-        android:scaleY="0.5"
-        android:layout_toRightOf="@+id/therelative"
-        android:layout_marginTop="69dp"
-        android:layout_marginRight="10dp" />
-
-    <TextView
-        android:id="@+id/pickup_city"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="13dp"
-        android:layout_toRightOf="@+id/dotfrom"
-        android:text="thecity"
-        android:textColor="@android:color/black"
-        android:textSize="14sp" />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/car"
-        android:id="@+id/transport_method"
-        android:layout_toRightOf="@+id/bar"
-        android:layout_marginTop="35dp" />
-
-    <TextView
-        android:id="@+id/dropoff_city"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="false"
-        android:layout_centerVertical="false"
-        android:layout_marginTop="83dp"
-        android:layout_toRightOf="@+id/dotTo"
-        android:text="theotherCity"
-        android:textColor="@android:color/black"
-        android:textSize="14sp" />
-
-    <TextView
-        android:id="@+id/pickup_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="false"
-        android:layout_alignParentTop="false"
-        android:layout_marginEnd="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginTop="3dp"
-        android:background="@drawable/backgroundstate"
-        android:text="Sep 10"
-        android:textAllCaps="false"
-        android:textColor="@android:color/black"
-        android:textSize="14sp"
-        android:textStyle="normal|bold" />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/packageicon"
-        android:id="@+id/package_icom"
-        android:layout_alignParentEnd="false"
-        android:layout_alignParentLeft="false"
-        android:layout_alignParentStart="false"
-        android:layout_alignParentTop="false"
-        android:layout_alignParentBottom="false"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="70dp" />
 
     <!--    <TextView
             android:text="1"
@@ -154,4 +193,4 @@
             android:layout_marginStart="7dp"
             android:layout_marginBottom="-30dp" />-->
 
-</RelativeLayout>
+</FrameLayout>

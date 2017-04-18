@@ -23,7 +23,7 @@ public class MainFragment extends Fragment {
     private static final String ARG_CITY_STATE = "city_state";
     private static final String ARG_FIRST_NAME= "first_name";
     private View view;
-    private ImageView pickup_date;
+    private TextView pickup_date;
     private Spinner number_packages, size_package;
     private TextView pickupdate_ui, drop_off_location, pickup_location;
     static String pickupdate, first_name;
@@ -102,10 +102,11 @@ public class MainFragment extends Fragment {
     }
 
     private void getPickUpDateButton() {
-        pickupdate_ui = (TextView) view.findViewById(R.id.dateofpickup_mainActivity);
-        setDate(Utilities.getTomorrow("yyyy-MM-dd"));
+//        pickupdate_ui = (TextView) view.findViewById(R.id.dateofpickup_mainActivity);
 
-        pickup_date = (ImageView) view.findViewById(R.id.setdate_mainActivity);
+
+        pickup_date = (TextView) view.findViewById(R.id.setdate_mainActivity);
+        setDate(Utilities.getTomorrow("yyyy-MM-dd"));
         pickup_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,10 +116,10 @@ public class MainFragment extends Fragment {
         });
     }
     private void restorePickUpDateButton(String val) {
-        pickupdate_ui = (TextView) view.findViewById(R.id.dateofpickup_mainActivity);
-        setDate(val);
+//        pickupdate_ui = (TextView) view.findViewById(R.id.dateofpickup_mainActivity);
 
-        pickup_date = (ImageView) view.findViewById(R.id.setdate_mainActivity);
+        pickup_date = (TextView) view.findViewById(R.id.setdate_mainActivity);
+        setDate(val);
         pickup_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -297,7 +298,9 @@ public class MainFragment extends Fragment {
     public void setDate(String date) {
         // Most important stuff first
         pickupdate = date;
-        pickupdate_ui.setText(Utilities.DateToDate(pickupdate, "yyyy-MM-dd","MMM dd" ));
+        pickup_date.setText(getResources().getString(R.string.explain_usage_search3) + ": " +
+                Utilities.DateToDate(pickupdate, "yyyy-MM-dd","MMM dd" ));
+//        pickupdate_ui.setText(Utilities.DateToDate(pickupdate, "yyyy-MM-dd","MMM dd" ));
     }
 
     public HashMap<String, String> getPickupLocation(){
@@ -355,7 +358,8 @@ public class MainFragment extends Fragment {
                 tmp += " (" + locationAddress.get(getString(R.string.saved_user_state)) + ")";
             }
         }
-        drop_off_location.setText(tmp);
+        drop_off_location.setText(getResources().getString(R.string.explain_usage_search5) + ": "
+                + tmp);
     }
 
     private void _setPickup_location() {
@@ -385,7 +389,7 @@ public class MainFragment extends Fragment {
         }
         if (DEBUG) Log.i(LOG_TAG, "_setPickup_location - tmp = "+tmp);
 
-        pickup_location.setText(tmp);
+        pickup_location.setText(getResources().getString(R.string.explain_usage_search2) + ": "+tmp);
     }
 
     public void setPickup_location(HashMap<String, String> locationAddress){

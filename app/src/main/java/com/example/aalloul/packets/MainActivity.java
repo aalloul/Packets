@@ -21,6 +21,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Environment;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -36,7 +37,6 @@ import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
-
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     // create a local variable for identifying the class where the log statements come from
     private final static String LOG_TAG = MainActivity.class.getSimpleName();
-    private static boolean DEBUG = true;
+    private static boolean DEBUG = false;
 
     private boolean isAlreadyRegistered() {
         if (DEBUG) Log.i(LOG_TAG, "isAlreadyRegistered - Enter");
@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         String devtype = sp.getString(getString(R.string.devicetype), "");
 
         if (devid.equals("")) {
-            /**
+            /*
              * here we assume this is the first time this user opens the app and hope the test above
              * will never return True while the deviceid was already set.
              */
@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             if (DEBUG) Log.i(LOG_TAG, "generateDeviceID - deviceID = "+devid + " device type = "+devtype);
             editor.putString(getString(R.string.deviceid), devtype);
             editor.putString(getString(R.string.devicetype), devtype);
-            /**
+            /*
              * here we use apply (asynchronous) rather then commit (synchronous), the reasoning being
              * that if this is not successful, next time we'll try again.
              */
@@ -553,7 +553,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 photoFile = createImageFile();
                 sharedPref.edit()
                         .putString(getString(R.string.saved_user_picture_path), mCurrentPhotoPath)
-                        .commit();
+                        .apply();
 
             } catch (IOException ex) {
                 // Error occurred while creating the File
@@ -614,6 +614,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         headers.put("Content-Type","application/json");
         headers.put("deviceID",DataBuffer.getDeviceId());
         headers.put("deviceType",DataBuffer.getDeviceType());
+        headers.put("networkRequestTime", String.valueOf(Utilities.CurrentTimeMS()));
 
 //        Map<String, String> headers = new HashMap<>();
         if (DEBUG) Log.i(LOG_TAG, "searchRequest - searchParams = " + searchParams);
@@ -640,7 +641,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         );
         request.setTag("searchOfferTAG");
         // 1st argument is initial timeout, 2nd is number of retries, 3rd is multiplier
-        request.setRetryPolicy(new DefaultRetryPolicy(1000, 3, 3.0f));
+        request.setRetryPolicy(new DefaultRetryPolicy(5000, 0, 0.0f));
 
         if (DEBUG) Log.i(LOG_TAG, "searchRequest - Adding request to queue");
         volleyQueue.add(request);
@@ -660,6 +661,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         headers.put("Content-Type","application/json");
         headers.put("deviceID",DataBuffer.getDeviceId());
         headers.put("deviceType",DataBuffer.getDeviceType());
+        headers.put("networkRequestTime", String.valueOf(Utilities.CurrentTimeMS()));
 
         Log.i(LOG_TAG, "dataToPost = " + dataToPost);
 
@@ -690,13 +692,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
      */
     @SuppressWarnings("unchecked")
     private void postOfferRequest(HashMap<String, String> dataToPost) {
-        String url = "http://192.168.178.206:3000/werwe";
+        String url = "http://192.168.178.206:3000/posts";
         if (DEBUG) Log.i(LOG_TAG, "postUsageRequest - Enter");
 
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type","application/json");
         headers.put("deviceID",DataBuffer.getDeviceId());
         headers.put("deviceType",DataBuffer.getDeviceType());
+        headers.put("networkRequestTime", String.valueOf(Utilities.CurrentTimeMS()));
 
         GsonRequest request = new GsonRequest(url, dataToPost, String.class, headers, Request.Method.POST,
                 new Response.Listener<Gson>() {
@@ -1004,11 +1007,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @Override
     @SuppressWarnings("unchecked")
-    public void onListFragmentInteraction(String nameAndFirstName, String pickup_city,
-                                          String pickup_country,String pickup_date, String dropoff_city,
-                                          String dropoff_country, String n_packets,
-                                          String package_size, String picture, String phone_number,
-                                          String comments, int thepos) {
+    public void onOfferSelected(String nameAndFirstName, String pickup_city, String pickup_country,
+                                String pickup_date, String dropoff_city, String dropoff_country,
+                                String n_packets, String package_size, String picture,
+                                String phone_number, String transport_methods, String comments,
+                                int thepos) {
         if (DEBUG) Log.i(LOG_TAG, "onListFragmentInteraction - Received a click - content is");
         if (DEBUG) Log.i(LOG_TAG, "onListFragmentInteraction - nameAndFirstName = " + nameAndFirstName);
         if (DEBUG) Log.i(LOG_TAG, "onListFragmentInteraction - source_city = " + pickup_city);
@@ -1030,7 +1033,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         detailsFragment =
                 OfferDetail.newInstance(nameAndFirstName, pickup_city, pickup_country, pickup_date,
                         dropoff_city, dropoff_country, n_packets, package_size, picture,
-                        phone_number, comments);
+                        phone_number, transport_methods,comments);
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.mainActivity_ListView, detailsFragment, "detailsFragment")
@@ -1038,7 +1041,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 .commit();
 
     }
-
 
     // Method for offerDetail
     @Override

@@ -10,8 +10,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context="com.example.aalloul.packets.OfferDetail"
-        android:background="@drawable/frog_background">
+        android:background="@drawable/frog_background"
+        tools:context="com.example.aalloul.packets.OfferDetail">
 
         <FrameLayout
             android:id="@+id/frame1"
@@ -216,40 +216,40 @@
 
         <RelativeLayout
             android:layout_width="200dp"
+            android:layout_height="match_parent"
             android:layout_below="@+id/relative_detail_2"
-            android:layout_centerHorizontal="true"
-            android:layout_height="match_parent">
+            android:layout_centerHorizontal="true">
 
             <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@android:drawable/sym_action_email"
                 android:id="@+id/messageButton"
-                android:background="@drawable/backgroundstate"
-                android:layout_centerInParent="false"
-                android:scaleX="2"
-                android:scaleY="2"
-                android:layout_marginRight="30dp"
-                android:layout_marginEnd="30dp"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="40dp"
-                android:layout_marginStart="40dp" />
-
-            <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@android:drawable/stat_sys_phone_call"
-                android:id="@+id/callButton"
-                android:layout_toRightOf="@+id/messageButton"
                 android:layout_centerInParent="false"
-                android:rotation="90"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="30dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginStart="40dp"
+                android:background="@drawable/backgroundstate"
                 android:scaleX="2"
                 android:scaleY="2"
+                app:srcCompat="@android:drawable/sym_action_email" />
+
+            <ImageButton
+                android:id="@+id/callButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="false"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
                 android:layout_marginStart="20dp"
+                android:layout_toRightOf="@+id/messageButton"
+                android:background="@drawable/backgroundstate"
                 android:backgroundTintMode="src_in"
-                android:background="@drawable/backgroundstate" />
+                android:rotation="90"
+                android:scaleX="2"
+                android:scaleY="2"
+                app:srcCompat="@android:drawable/stat_sys_phone_call" />
         </RelativeLayout>
     </RelativeLayout>
 </ScrollView>

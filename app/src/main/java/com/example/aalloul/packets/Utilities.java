@@ -315,12 +315,14 @@ final class Utilities {
      * @return formatted String
      */
     static String Epoch2Date(long epoch, String formatString){
+        Log.i(LOG_TAG, "Epoch2Date - epoch = " +epoch);
         Date updatedate;
         SimpleDateFormat out_format = new SimpleDateFormat(formatString);
         SimpleDateFormat test_format = new SimpleDateFormat("yyyy");
 
         updatedate = new Date(epoch);
-        if (Integer.parseInt(test_format.format(updatedate)) > 2017 &&
+        Log.i(LOG_TAG, "Epoch2Date - updatedate = " +updatedate);
+        if (Integer.parseInt(test_format.format(updatedate)) > 2016 &&
                 Integer.parseInt(test_format.format(updatedate)) < 2100) {
             return (out_format.format(updatedate));
         } else {

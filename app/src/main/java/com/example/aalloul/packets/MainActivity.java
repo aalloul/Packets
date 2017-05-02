@@ -51,6 +51,8 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.AutocompleteFilter;
+import com.google.android.gms.location.places.AutocompletePrediction;
+import com.google.android.gms.location.places.AutocompletePredictionBuffer;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.model.LatLng;
@@ -72,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         OfferDetail.OnFragmentInteractionListener, MainFragment.OnFragmentInteractionListener,
         DatePickerFragment.TheListener, RegistrationFragment.RegistrationFragmentListener,
         ConfirmPublish.OnCofirmPublishListener, CameraOrGalleryDialog.CameraOrGalleryInterface,
-        ThankYou.ShareFragmentListener{
+        ThankYou.ShareFragmentListener, NoResultsFound.OnNoResultsFoundInteraction{
 
     protected final int MAP_PERMISSION = 1;
     protected final int DROP_OFF_LOCATION_REQUEST = 2;
@@ -105,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     // create a local variable for identifying the class where the log statements come from
     private final static String LOG_TAG = MainActivity.class.getSimpleName();
-    private static boolean DEBUG = false;
+    private static boolean DEBUG = true;
 
     private boolean isAlreadyRegistered() {
         if (DEBUG) Log.i(LOG_TAG, "isAlreadyRegistered - Enter");
@@ -119,6 +121,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 sharedPref.getString(getString(R.string.saved_user_firstname), ""));
         return false;
     }
+
+    // TODO looks like our SQLite is not closed when the app crashes
 
     protected HashMap<String, String> getUserDetailedLocation() {
         if (DEBUG) Log.i(LOG_TAG, "getUserDetailedLocation - Enter");
@@ -215,15 +219,31 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     private void handleNetworkResult(String queryResult) {
-        if (queryResult.equals("ok")) {
-            if (DEBUG) Log.i(LOG_TAG, "handleNetworkResult - Notifying dataset change");
-            if (itemFragment == null) {
-                if (DEBUG) Log.i(LOG_TAG, "handleNetworkResult - itemFragment is null");
-            } else {
-                itemFragment.updateData();
-            }
-        } else {
+        Log.i(LOG_TAG, "handleNetworkResult  - queryResult = " + queryResult);
+
+
+        switch (queryResult) {
+            case "empty":
+                Log.i(LOG_TAG, "handleNetworkResult - empty results");
+                NoResultsFound noresultsfound = NoResultsFound.newInstance();
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .add(R.id.mainActivity_ListView, noresultsfound, "noresultsfound")
+                        .commit();
+                break;
+
+            case "ok":
+                if (DEBUG) Log.i(LOG_TAG, "handleNetworkResult - Notifying dataset change");
+                if (itemFragment == null) {
+                    if (DEBUG) Log.i(LOG_TAG, "handleNetworkResult - itemFragment is null");
+                } else {
+                    itemFragment.updateData();
+                }
+                break;
+
+        default:
             if (DEBUG) Log.i(LOG_TAG, "handleNetworkResult - An error happened with the network");
+            break;
         }
     }
 
@@ -480,7 +500,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         try {
             // Only show addresses
             AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
-                    .setTypeFilter(AutocompleteFilter.TYPE_FILTER_ADDRESS)
+                    .setTypeFilter(AutocompleteFilter.TYPE_FILTER_CITIES)
                     .build();
 
             Intent intent =
@@ -608,25 +628,31 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private void searchRequest(HashMap<String, String> searchParams) {
         if (DEBUG) Log.i(LOG_TAG, "searchRequest - Enter");
 
-        String url = "http://192.168.178.206:3000/offers";
+        String url = "https://2ewwhcff9d.execute-api.eu-west-1.amazonaws.com/production/shippy-search";
 
         HashMap<String, String> headers = new HashMap<>();
         headers.put("Content-Type","application/json");
         headers.put("deviceID",DataBuffer.getDeviceId());
         headers.put("deviceType",DataBuffer.getDeviceType());
         headers.put("networkRequestTime", String.valueOf(Utilities.CurrentTimeMS()));
+        headers.put("x-api-key","vmXvcob4V33NpNVXKsDll8nAQAcmHGZZ87Fl4HF6");
 
 //        Map<String, String> headers = new HashMap<>();
         if (DEBUG) Log.i(LOG_TAG, "searchRequest - searchParams = " + searchParams);
 
         GsonRequest request = new GsonRequest(url, searchParams, SearchResponse[].class, headers,
-                Request.Method.GET, new Response.Listener<SearchResponse[]>() {
+                Request.Method.POST, new Response.Listener<SearchResponse[]>() {
                     @Override
                     public void onResponse(SearchResponse[] response) {
-                        if (DEBUG) Log.i(LOG_TAG, "searchRequest - Got "+response.length + " entries");
                         new Postman(getApplicationContext(), response);
                         Intent newdata = new Intent("newDataHasArrived");
-                        newdata.putExtra("queryResult", "ok");
+                        if (response == null) {
+                            Log.i(LOG_TAG, "searchRequest - response is null");
+                            newdata.putExtra("queryResult", "empty");
+                        } else {
+                            newdata.putExtra("queryResult", "ok");
+                        }
+
                         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(newdata);
                     }
         },
@@ -635,6 +661,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     public void onErrorResponse(VolleyError error) {
                         DataBuffer.addException("searchRequestError", error.getMessage(), "mainFragment",
                                 "search");
+                        Log.i(LOG_TAG, "error.getMesage() = " + error.getMessage());
+                        Log.i(LOG_TAG, "error.getCause() = " + error.getCause());
                         informNetworkError(mainFragment);
                     }
                 }
@@ -654,7 +682,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
      */
     @SuppressWarnings("unchecked")
     private void postUsageRequest(final ArrayList<HashMap<String, String>> dataToPost) {
-        String url = "http://192.168.178.206:3000/usage";
+        String url = "https://2ewwhcff9d.execute-api.eu-west-1.amazonaws.com/production/shippy-logging";
         if (DEBUG) Log.i(LOG_TAG, "postUsageRequest - Enter");
 
         Map<String, String> headers = new HashMap<>();
@@ -662,10 +690,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         headers.put("deviceID",DataBuffer.getDeviceId());
         headers.put("deviceType",DataBuffer.getDeviceType());
         headers.put("networkRequestTime", String.valueOf(Utilities.CurrentTimeMS()));
+        headers.put("x-api-key","vmXvcob4V33NpNVXKsDll8nAQAcmHGZZ87Fl4HF6");
 
         Log.i(LOG_TAG, "dataToPost = " + dataToPost);
 
-        GsonRequest request = new GsonRequest(url, dataToPost, String.class, headers, Request.Method.POST,
+        GsonRequest request = new GsonRequest(url, dataToPost, null, headers, Request.Method.POST,
                 new Response.Listener<Gson>() {
                     @Override
                     public void onResponse(Gson response) {
@@ -683,7 +712,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         );
         request.setTag("usageStatsTag");
         Log.i(LOG_TAG, "postUsageRequest - Adding to request queue");
-        volleyQueue.add(request);
+//        volleyQueue.add(request);
     }
 
     /**
@@ -692,7 +721,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
      */
     @SuppressWarnings("unchecked")
     private void postOfferRequest(HashMap<String, String> dataToPost) {
-        String url = "http://192.168.178.206:3000/posts";
+        String url = "https://2ewwhcff9d.execute-api.eu-west-1.amazonaws.com/production/shippy-offers";
         if (DEBUG) Log.i(LOG_TAG, "postUsageRequest - Enter");
 
         Map<String, String> headers = new HashMap<>();
@@ -700,8 +729,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         headers.put("deviceID",DataBuffer.getDeviceId());
         headers.put("deviceType",DataBuffer.getDeviceType());
         headers.put("networkRequestTime", String.valueOf(Utilities.CurrentTimeMS()));
+        headers.put("x-api-key","vmXvcob4V33NpNVXKsDll8nAQAcmHGZZ87Fl4HF6");
 
-        GsonRequest request = new GsonRequest(url, dataToPost, String.class, headers, Request.Method.POST,
+        GsonRequest request = new GsonRequest(url, dataToPost, null, headers, Request.Method.POST,
                 new Response.Listener<Gson>() {
                     @Override
                     public void onResponse(Gson response) {
@@ -1636,6 +1666,19 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 REQUEST_SHARE_APP);
     }
 
+    @Override
+    public void onNoResultsShareButtonPressed() {
+
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        String mystr = getResources().getString(R.string.share_link_noresults);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, mystr);
+        sendIntent.setType("text/plain");
+        startActivityForResult(
+                Intent.createChooser(sendIntent, getResources().getText(R.string.share_with_friends)),
+                REQUEST_SHARE_APP);
+    }
+
     /*
      This little class is called when the user takes a picture of himself. It crops, rotates if
      necessary and displays the picture on the registration page.
@@ -1664,8 +1707,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             if (PICTURE_FOR_CONFIRM && confirmPublish!=null){
                 confirmPublish.setUserPicture(result);
                 PICTURE_FOR_CONFIRM=false;
+                return;
             }
-            if (registrationFragment != null) {
+            if (registrationFragment != null && !PICTURE_FOR_CONFIRM) {
+                if (DEBUG) Log.i(LOG_TAG, "HandlePictureAsync - registrationFragment NOT NULL");
                 registrationFragment.setUserPicture(result);
                 registrationFragment.unsetCaption_user_picture();
             }

@@ -28,7 +28,7 @@ class GsonRequest<T> extends Request<T> {
     private final Response.Listener<T> listener;
     private final Object dataIn;
     private final static String LOG_TAG = GsonRequest.class.getSimpleName();
-    private final static boolean DEBUG = false;
+    private final static boolean DEBUG = true;
 
     /**
      * Make a request and return a parsed object from JSON.
@@ -75,9 +75,19 @@ class GsonRequest<T> extends Request<T> {
     }
 
     @Override
+    public String getBodyContentType() {
+        return "application/json; charset=utf-8";
+    }
+
+    @Override
     public byte[] getBody() throws AuthFailureError {
         if (DEBUG) Log.i(LOG_TAG, "getBody - Enter");
-        return gson.toJson(dataIn).getBytes();
+        try {
+            return gson.toJson(dataIn).getBytes("utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
@@ -92,15 +102,20 @@ class GsonRequest<T> extends Request<T> {
     @Override
     protected Response<T> parseNetworkResponse(NetworkResponse response) {
         if (DEBUG) Log.i(LOG_TAG, "parseNetworkResponse - Enter");
+
+        // if clazz is null then it means we just don't care about parsing the response
+        if (clazz == null) return (Response.success(null,HttpHeaderParser.parseCacheHeaders(response) ));
+
         try {
             String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
             if (DEBUG) Log.i(LOG_TAG, "parseNetworkResponse - json = " + json);
-            if (getMethod() == Method.POST) {
+
+            if (json.equals("{}")) {
                 return Response.success(null, HttpHeaderParser.parseCacheHeaders(response));
-            } else {
-                return Response.success(gson.fromJson(json, clazz),
-                        HttpHeaderParser.parseCacheHeaders(response));
             }
+
+            return Response.success(gson.fromJson(json, clazz), HttpHeaderParser.parseCacheHeaders(response));
+
         } catch (UnsupportedEncodingException e) {
             return Response.error(new ParseError(e));
         } catch (JsonSyntaxException e) {

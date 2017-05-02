@@ -55,7 +55,7 @@ public class ItemFragment extends Fragment {
         if (DEBUG) Log.i(LOG_TAG, "onCreateView -- Start");
 
         View view = inflater.inflate(R.layout.fragment_item_list, container, false);
-
+        
         getActivity().setTitle(getString(R.string.offers_towards));
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -91,6 +91,8 @@ public class ItemFragment extends Fragment {
     public void updateData() {
         if (DEBUG) Log.i(LOG_TAG, "updateData - notifying change");
         theCursor = postman.get_Data_For_ListView();
+//        if (theCursor.)
+
         myItemRecyclerViewAdapter.updateCursor(theCursor);
         myItemRecyclerViewAdapter.notifyDataSetChanged();
     }

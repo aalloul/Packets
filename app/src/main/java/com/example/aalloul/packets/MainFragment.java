@@ -297,6 +297,7 @@ public class MainFragment extends Fragment {
 
     public void setDate(String date) {
         // Most important stuff first
+        Log.i(LOG_TAG, "setDate - date = " + date);
         pickupdate = date;
         pickup_date.setText(getResources().getString(R.string.explain_usage_search3) + ": " +
                 Utilities.DateToDate(pickupdate, "yyyy-MM-dd","MMM dd" ));

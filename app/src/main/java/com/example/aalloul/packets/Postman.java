@@ -98,6 +98,7 @@ class Postman {
 //        new ArrayList<String>(Arrays.asList("*"));
         db.execSQL("delete from "+ Postmen.TABLE_NAME);
 
+        if (queryResults == null || queryResults.length == 0) return;
 
         try {
             if (DEBUG) Log.i(LOG_TAG, "updateTable - received "+ queryResults.length +" new entries");

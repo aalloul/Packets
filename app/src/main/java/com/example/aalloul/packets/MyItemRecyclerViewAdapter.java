@@ -30,7 +30,7 @@ import static com.example.aalloul.packets.DataBaseContracts.Postmen.COLUMN_NAME_
 class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewAdapter.ViewHolder> {
 
     private final static String LOG_TAG = MyItemRecyclerViewAdapter.class.getSimpleName();
-    private final static boolean DEBUG = false;
+    private final static boolean DEBUG = true;
 
 //    private Cursor cursor;
     private final ArrayList<String> firstnames = new ArrayList<>();
@@ -111,6 +111,8 @@ class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewA
             }
 
             if (cursor.getColumnIndex(COLUMN_NAME_PICKUPDATE) >= 0) {
+                if (DEBUG) Log.i(LOG_TAG, "MyItemRecyclerViewAdapter - COLUMN_NAME_PICKUPDATE found=" +
+                cursor.getString(cursor.getColumnIndex(COLUMN_NAME_PICKUPDATE)));
                 pickup_dates.add(cursor.getString(cursor.getColumnIndex(COLUMN_NAME_PICKUPDATE)));
             } else {
                 if (DEBUG) Log.i(LOG_TAG, "MyItemRecyclerViewAdapter - COLUMN_NAME_PICKUPDATE not found");
@@ -142,6 +144,9 @@ class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewA
 
         holder.pickup_city.setText(pickup_cities.get(holder.getAdapterPosition()));
         holder.dropoff_city.setText(dropoff_cities.get(holder.getAdapterPosition()));
+
+        if (DEBUG) Log.i(LOG_TAG, "onBindViewHolder - setting date to "+
+                Utilities.Epoch2Date(pickup_dates.get(holder.getAdapterPosition()),"dd MMM"));
 
         holder.pickup_date.setText(
                 Utilities.Epoch2Date(pickup_dates.get(holder.getAdapterPosition()),"dd MMM"));

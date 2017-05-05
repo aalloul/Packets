@@ -1,21 +1,80 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.aalloul.packets.PrivacyNotice"
     android:layout_margin="20dp"
-    android:background="@android:color/white">
+    android:background="@android:color/white"
+    tools:context="com.example.aalloul.packets.PrivacyNotice">
 
-    <!-- TODO: Update blank fragment layout -->
-
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/privacynotice"
-        android:textAllCaps="false"
-        android:id="@+id/privacynotice"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_height="match_parent">
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/contact_us"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/contact_us"
+            android:textColor="@android:color/black"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/contact_us_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/contact_us"
+            android:layout_marginTop="10dp"
+            android:text="@string/contact_us2" />
+
+        <TextView
+            android:id="@+id/legal_notice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/contact_us_2"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/legal_notice"
+            android:textColor="@android:color/black"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/legal_notice_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentStart="false"
+            android:layout_alignParentTop="false"
+            android:layout_below="@+id/legal_notice"
+            android:text="@string/legal_notice2"
+            android:textAllCaps="false" />
+
+        <TextView
+            android:id="@+id/privacy_notice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/legal_notice_2"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/privacy_notice"
+            android:textColor="@android:color/black"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/privacy_notice2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/privacy_notice"
+            android:text="@string/privacy_notice2"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/privacy_notice3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/privacy_notice2"
+            android:text="@string/privacy_notice3" />
+
+    </RelativeLayout>
+
+
+</ScrollView>

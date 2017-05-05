@@ -21,21 +21,24 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Environment;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.FileProvider;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -51,8 +54,6 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.AutocompleteFilter;
-import com.google.android.gms.location.places.AutocompletePrediction;
-import com.google.android.gms.location.places.AutocompletePredictionBuffer;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.model.LatLng;
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         OfferDetail.OnFragmentInteractionListener, MainFragment.OnFragmentInteractionListener,
         DatePickerFragment.TheListener, RegistrationFragment.RegistrationFragmentListener,
         ConfirmPublish.OnCofirmPublishListener, CameraOrGalleryDialog.CameraOrGalleryInterface,
-        ThankYou.ShareFragmentListener, NoResultsFound.OnNoResultsFoundInteraction{
+        ThankYou.ShareFragmentListener, NoResultsFound.OnNoResultsFoundInteraction, PrivacyNotice.ContactUsListener {
 
     protected final int MAP_PERMISSION = 1;
     protected final int DROP_OFF_LOCATION_REQUEST = 2;
@@ -104,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private ItemFragment itemFragment;
     private OfferDetail detailsFragment;
     private RequestQueue volleyQueue;
+    private PrivacyNotice privacyNotice;
 
     // create a local variable for identifying the class where the log statements come from
     private final static String LOG_TAG = MainActivity.class.getSimpleName();
@@ -221,6 +223,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private void handleNetworkResult(String queryResult) {
         Log.i(LOG_TAG, "handleNetworkResult  - queryResult = " + queryResult);
 
+        if (mainFragment==null) {
+            Log.e(LOG_TAG, "handleNetworkResult - mainFragment is null");
+        }
 
         switch (queryResult) {
             case "empty":
@@ -229,7 +234,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 getSupportFragmentManager()
                         .beginTransaction()
                         .add(R.id.mainActivity_ListView, noresultsfound, "noresultsfound")
-                        .commit();
+                        .commitAllowingStateLoss();
                 break;
 
             case "ok":
@@ -750,6 +755,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         );
         request.setTag("postOfferTag");
         if (DEBUG) Log.i(LOG_TAG, "postUsageRequest - Adding to request queue");
+        // 1st argument is initial timeout, 2nd is number of retries, 3rd is multiplier
+        request.setRetryPolicy(new DefaultRetryPolicy(2000, 0, 0.0f));
+
         volleyQueue.add(request);
     }
 
@@ -1544,42 +1552,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 .replace(R.id.mainActivity_ListView, thankYou, "Thank you")
                 .commit();
 
-//        new CountDownTimer(3000, 1000) {
-//            public void onTick(long millisUntilFinished) { }
-//            public void onFinish() {
-//                if (mainFragment == null) {
-//                    mainFragment = MainFragment.newInstance(getUserDetailedLocation(),
-//                            getUserPersonalDetails().get(getString(R.string.saved_user_firstname)));
-//                }
-//                FragmentManager fm;
-//                fm = getSupportFragmentManager();
-//                int ec = fm.getBackStackEntryCount();
-//                if (DEBUG) Log.i(LOG_TAG, "onBackToMainFragment - ec = "+ec);
-//                int id = fm.getBackStackEntryAt(ec-1).getId();
-//                if (DEBUG) Log.i(LOG_TAG, "onBackToMainFragment - id = "+id);
-//
-//                for (int i = 0; i > ec; i++) {
-//                    fm.popBackStack(i, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-//                }
-//
-//                fm.beginTransaction()
-//                        .remove(thankYou)
-//                        .remove(mainFragment)
-//                        .commit();
-//
-//                fm.beginTransaction()
-//                        .add(R.id.mainActivity_ListView, mainFragment, "mainFragment")
-//                        .commit();
-//            }
-//        }.start();
-
-
     }
 
     @Override
     public void onBackPressed()
     {
-        //TODO check this is stable
         if (DEBUG) Log.i(LOG_TAG, "onBackPressed - start");
 
         FragmentTransaction fmg = getSupportFragmentManager().beginTransaction();
@@ -1596,7 +1573,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             super.onBackPressed();
         } catch (Exception e) {
             if (DEBUG) Log.i(LOG_TAG, "STUCK STUCK STUCK STUCK ");
-//            e.printStackTrace();
             DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "MainActivity",
                     "onBackPressed");
 
@@ -1637,8 +1613,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @Override
     public void OnPrivacyButtonPressed() {
+        privacyNotice = PrivacyNotice.newInstance();
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.mainActivity_ListView, PrivacyNotice.newInstance())
+                .replace(R.id.mainActivity_ListView, privacyNotice)
                 .addToBackStack("toPrivacy")
                 .commit();
     }
@@ -1655,15 +1632,28 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         HashMap<String, String> tmp = confirmPublish.getAllDetails();
         String tmp2 = tmp.get(getString(R.string.drop_off_city));
-        Intent sendIntent = new Intent();
-        sendIntent.setAction(Intent.ACTION_SEND);
         String mystr = getResources().getString(R.string.share_link_pt1) + " " + tmp2;
         mystr = mystr + " "+ getResources().getString(R.string.share_link_pt2);
-        sendIntent.putExtra(Intent.EXTRA_TEXT, mystr);
-        sendIntent.setType("text/plain");
+
+        Intent sendIntent = returnShareIntent(mystr);
         startActivityForResult(
                 Intent.createChooser(sendIntent, getResources().getText(R.string.share_with_friends)),
                 REQUEST_SHARE_APP);
+    }
+
+    private Intent returnShareIntent (String mystr) {
+
+        HashMap<String, String> u1 = new HashMap<>();
+        u0.put(getString(R.string.fName),"shareIntent");
+        u1.put(getString(R.string.fActions), "ShareTheApp");
+        u1.put(getString(R.string.fStart), Long.toString(Utilities.CurrentTimeMS()));
+        new HandleReportingAsync().execute(u0,u1);
+
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, mystr);
+        sendIntent.setType("text/plain");
+        return sendIntent;
     }
 
     @Override
@@ -1678,6 +1668,73 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 Intent.createChooser(sendIntent, getResources().getText(R.string.share_with_friends)),
                 REQUEST_SHARE_APP);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate menu resource file.
+        getMenuInflater().inflate(R.menu.menu, menu);
+
+        return true;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public boolean onOptionsItemSelected(MenuItem item) {
+        HashMap<String, String> u1 = new HashMap<>();
+
+        switch (item.getItemId()) {
+            case R.id.menu_item_share:
+                u0.put(getString(R.string.fName),"shareApplication");
+                u1.put(getString(R.string.fActions), "shareApplication");
+                u1.put(getString(R.string.fStart), Long.toString(Utilities.CurrentTimeMS()));
+                new HandleReportingAsync().execute(u0,u1);
+
+                ShareActionProvider mShareActionProvider = (ShareActionProvider)
+                        MenuItemCompat.getActionProvider(item);
+                String tmp = getString(R.string.share_link_noresults);
+                mShareActionProvider.setShareIntent(returnShareIntent(tmp));
+                return true;
+
+            case R.id.menu_item_contact:
+                u0.put(getString(R.string.fName),"shareApplication");
+                u1.put(getString(R.string.fActions), "shareApplication");
+                u1.put(getString(R.string.fStart), Long.toString(Utilities.CurrentTimeMS()));
+
+                ShareActionProvider contactUsActionProvider = (ShareActionProvider)
+                        MenuItemCompat.getActionProvider(item);
+
+                contactUsActionProvider.setShareIntent(getEmailItentenForContact());
+
+                return true;
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void onContactUsPressed() {
+        HashMap<String, String> u1 = new HashMap<>();
+        u0.put(getString(R.string.fName),"PrivacyNotice");
+        u1.put(getString(R.string.fActions), "contactUs");
+        u1.put(getString(R.string.fStart), Long.toString(privacyNotice.getFragmentStartTime()));
+        new HandleReportingAsync().execute(u0,u1);
+        startActivity(Intent.createChooser(getEmailItentenForContact(), "Choose an Email client :"));
+    }
+
+    private Intent getEmailItentenForContact() {
+        Intent email = new Intent(Intent.ACTION_SEND);
+        email.putExtra(Intent.EXTRA_EMAIL, new String[]{"shippy@gmail.com"});
+        email.putExtra(Intent.EXTRA_SUBJECT, "My feedback about Shippy");
+        email.putExtra(Intent.EXTRA_TEXT, "");
+        email.setType("message/rfc822");
+        return email;
+    }
+
 
     /*
      This little class is called when the user takes a picture of himself. It crops, rotates if
@@ -1714,6 +1771,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 registrationFragment.setUserPicture(result);
                 registrationFragment.unsetCaption_user_picture();
             }
+
         }
     }
 

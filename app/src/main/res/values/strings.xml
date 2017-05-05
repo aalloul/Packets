@@ -34,7 +34,7 @@
     <string name="location_will_come_later">Do not worry, we will update your location when we get a signal</string>
     <string name="user_location_not_entered">For the registration process, we only need to know the city you live in</string>
     <string name="updating_location">Retrieving your location</string>
-    <string name="offers_towards">Offers towards</string>
+    <string name="offers_towards">Available offers</string>
     <!--This okay is displayed when input is missing when searching/posting offers -->
     <string name="okay">OK</string>
     <string name="join_the_community">Join the community!</string>
@@ -53,7 +53,6 @@
         <item>Large</item>
     </string-array>
     <string-array name="travelling_by">
-        <item>Travelling by</item>
         <item>Car</item>
         <item>Train</item>
         <item>Plane</item>
@@ -77,15 +76,31 @@
         <item>New Selfie</item>
     </string-array>
     <string name="choose_gallery_or_camera">Choose from Gallery or Picture?</string>
-    <string name="privacynotice">When someone visits www.ico.org.uk we use a third party service, Google Analytics, to collect standard internet log information and details of visitor behaviour patterns. We do this to find out things such as the number of visitors to the various parts of the site. This information is only processed in a way which does not identify anyone. We do not make, and do not allow Google to make, any attempt to find out the identities of those visiting our website. If we do want to collect personally identifiable information through our website, we will be up front about this. We will make it clear when we collect personal information and will explain what we intend to do with it.
+    <string name="legal_notice">Terms and Conditions</string>
+    <string name="privacy_notice">Privacy and data collection</string>
 
-Use of cookies by the ICO
+    <string name="legal_notice2">We, at Shippy, believe that official post services are very important and useful as they provide a reliable and secure way to send goods around. We believe though that there is a category of goods that do not deserve so much \"officiality\" and that our users are happy as long as their package arrives in good order. This is exactly why we decided to create this service. \r\n
+        The below bullet points only serve at making this a bit clearer:\r\n
+        \u2022 We strongly recommend you agree with each other to agree on the content of the package. This allows for a safer and easier transaction.\r\n
+        \u2022 We recommend you only send/transport goods whose price is such that sending them trough the official post services is too expensive.\r\n
+        \u2022 When you choose to publish an offer on Shippy, you agree to share your contact details with other users of Shippy. For more details about our data privacy policy, please see below.\r\n
+        \u2022 Using Shippy is at your own risk and we strongly recommend you take actions to prevent any undesirable outcome. For example by following the above-mentioned advices. Please feel free to reach out to us if you have any idea on how we can make this service more secure.\r\n
+    </string>
+    <string name="privacy_notice2"> At Shippy, when it comes to privacy, we become very, very serious:\r\n
+        \u2022 We believe your privacy is your most important asset.\r\n
+        \u2022 We will never, ever, ever sell your personal data\r\n
+        \u2022 We actually do not collect your personal data. We do store your contact details when you publish an offer but that is strictly to ensure other users can contact you.\r\n
+        </string>
+    <string name="privacy_notice3">
+        Another important principle we follow is that we should keep improving on our Service and never consider your trust in us as permanent. We have thus decided to collect strictly anonymously some usage metrics that will drive our business decisions. For example, we are interested in knowing:\r\n
+        \u2022 How long does it take for a user to go from one secreen to another?\r\n
+        \u2022 How often did a user open the app before starting to use it?\r\n
+        \u2022 How many results were returned when the user hit the \"Search\" button?\r\n
+        We like to think of ourselves as your neighbourhood shop who has come to learn about your habits as you become a loyal customer. The only difference is that we never speak about you or your habits to anyone else.
+    </string>
 
-You can read more about how we use cookies on our Cookies page.
-
-Search engine
-
-Our website search and decision notice search is powered by System Associates. Search queries and results are logged anonymously to help us improve our website and search functionality. No user-specific data is collected by either ICO or any </string>
+    <string name="contact_us">Contact us</string>
+    <string name="contact_us2">We value your input and would love to hear from you so we can better improve our app. If you want to get in touch with us, you can send us an e-mail (click here), or go to the App Store and leave a comment there.</string>
 
 
     <string name="privacy_button">We\'re proud of our privacy notice</string>

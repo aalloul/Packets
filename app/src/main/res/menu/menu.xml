@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_item_share"
+        android:checkable="false"
+        android:menuCategory="alternative"
+        android:title="Share"
+        android:visible="true"
+        app:actionProviderClass="android.support.v7.widget.ShareActionProvider"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_item_contact"
+        android:checkable="false"
+        android:menuCategory="alternative"
+        android:title="Contact us"
+        android:visible="true"
+        app:actionProviderClass="android.support.v7.widget.ShareActionProvider"
+        app:showAsAction="never" />
+</menu>

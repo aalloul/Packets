@@ -297,13 +297,18 @@ final class Utilities {
         Date updatedate;
         SimpleDateFormat out_format = new SimpleDateFormat(formatString);
         SimpleDateFormat test_format = new SimpleDateFormat("yyyy");
+        Log.i(LOG_TAG, "Epoch2Date - updatedate = " +epoch);
 
         long epoch_long = Long.parseLong(epoch);
+        Log.i(LOG_TAG, "Epoch2Date - parsed(updatedate) = " +epoch_long);
+
         updatedate = new Date(epoch_long);
-        if (Integer.parseInt(test_format.format(updatedate)) > 2017 &&
+        if (Integer.parseInt(test_format.format(updatedate)) > 2016 &&
                 Integer.parseInt(test_format.format(updatedate)) < 2100) {
+            Log.i(LOG_TAG, "Epoch2Date - it's in milli");
             return (out_format.format(updatedate));
         } else {
+            Log.i(LOG_TAG, "Epoch2Date - it's in seconds");
             return out_format.format(new Date(epoch_long*1000));
         }
     }
@@ -324,8 +329,10 @@ final class Utilities {
         Log.i(LOG_TAG, "Epoch2Date - updatedate = " +updatedate);
         if (Integer.parseInt(test_format.format(updatedate)) > 2016 &&
                 Integer.parseInt(test_format.format(updatedate)) < 2100) {
+            Log.i(LOG_TAG, "Epoch2Date - it's in milli");
             return (out_format.format(updatedate));
         } else {
+            Log.i(LOG_TAG, "Epoch2Date - it's in seconds");
             return out_format.format(new Date(epoch*1000));
         }
     }

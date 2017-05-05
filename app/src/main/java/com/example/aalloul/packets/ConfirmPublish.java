@@ -249,6 +249,10 @@ public class ConfirmPublish extends Fragment {
 
         if (DEBUG) Log.i(LOG_TAG, "checkInputs - Enter");
 
+        if (travelling_by.getSelectedItem().toString().equals("Travelling by")) {
+            return false;
+        }
+
         if (firstname_edit.getText() == null || firstname_edit.getText().toString().equals("")) {
             return false;
         }
@@ -261,6 +265,7 @@ public class ConfirmPublish extends Fragment {
         if (comment_user.getText() == null || comment_user.getText().toString().equals("")) {
             return false;
         }
+
 
         return true;
     }

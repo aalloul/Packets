@@ -1,9 +1,5 @@
 package com.example.aalloul.packets;
-
 import android.content.Context;
-import android.content.Intent;
-import android.media.Image;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -14,23 +10,14 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import com.google.android.gms.vision.text.Text;
 
 import java.util.HashMap;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link OfferDetail.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link OfferDetail#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class OfferDetail extends Fragment {
     // create a local variable for identifying the class where the log statements come from
     private final static String LOG_TAG = OfferDetail.class.getSimpleName();
-
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_NAMEANDFIRSTNAME = "nameAndFirstName";
     private static final String ARG_PICKUP_CITY = "pickup_city";
@@ -40,7 +27,10 @@ public class OfferDetail extends Fragment {
     private static final String ARG_COMMENTS = "comments";
     private static final String ARG_PICKUP_COUNTRY = "pickup_country";
     private static final String ARG_DROPOFF_COUNTRY = "dropoff_country";
-
+    private static final String ARG_PACKAGE_SIZE = "package_size";
+    private static final String ARG_PICTURE = "picture";
+    private static final String ARG_PICKUP_DATE = "pickup_date";
+    private static final String ARG_TRANSPORT_METHOD = "transport_method";
     private String nameAndFirstName;
     private String pickup_city;
     private String dropoff_city;
@@ -49,38 +39,31 @@ public class OfferDetail extends Fragment {
     private String comments;
     private String dropoff_country;
     private String pickup_country;
+    private String picture;
+    private String package_size;
+    private String pickup_date;
     private long fragment_start_time;
-
-    private ImageButton callButton;
-    private ImageButton sendMessage;
-
-
     private OnFragmentInteractionListener mListener;
+    private final static boolean DEBUG = false;
+    private String transport_method;
 
     public OfferDetail() {
         // Required empty public constructor
         fragment_start_time = Utilities.CurrentTimeMS();
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param nameAndFirstName Parameter 1.
-     * @param pickup_city Parameter 2.
-     * @return A new instance of fragment OfferDetail.
-     */
-    // TODO: Rename and change types and number of parameters
     public static OfferDetail newInstance(String nameAndFirstName, String pickup_city,
-                                          String pickup_country, String dropoff_city,
-                                          String dropoff_country,String n_packets,
-                                          String phone_number, String comments) {
-        Log.i(LOG_TAG, "newInstance - Start");
+                                          String pickup_country, String pickup_date,
+                                          String dropoff_city, String dropoff_country,
+                                          String n_packets, String package_size, String picture,
+                                          String phone_number, String transport_methods,
+                                          String comments) {
+        if (DEBUG) Log.i(LOG_TAG, "newInstance - Start");
         OfferDetail fragment = new OfferDetail();
         Bundle args = new Bundle();
-        Log.i(LOG_TAG, "newInstance - nameAndFirstName = " + nameAndFirstName);
+        if (DEBUG) Log.i(LOG_TAG, "newInstance - nameAndFirstName = " + nameAndFirstName);
         args.putString(ARG_NAMEANDFIRSTNAME, nameAndFirstName);
-        Log.i(LOG_TAG, "newInstance - nameAndFirstName = " + pickup_city);
+        if (DEBUG) Log.i(LOG_TAG, "newInstance - nameAndFirstName = " + pickup_city);
         args.putString(ARG_PICKUP_CITY, pickup_city);
         args.putString(ARG_DROPOFF_CITY, dropoff_city);
         args.putString(ARG_N_PACKETS, n_packets);
@@ -88,20 +71,24 @@ public class OfferDetail extends Fragment {
         args.putString(ARG_COMMENTS, comments);
         args.putString(ARG_PICKUP_COUNTRY, pickup_country);
         args.putString(ARG_DROPOFF_COUNTRY, dropoff_country);
+        args.putString(ARG_PACKAGE_SIZE, package_size);
+        args.putString(ARG_PICTURE, picture);
+        args.putString(ARG_PICKUP_DATE, pickup_date);
+        args.putString(ARG_TRANSPORT_METHOD, transport_methods);
 
         fragment.setArguments(args);
-        Log.i(LOG_TAG, "newInstance - Exit");
+        if (DEBUG) Log.i(LOG_TAG, "newInstance - Exit");
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i(LOG_TAG, "onCreate - Start");
+        if (DEBUG) Log.i(LOG_TAG, "onCreate - Start");
         if (getArguments() != null) {
-            Log.i(LOG_TAG, "onCreate - getArguments is not null");
+            if (DEBUG) Log.i(LOG_TAG, "onCreate - getArguments is not null");
             nameAndFirstName = getArguments().getString(ARG_NAMEANDFIRSTNAME);
-            Log.i(LOG_TAG, "onCreate - nameAndFirstName = "+ nameAndFirstName);
+            if (DEBUG) Log.i(LOG_TAG, "onCreate - nameAndFirstName = "+ nameAndFirstName);
             pickup_city = getArguments().getString(ARG_PICKUP_CITY);
             dropoff_city = getArguments().getString(ARG_DROPOFF_CITY);
             n_packets = getArguments().getString(ARG_N_PACKETS);
@@ -109,14 +96,18 @@ public class OfferDetail extends Fragment {
             comments = getArguments().getString(ARG_COMMENTS);
             dropoff_country = getArguments().getString(ARG_DROPOFF_COUNTRY);
             pickup_country = getArguments().getString(ARG_PICKUP_COUNTRY);
+            package_size = getArguments().getString(ARG_PACKAGE_SIZE);
+            picture = getArguments().getString(ARG_PICTURE);
+            pickup_date = getArguments().getString(ARG_PICKUP_DATE);
+            transport_method = getArguments().getString(ARG_TRANSPORT_METHOD);
         }
-        Log.i(LOG_TAG, "onCreate - Exit");
+        if (DEBUG) Log.i(LOG_TAG, "onCreate - Exit");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        Log.i(LOG_TAG, "onCreateView - Start");
+        if (DEBUG) Log.i(LOG_TAG, "onCreateView - Start");
 
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_offer_detail, container, false);
@@ -129,24 +120,63 @@ public class OfferDetail extends Fragment {
         final TextView dropoffcity = (TextView) view.findViewById(R.id.going_to);
         dropoffcity.setText(dropoff_city);
 
-        final TextView pickup_date = (TextView) view.findViewById(R.id.pickup_date_offer);
-        pickup_date.setText("Feb 20");
+        final TextView pickup_date_ui = (TextView) view.findViewById(R.id.pickup_date_offer);
+        pickup_date_ui.setText(Utilities.Epoch2Date(pickup_date, "dd MMM"));
 
+        final ImageView picture_ui = (ImageView) view.findViewById(R.id.transporter_picture_detail);
 
-        final TextView descriptionTextView = (TextView) view.findViewById(R.id.description);
-        // Convert date to human readable
-        String departure_date = "departure_date";
-        String arrival_date = "arrival_date";
-        // Build description
-        String mystr = String.format("%s is going from %s (%s) to %s (%s). He will depart at " +
-                "%s and should arrive around %s. \nTo call him, press the phone" +
-                "icon below. \nYou can also send him a message.",
-                nameAndFirstName, pickup_city, pickup_country, dropoff_city, dropoff_country,
-                departure_date, arrival_date);
-        descriptionTextView.setText(mystr);
+        if (picture != null && !picture.equals("")) {
+            picture_ui.setImageBitmap(Utilities.StringToBitMap(picture));
+            picture_ui.setScaleX(1);
+            picture_ui.setScaleY(1);
+            picture_ui.setBackground(null);
+            picture_ui.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        }
+
+        final TextView descriptionTextView = (TextView) view.findViewById(R.id.comment_transporter);
+        if (comments == null || comments.equals("") ) {
+            // Convert date to human readable
+            String departure_date = "departure_date";
+            String arrival_date = "arrival_date";
+            // Build description
+            String mystr = String.format("%s is going from %s (%s) to %s (%s). He will depart at " +
+                            "%s and should arrive around %s. \nTo call him, press the phone" +
+                            "icon below. \nYou can also send him a message.",
+                    nameAndFirstName, pickup_city, pickup_country, dropoff_city, dropoff_country,
+                    departure_date, arrival_date);
+            descriptionTextView.setText(mystr);
+        } else {
+            descriptionTextView.setText(comments);
+        }
+
+        switch (package_size) {
+            case "Small":
+                ((TextView) view.findViewById(R.id.size_package_detail)).setText("S");
+                break;
+            case "Medium":
+                ((TextView) view.findViewById(R.id.size_package_detail)).setText("M");
+                break;
+            case "Large":
+                ((TextView) view.findViewById(R.id.size_package_detail)).setText("L");
+                break;
+        }
+
+        ((TextView) view.findViewById(R.id.number_packages_detail)).setText("x"+n_packets);
+
+        switch (transport_method) {
+            case "Car":
+                ((ImageView) view.findViewById(R.id.travel_by)).setImageResource(R.drawable.car);
+                break;
+            case "Train":
+                ((ImageView) view.findViewById(R.id.travel_by)).setImageResource(R.drawable.train);
+                break;
+            case "Plane":
+                ((ImageView) view.findViewById(R.id.travel_by)).setImageResource(R.drawable.plane);
+                break;
+        }
 
         // Call action
-        callButton = (ImageButton) view.findViewById(R.id.callButton);
+        ImageButton callButton = (ImageButton) view.findViewById(R.id.callButton);
         callButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -155,7 +185,7 @@ public class OfferDetail extends Fragment {
         });
 
         // Message action
-        sendMessage = (ImageButton) view.findViewById(R.id.messageButton);
+        ImageButton sendMessage = (ImageButton) view.findViewById(R.id.messageButton);
         sendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -163,7 +193,7 @@ public class OfferDetail extends Fragment {
             }
         });
 
-        Log.i(LOG_TAG, "onCreateView - Exit");
+        if (DEBUG) Log.i(LOG_TAG, "onCreateView - Exit");
         return view;
     }
 
@@ -171,14 +201,14 @@ public class OfferDetail extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        Log.i(LOG_TAG, "onAttach - Start");
+        if (DEBUG) Log.i(LOG_TAG, "onAttach - Start");
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
-        Log.i(LOG_TAG, "onAttach - Exit");
+        if (DEBUG) Log.i(LOG_TAG, "onAttach - Exit");
     }
 
     @Override
@@ -204,17 +234,7 @@ public class OfferDetail extends Fragment {
         return t;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
+    interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onCallButtonPress(String phoneNumber);
         void onMessageButtonPress(String phonenumber);

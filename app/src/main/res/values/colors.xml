@@ -14,4 +14,6 @@
     <color name="white">#ffffff</color>
     <color name="vert">#91b67f</color>
     <color name="marron">#c28f55</color>
+    <color name="square_color">#e4e6e7</color>
+    <color name="test_color">#96a76b12</color>
 </resources>

@@ -15,7 +15,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
-
 import java.util.HashMap;
 
 
@@ -33,7 +32,7 @@ public class ConfirmPublish extends Fragment {
     private static final String ARG_TRIP_DETAILS= "trip_details";
     private final static String LOG_TAG = ConfirmPublish.class.getSimpleName();
     private HashMap<String, String> mpers_details, mtrip_details;
-
+    private final static boolean DEBUG = false;
 
     private EditText firstname_edit, surname_edit, phone_edit, comment_user ;
     private TextView caption_confirm_user_picture;
@@ -62,7 +61,7 @@ public class ConfirmPublish extends Fragment {
     public static ConfirmPublish newInstance(HashMap<String, String> pers_details,
                                              HashMap<String, String> trip_details) {
         ConfirmPublish fragment = new ConfirmPublish();
-//        Log.i(LOG_TAG, "newInstance - pers_details = " + pers_details.toString());
+//        if (DEBUG) Log.i(LOG_TAG, "newInstance - pers_details = " + pers_details.toString());
         Bundle args = new Bundle();
         args.putSerializable(ARG_PERSONAL_DETAILS, pers_details);
         args.putSerializable(ARG_TRIP_DETAILS, trip_details);
@@ -132,10 +131,11 @@ public class ConfirmPublish extends Fragment {
         bundle.putString("user_picture_path", user_picture_path);
         super.onSaveInstanceState(bundle);
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.i(LOG_TAG, "onCreateView - start");
+        if (DEBUG) Log.i(LOG_TAG, "onCreateView - start");
         // Inflate the layout for this fragment
         view =  inflater.inflate(R.layout.fragment_confirm_publish, container, false);
         caption_confirm_user_picture = (TextView) view.findViewById(
@@ -152,12 +152,10 @@ public class ConfirmPublish extends Fragment {
         firstname_edit = (EditText) view.findViewById(R.id.confirm_first_name);
         surname_edit = (EditText) view.findViewById(R.id.confirm_surname);
         phone_edit = (EditText) view.findViewById(R.id.confirm_phone_number);
-//        TextView confirm_please = (TextView) view.findViewById(R.id.confirm_please);
-        comment_user = (EditText) view.findViewById(R.id.comment_user);
+        comment_user = (EditText) view.findViewById(R.id.comment_transporter);
 
         if (!mpers_details.get(getString(R.string.saved_user_firstname)).equals("")) {
-//            Log.i(LOG_TAG, "onCreateView - mpers_details = "+mpers_details.toString());
-//            confirm_please.setText(getString(R.string.please_register));
+//            if(DEBUG) Log.i(LOG_TAG, "onCreateView - mpers_details = "+mpers_details.toString());
             getActivity().setTitle(getString(R.string.please_confirm));
             firstname_edit.setText(mpers_details.get(getString(R.string.saved_user_firstname)));
             surname_edit.setText(mpers_details.get(getString(R.string.saved_user_surname)));
@@ -166,7 +164,7 @@ public class ConfirmPublish extends Fragment {
             user_picture_path = mpers_details.get(getString(R.string.saved_user_picture_path));
 
             Log.i(LOG_TAG, "onCreateView - user_picture_path = "+user_picture_path);
-//            Log.i(LOG_TAG, "onCreateView - user_picture_path = "+user_picture_string);
+//            if (DEBUG) Log.i(LOG_TAG, "onCreateView - user_picture_path = "+user_picture_string);
         } else {
             getActivity().setTitle(getString(R.string.please_register));
         }
@@ -229,18 +227,18 @@ public class ConfirmPublish extends Fragment {
         out.put(getString(R.string.user_comment), comment_user.getText().toString());
         out.put(getString(R.string.saved_user_picture), user_picture_string);
         out.putAll(mtrip_details);
-//        Log.i(LOG_TAG, "getAllDetails - out" + out.toString());
+//        if (DEBUG) Log.i(LOG_TAG, "getAllDetails - out" + out.toString());
         return out;
     }
 
     public void setUserPicture(Bitmap imageBitmap){
-        Log.i(LOG_TAG, "setUserPicture - enter");
+        if (DEBUG) Log.i(LOG_TAG, "setUserPicture - enter");
 
         // This method is only called when the user chooses to edit his profile picture
         // before publishing a new offer
         changed_profile_picture=true;
         user_picture_string = Utilities.BitMapToString(imageBitmap);
-//        Log.i(LOG_TAG, "setUserPicture picture_ui_bitmap = " + picture_bitmap);
+//        if (DEBUG) Log.i(LOG_TAG, "setUserPicture picture_ui_bitmap = " + picture_bitmap);
         user_picture.setImageBitmap(imageBitmap);
         user_picture.setScaleX(1);
         user_picture.setScaleY(1);
@@ -249,7 +247,11 @@ public class ConfirmPublish extends Fragment {
 
     public boolean checkInputs() {
 
-        Log.i(LOG_TAG, "checkInputs - Enter");
+        if (DEBUG) Log.i(LOG_TAG, "checkInputs - Enter");
+
+        if (travelling_by.getSelectedItem().toString().equals("Travelling by")) {
+            return false;
+        }
 
         if (firstname_edit.getText() == null || firstname_edit.getText().toString().equals("")) {
             return false;
@@ -263,6 +265,7 @@ public class ConfirmPublish extends Fragment {
         if (comment_user.getText() == null || comment_user.getText().toString().equals("")) {
             return false;
         }
+
 
         return true;
     }
@@ -307,7 +310,7 @@ public class ConfirmPublish extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnCofirmPublishListener {
+    interface OnCofirmPublishListener {
         void onConfirmPublish();
         void onUserPicturePressed_Confirm();
         void OnPrivacyButtonPressed2();

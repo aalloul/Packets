@@ -5,24 +5,16 @@ package com.example.aalloul.packets;
  */
 
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.HashMap;
-
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
-import android.os.Build;
+import android.media.ExifInterface;
 
-import com.google.gson.Gson;
-
-public class ExifUtil {
-    /**
+class ExifUtil {
+    /*
      * Kindly provided by 9re https://gist.github.com/9re/1990019
      */
-    protected static Bitmap rotateBitmap(String src, Bitmap bitmap) {
+    static Bitmap rotateBitmap(String src, Bitmap bitmap) {
         try {
             int orientation = getExifOrientation(src);
 
@@ -79,58 +71,7 @@ public class ExifUtil {
     }
 
     private static int getExifOrientation(String src) throws IOException {
-        int orientation = 1;
-
-        try {
-            /**
-             * if your are targeting only api level >= 5
-             * ExifInterface exif = new ExifInterface(src);
-             * orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
-             */
-            if (Build.VERSION.SDK_INT >= 5) {
-                Class<?> exifClass = Class.forName("android.media.ExifInterface");
-                Constructor<?> exifConstructor = exifClass.getConstructor(new Class[] { String.class });
-                Object exifInstance = exifConstructor.newInstance(new Object[] { src });
-                Method getAttributeInt = exifClass.getMethod("getAttributeInt", new Class[] { String.class, int.class });
-                Field tagOrientationField = exifClass.getField("TAG_ORIENTATION");
-                String tagOrientation = (String) tagOrientationField.get(null);
-                orientation = (Integer) getAttributeInt.invoke(exifInstance, new Object[] { tagOrientation, 1});
-            }
-        } catch (ClassNotFoundException e) {
-            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "ExifUtil", "getExifOrientation");
-            
-            e.printStackTrace();
-        } catch (SecurityException e) {
-            Gson gson = new Gson();
-            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "ExifUtil", "getExifOrientation");
-            
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "ExifUtil", "getExifOrientation");
-            
-            e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "ExifUtil", "getExifOrientation");
-            
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "ExifUtil", "getExifOrientation");
-            
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "ExifUtil", "getExifOrientation");
-            
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "ExifUtil", "getExifOrientation");
-            
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
-            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "ExifUtil", "getExifOrientation");
-            
-            e.printStackTrace();
-        }
-
-        return orientation;
+        ExifInterface exif = new ExifInterface(src);
+        return exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
     }
 }

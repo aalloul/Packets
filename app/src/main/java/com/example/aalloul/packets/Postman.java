@@ -4,72 +4,38 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-
 import com.example.aalloul.packets.DataBaseContracts.Postmen;
-import com.google.gson.Gson;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
-
 import android.util.Log;
 
 /**
  * Created by aalloul on 03/07/16.
  */
-class Postman extends Person {
+class Postman {
     // Logging
     private final static String LOG_TAG = "Postman";
-
+    private final static boolean DEBUG = false;
     // Some variables
-    private Context localContext;
-    private Backend backend = new Backend();
-    private SQLiteDatabase db;
     private PacketsDatabase packetsDatabase;
 
-    // constructor that returns access to individual postmen
-    public Postman (Context ctx, JSONObject userDeclaration) {
-        // Calling the super constructor needs to be done first, you dumb ass!
-        super(ctx,userDeclaration);
-        Log.i(LOG_TAG, "Constructor called");
-        localContext = ctx;
 
+    Postman (Context ctx) {
+//        super(ctx);
+        packetsDatabase = new PacketsDatabase(ctx);
     }
 
-    // This constructor allows access to the backend, table update and listView populating
-    public Postman (Context ctx, HashMap<String, String> queryParams) {
-        super(ctx);
-        Log.i(LOG_TAG, "Constructor with query parameters called");
-
-        localContext = ctx;
-        //TODO maybe change this to an intent to avoid blocking the thread?
-        String t_start = Long.toString(System.currentTimeMillis());
-        String t_end   = Long.toString(System.currentTimeMillis()*24*3600*1000);
-        queryParams.put("date_pickup", t_start);
-        queryParams.put("date_delivery", t_end);
-        Log.i(LOG_TAG,"queryParams filled");
-
-        packetsDatabase = new PacketsDatabase(localContext);
-        Log.i(LOG_TAG,"Initialize the packetsDatabase");
-        db = packetsDatabase.getWritableDatabase();
-        Log.i(LOG_TAG,"Get writable packetsDatabase");
-        this.updateTable(db,queryParams);
-
+    // Gets the results from the back-end and stores them into the DB
+    Postman (Context ctx, SearchResponse[] searchResults) {
+//        super(ctx);
+        if (DEBUG) Log.i(LOG_TAG, "Postman - Got search results");
+        packetsDatabase = new PacketsDatabase(ctx);
+        this.updateTable(packetsDatabase.getWritableDatabase(),searchResults);
     }
-
 
     // Method that returns the whole content of the SQLite table.
-    @Override
+//    @Override
     protected Cursor getUsers(){
-
-        Log.i(LOG_TAG, " getUsers -- Start getting all postmen from SQLite");
-        ArrayList<Postman> myUsers = new ArrayList<Postman>();
+        if (DEBUG) Log.i(LOG_TAG, " getUsers -- Start getting all postmen from SQLite");
 
         // Query the SQLite db
         SQLiteDatabase db = packetsDatabase.getReadableDatabase();
@@ -84,226 +50,103 @@ class Postman extends Person {
                 null                 // The sort order
         );
 
-        Log.i(LOG_TAG, " getUsers -- Return all postmen from SQLite");
+        if (DEBUG) Log.i(LOG_TAG, " getUsers -- Return all postmen from SQLite");
 
         return c;
     }
 
-    protected Cursor get_Data_For_ListView(HashMap<String, String> parameters) {
-        // TODO find a way to include neighbouring cities ...
+    Cursor get_Data_For_ListView() {
         // TODO if no values returned, widen date range and/or request update of db... tbd outside
         // TODO arrange the ordering of the returned results -- currently ordered by date
         // TODO if backend throws exception, forward it to the main caller.
         // TODO base64 encode/decode of pictures
 
-        Log.i(LOG_TAG, "get_Data_For_ListView -- Start getting all postmen for ListView");
-        // Initialize some variables
+        if (DEBUG) Log.i(LOG_TAG, "get_Data_For_ListView -- Start getting all postmen for ListView");
+        SQLiteDatabase db = packetsDatabase.getReadableDatabase();
         Cursor c;
-        // this is for the where variable
-        String where_col = "";
-        List<String> where_val = new ArrayList<String>();
-
-        // This counter allows to know whether an "AND" clause is needed
-        int cnt = 0;
-        String and;
 
         // Columns to retrieve
         String[] projection = {
-                Postmen.ROW_ID,
-                Postmen.COLUMN_NAME_FIRSTNAME,
-                Postmen.COLUMN_NAME_NUMBERPACKAGES,
-                Postmen.COLUMN_NAME_SOURCECITY,
-                Postmen.COLUMN_NAME_SOURCECOUNTRY,
-                Postmen.COLUMN_NAME_DESTINATIONCITY,
-                Postmen.COLUMN_NAME_DESTINATIONCOUNTRY,
-                Postmen.COLUMN_NAME_TAKEBYDATE,
-                Postmen.COLUMN_NAME_DELIVERBYDATE,
-                Postmen.COLUMN_NAME_POSTMANCOMMENT,
-                Postmen.COLUMN_NAME_PHONENUMBER,
-                Postmen.COLUMN_NAME_SIZEPACKAGES,
-                Postmen.COLUMN_NAME_TRANSPORTMETHOD,
-                Postmen.COLUMN_NAME_DELIVERBYDATE,
-        };
-
-        // fromCity
-        if (parameters.containsKey("source_city")) {
-            where_col += Postmen.COLUMN_NAME_SOURCECITY + " = ? ";
-            where_val.add(parameters.get("source_city"));
-            cnt++;
-        }
-
-        // fromCountry
-        if (parameters.containsKey("source_country")) {
-            and = (cnt > 0) ? " AND ":" ";
-            where_col += and + Postmen.COLUMN_NAME_SOURCECOUNTRY + " = ? ";
-            where_val.add(parameters.get("source_country"));
-            cnt = 1;
-        }
-
-        // date start
-        if (parameters.containsKey("packet_take_by_date")) {
-            and = (cnt > 0) ? " AND ":" ";
-            where_col += and + Postmen.COLUMN_NAME_TAKEBYDATE + " > ? ";
-            where_val.add(parameters.get("packet_take_by_date"));
-            cnt = 1;
-        } else {
-            Log.i(LOG_TAG, "get_Data_For_ListView - Query params does not contain start time");
-
-            and = (cnt > 0) ? " AND ":" ";
-            String t_start = Long.toString(System.currentTimeMillis());
-            where_col += and + Postmen.COLUMN_NAME_TAKEBYDATE + " > ? ";
-            where_val.add(t_start);
-            cnt = 1;
-        }
-
-        // Date end
-        if (parameters.containsKey("packet_deliver_by_date")) {
-            and = (cnt > 0) ? " AND ":" ";
-            where_col += and + Postmen.COLUMN_NAME_DELIVERBYDATE + " < ? ";
-            where_val.add(parameters.get("packet_deliver_by_date"));
-            cnt = 1;
-        } else {
-            Log.i(LOG_TAG, "get_Data_For_ListView - Query params does not contain end time");
-            and = (cnt > 0) ? " AND ":" ";
-            String t_end = Long.toString(System.currentTimeMillis() + 24*3600*1000);
-            where_col += and + Postmen.COLUMN_NAME_DELIVERBYDATE + " < ? ";
-            where_val.add(t_end);
-            cnt = 1;
-        }
-
-        // Size package
-        if (parameters.containsKey("packet_size")) {
-            and = (cnt > 0) ? " AND ":" ";
-            where_col += and + Postmen.COLUMN_NAME_SIZEPACKAGES + " = ? ";
-            where_val.add(parameters.get("packet_size"));
-            cnt = 1;
-        }
-
-        // Number of packages
-        if (parameters.containsKey("number_packages")) {
-            and = (cnt > 0) ? " AND ":" ";
-            where_col += and + Postmen.COLUMN_NAME_NUMBERPACKAGES + " = ? ";
-            where_val.add(parameters.get("number_packages"));
-            cnt = 1;
-        }
+                Postmen.ROW_ID, Postmen.COLUMN_NAME_FIRSTNAME, Postmen.COLUMN_NAME_NUMBERPACKAGES,
+                Postmen.COLUMN_NAME_PICKUPCITY, Postmen.COLUMN_NAME_PICKUPCOUNTRY,
+                Postmen.COLUMN_NAME_DROPOFFCITY, Postmen.COLUMN_NAME_DROPOFFCOUNTRY,
+                Postmen.COLUMN_NAME_PICKUPDATE, Postmen.COLUMN_NAME_DROPOFFDATE,
+                Postmen.COLUMN_NAME_USERCOMMENT, Postmen.COLUMN_NAME_PHONENUMBER,
+                Postmen.COLUMN_NAME_SIZEPACKAGES, Postmen.COLUMN_NAME_TRAVELBY,
+                Postmen.COLUMN_NAME_PICTURE};
 
         // Sort order
-        String sortOrder = Postmen.COLUMN_NAME_TAKEBYDATE + " ASC";
-
-        // Change where_val to an array
-        String[] where_val_array = new String[ where_val.size() ];
-        where_val.toArray(where_val_array);
-
-        // Some Debug
-        Log.i(LOG_TAG, "get_Data_For_ListView - projection is "+ Arrays.toString(projection));
-        Log.i(LOG_TAG, "get_Data_For_ListView - where col is "+where_col);
-        Log.i(LOG_TAG, "get_Data_For_ListView - where val is "+Arrays.toString(where_val_array));
-        Log.i(LOG_TAG, "get_Data_For_ListView - sortOder = "+sortOrder);
-
-
-        c = db.query(Postmen.TABLE_NAME, new String[]{"*"} ,null, null, null, null, null);
-
-        Log.i(LOG_TAG,"get_Data_For_ListView - The database contains " + c.getCount()+" entries, in total.");
+        String sortOrder = Postmen.COLUMN_NAME_PICKUPDATE+ " ASC";
 
         // The query itself
-        c = db.query(
-                Postmen.TABLE_NAME,  // The table to query
+        c = db.query(Postmen.TABLE_NAME,  // The table to query
                 projection,          // The columns to return
-                where_col,           // The columns for the WHERE clause
-                where_val_array,     // The values for the WHERE clause
+                null,           // The columns for the WHERE clause
+                null,     // The values for the WHERE clause
                 null,                // don't group the rows
                 null,                // don't filter by row groups
                 sortOrder            // The sort order
         );
 
-        Log.i(LOG_TAG, "get_Data_For_ListView - The actual query returned "+c.getCount()+" entries");
-        Log.i(LOG_TAG, "get_Data_For_ListView -- End");
+        if (DEBUG) Log.i(LOG_TAG, "get_Data_For_ListView - The actual query returned "+c.getCount()+" entries");
         return c;
 
     }
 
+    private void updateTable (SQLiteDatabase db, SearchResponse[] queryResults) {
+        if (DEBUG) Log.i(LOG_TAG,"updateTable - Start");
+//        new ArrayList<String>(Arrays.asList("*"));
+        db.execSQL("delete from "+ Postmen.TABLE_NAME);
 
-    protected void updateTable (SQLiteDatabase db, HashMap<String, String> queryParameters) {
-        /* TODO the back-end result will contain all the neighboring cities in an array, something
-        like [ {...., "cities": [city_1, city_2], "distances":[dist_1, dist_2]},... ]
-         up to this method to flatten this
-         */
-        /* TODO Make sure this is not called whenever the main View is called */
-        Log.i(LOG_TAG,"updateTable - Start");
-
-        Log.i(LOG_TAG,"updateTable - Request back-end");
-        String resu = backend.requestUpdate(queryParameters);
-
-        Log.d(LOG_TAG, "updateTable - resu = "+resu);
-
-        // Initialize variable
-        Log.i(LOG_TAG,"updateTable - Initialize all variables");
-        JSONArray all_updates;
-
+        if (queryResults == null || queryResults.length == 0) return;
 
         try {
-            all_updates = new JSONArray(resu);
-            Log.i(LOG_TAG, "updateTable - After parsing to JSON, we have "+
-                    all_updates.length() +" new entries");
+            if (DEBUG) Log.i(LOG_TAG, "updateTable - received "+ queryResults.length +" new entries");
 
-            for (int i = 0; i < all_updates.length(); i++){
-                JSONObject updated_user = all_updates.getJSONObject(i);
-
+            for (SearchResponse q:queryResults) {
                 ContentValues values = new ContentValues();
-                values.put(Postmen.COLUMN_NAME_NAME , updated_user.getString( "name"));
-                values.put(Postmen.COLUMN_NAME_FIRSTNAME , updated_user.getString( "firstname"));
-                values.put(Postmen.COLUMN_NAME_CITY , updated_user.getString( "city"));
-                values.put(Postmen.COLUMN_NAME_STREET , updated_user.getString( "street"));
-                values.put(Postmen.COLUMN_NAME_COUNTRY , updated_user.getString( "country"));
-                values.put(Postmen.COLUMN_NAME_PHONENUMBER ,
-                        updated_user.getString( "phone_number"));
-                values.put(Postmen.COLUMN_NAME_RATING , updated_user.getInt( "user_rating"));
-                values.put(Postmen.COLUMN_NAME_SOURCECITY ,
-                        updated_user.getString("source_city"));
-                values.put(Postmen.COLUMN_NAME_SOURCECOUNTRY ,
-                        updated_user.getString("source_country"));
-                values.put(Postmen.COLUMN_NAME_SOURCESTREET ,
-                        updated_user.getString("source_street"));
-                values.put(Postmen.COLUMN_NAME_DESTINATIONCITY ,
-                        updated_user.getString("destination_city"));
-                values.put(Postmen.COLUMN_NAME_DESTINATIONCOUNTRY ,
-                        updated_user.getString("destination_country"));
-                values.put(Postmen.COLUMN_NAME_DESTINATIONSTREET ,
-                        updated_user.getString("destination_street"));
-                values.put(Postmen.COLUMN_NAME_POSTMANCOMMENT ,
-                        updated_user.getString("transport_comment"));
-                values.put(Postmen.COLUMN_NAME_SIZEPACKAGES , updated_user.getString("packet_size"));
-                values.put(Postmen.COLUMN_NAME_NUMBERPACKAGES ,
-                        updated_user.getInt("number_packages"));
-                values.put(Postmen.COLUMN_NAME_TAKEBYDATE ,
-                        updated_user.getString("packet_take_by_date"));
-                values.put(Postmen.COLUMN_NAME_DELIVERBYDATE ,
-                        updated_user.getString("packet_deliver_by_date"));
-                values.put(Postmen.COLUMN_NAME_TRANSPORTMETHOD ,
-                        updated_user.getString("package_transport_method"));
+                values.put(Postmen.COLUMN_NAME_NAME , q.getUserSurName());
+                values.put(Postmen.COLUMN_NAME_FIRSTNAME , q.getUserFirstName());
+                values.put(Postmen.COLUMN_NAME_PHONENUMBER , q.getUserPhoneNumber());
+                values.put(Postmen.COLUMN_NAME_PICTURE, q.getUserPicture());
+                values.put(Postmen.COLUMN_NAME_USERCOMMENT , q.getUserComment());
+//                values.put(Postmen.COLUMN_NAME_RATING , q.getUser_rating;
 
-//                db.insert(
-//                        Postmen.TABLE_NAME,
-//                        "",
-//                        values);
+                values.put(Postmen.COLUMN_NAME_PICKUPLATITUDE, q.getPickupLatitude());
+                values.put(Postmen.COLUMN_NAME_PICKUPLONGITUDE, q.getPickupLongitude());
+                values.put(Postmen.COLUMN_NAME_PICKUPCITY, q.getPickupCity());
+                values.put(Postmen.COLUMN_NAME_PICKUPADDRESS, q.getPickupAddress());
+                values.put(Postmen.COLUMN_NAME_PICKUPCOUNTRY, q.getPickupCountry());
+                values.put(Postmen.COLUMN_NAME_PICKUPPOSTALCODE, q.getPickupPostalCode());
+                values.put(Postmen.COLUMN_NAME_DROPOFFLATITUDE, q.getDropOffLatitude());
+                values.put(Postmen.COLUMN_NAME_DROPOFFLONGITUDE, q.getDropOffLongitude());
+                values.put(Postmen.COLUMN_NAME_DROPOFFCITY , q.getDropOffCity());
+                values.put(Postmen.COLUMN_NAME_DROPOFFCOUNTRY , q.getDropOffCountry());
+                values.put(Postmen.COLUMN_NAME_DROPOFFADDRESS, q.getDropOffAddress());
+                values.put(Postmen.COLUMN_NAME_DROPOFFPOSTALCODE, q.getDropOffPostalCode());
+
+                values.put(Postmen.COLUMN_NAME_SIZEPACKAGES , q.getSizePackages());
+                values.put(Postmen.COLUMN_NAME_NUMBERPACKAGES , q.getNumberPackages());
+                values.put(Postmen.COLUMN_NAME_TRAVELBY, q.getTravelsBy());
+                values.put(Postmen.COLUMN_NAME_PICKUPDATE , q.getPickupDate());
+//                values.put(Postmen.COLUMN_NAME_DROPOFFDATE , q.getDropoffDate());
+
+                long mylong = db.insert(Postmen.TABLE_NAME,"",values);
+                if (DEBUG) Log.i(LOG_TAG,"updateTable - db.insert returned "+mylong);
+
             }
 
-        } catch (JSONException e) {
-            Log.e(LOG_TAG, "updateTable - An error with JSON happened, stacktrace follows");
-            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "Postman", "updateTable");
-
-            e.printStackTrace();
         } catch (Exception e){
-            Log.e(LOG_TAG, "updateTable - An unknown error happened, stacktrace follows");
+            if (DEBUG) Log.e(LOG_TAG, "updateTable - An unknown error happened, stacktrace follows");
             DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "Postman", "updateTable");
             e.printStackTrace();
         }
 
-        Log.i(LOG_TAG,"updateTable - Finish update table");
+        if (DEBUG) Log.i(LOG_TAG,"updateTable - Finish update table");
     }
 
-    public void closeDatabase(){
-        db.close();
+    void closeDatabase(){
+        packetsDatabase.close();
     }
 
 }

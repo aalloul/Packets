@@ -5,223 +5,191 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <RelativeLayout
         tools:context="com.example.aalloul.packets.MainFragment"
         android:background="@drawable/frog_background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!--<TextView-->
-            <!--android:text="@string/explanation_main_activity_pt2"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:id="@+id/explanationText2"-->
-            <!--android:layout_below="@+id/explanationText"-->
-            <!--android:textColor="@android:color/black"-->
-            <!--android:layout_marginBottom="5dp"-->
-            <!--android:layout_marginLeft="10dp"-->
-            <!--android:layout_marginStart="10dp"-->
-            <!--android:background="@drawable/frameborder2"-->
-            <!--android:alpha="0.8"-->
-            <!--android:layout_marginEnd="10dp"-->
-            <!--android:layout_marginRight="10dp"-->
-            <!--android:backgroundTint="@color/white" />-->
+        <TextView
+            android:id="@+id/pickuplocation_main_activity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:alpha="0.8"
+            android:background="@drawable/frameborder"
+            android:paddingBottom="10dp"
+            android:paddingLeft="20dp"
+            android:paddingStart="20dp"
+            android:paddingTop="10dp"
+            android:text="@string/explain_usage_search2"
+            android:textColor="@android:color/black" />
 
-        <!--<TextView-->
-            <!--android:text="@string/explanation_main_activity_pt3"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:id="@+id/explanationText3"-->
-            <!--android:layout_below="@+id/explanationText2"-->
-            <!--android:textColor="@android:color/black"-->
-            <!--android:layout_marginStart="10dp"-->
-            <!--android:layout_marginLeft="10dp"-->
-            <!--android:background="@drawable/frameborder2"-->
-            <!--android:alpha="0.8"-->
-            <!--android:layout_marginEnd="10dp"-->
-            <!--android:layout_marginRight="10dp"-->
-            android:backgroundTint="@color/white" />
+        <TextView
+            android:id="@+id/setdate_mainActivity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/pickuplocation_main_activity"
+            android:layout_marginEnd="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:alpha="0.8"
+            android:background="@drawable/frameborder"
+            android:paddingBottom="10dp"
+            android:paddingLeft="20dp"
+            android:paddingStart="20dp"
+            android:paddingTop="10dp"
+            android:text="@string/explain_usage_search3"
+            android:textColor="@android:color/black" />
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/setdate_mainActivity"
+            android:layout_marginEnd="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:alpha="0.8"
+            android:background="@drawable/frameborder"
+            android:paddingBottom="10dp"
+            android:paddingLeft="20dp"
+            android:paddingStart="20dp"
+            android:paddingTop="10dp"
+            android:text="@string/explain_usage_search4"
+            android:textColor="@android:color/black" />
 
         <RelativeLayout
-            android:layout_height="wrap_content"
-            android:id="@+id/layout2_main_activity"
-            android:background="@drawable/frameborder"
+            android:id="@+id/relative_layout_xxx"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView7"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
-            android:elevation="24dp"
-            android:backgroundTint="@color/white"
-            android:layout_centerVertical="true">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/dot1_main_activity"
-                android:scaleX="0.5"
-                android:scaleY="0.5"
-                android:src="@drawable/dot"
-                tools:ignore="ContentDescription" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/bar_main_activity"
-                android:layout_below="@id/dot1_main_activity"
-                android:rotation="90"
-                android:layout_marginTop="31dp"
-                android:layout_marginBottom="10dp"
-                android:src="@drawable/bar"
-                android:scaleX="3"
-                tools:ignore="ContentDescription" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/dot2_main_activity"
-                android:layout_below="@+id/setNumberPackages"
-                android:scaleX="0.5"
-                android:scaleY="0.5"
-                android:src="@drawable/dot"
-                android:layout_marginTop="5dp"
-                tools:ignore="ContentDescription" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:id="@+id/dropofflocation_mainactivity"
-                android:layout_toRightOf="@+id/dot2_main_activity"
-                android:layout_below="@+id/setNumberPackages"
-                android:hint="@string/enter_dropoff_location"
-                android:layout_marginTop="22dp"
-                android:background="@drawable/backgroundstate"
-                android:clickable="true"
-                android:layout_alignBottom="@+id/dot2_main_activity"
-                android:textColor="@android:color/black"
-                android:textColorHint="@android:color/black"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_toEndOf="@+id/dot2_main_activity" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/setdate_mainActivity"
-                android:layout_toRightOf="@+id/bar_main_activity"
-                android:layout_below="@+id/pickuplocation_main_activity"
-                android:layout_marginTop="5dp"
-                android:src="@drawable/calendar"
-                android:layout_marginStart="30dp"
-                android:layout_marginLeft="30dp"
-                android:layout_toEndOf="@+id/bar_main_activity"
-                android:background="@drawable/calendar"
-                android:layout_marginEnd="20dp"
-                android:layout_marginRight="20dp" />
+            android:layout_marginTop="10dp">
 
             <Spinner
+                android:id="@+id/setNumberPackages"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/setNumberPackages"
-                android:layout_below="@+id/setdate_mainActivity"
+                android:layout_centerHorizontal="false"
+                android:layout_centerInParent="false"
+                android:layout_centerVertical="false"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
                 android:background="@drawable/packageicon"
-                android:layout_marginTop="13dp"
-                android:scaleX="1.2"
-                android:scaleY="1.2"
-                android:src="@drawable/packageicon"
-                android:layout_toRightOf="@+id/bar_main_activity"
                 android:dropDownWidth="match_parent"
                 android:gravity="center_vertical|center_horizontal"
-                android:layout_centerVertical="false"
-                android:layout_centerInParent="false"
                 android:paddingLeft="8dp"
-                android:paddingTop="10dp"
-                android:layout_marginStart="34dp"
-                android:layout_marginLeft="34dp"
                 android:paddingRight="8dp"
-                android:layout_toEndOf="@+id/bar_main_activity" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/dateofpickup_mainActivity"
-                android:layout_toRightOf="@+id/setdate_mainActivity"
-                android:layout_below="@+id/pickuplocation_main_activity"
-                android:layout_marginTop="20dp"
-                android:textColor="@android:color/black"
-                android:textColorHint="@android:color/black"
-                android:layout_toEndOf="@+id/setdate_mainActivity" />
-
-            <TextView
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:id="@+id/pickuplocation_main_activity"
-                android:hint="@string/enter_pickup_location"
-                android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/dot1_main_activity"
-                android:layout_toEndOf="@+id/dot1_main_activity"
-                android:background="@drawable/backgroundstate"
-                android:layout_alignBottom="@+id/dot1_main_activity"
-                android:layout_width="wrap_content"
-                android:layout_marginTop="15dp"
-                android:textColorHint="@android:color/black"
-                android:textColor="@android:color/black"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"/>
+                android:scaleX="1.2"
+                android:scaleY="1.2"
+                android:src="@drawable/packageicon" />
 
             <Spinner
+                android:id="@+id/packagesize"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/packagesize"
-                android:dropDownWidth="match_parent"
-                android:background="@drawable/backgroundstate"
                 android:layout_alignTop="@+id/setNumberPackages"
-                android:layout_toRightOf="@+id/setNumberPackages"
+                android:layout_centerHorizontal="false"
+                android:layout_centerVertical="false"
+                android:layout_marginTop="15dp"
                 android:layout_toEndOf="@+id/setNumberPackages"
-                android:layout_marginTop="12dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginLeft="15dp" />
+                android:layout_toRightOf="@+id/setNumberPackages"
+                android:alpha="0.8"
+                android:background="@color/white"
+                android:dropDownWidth="match_parent" />
         </RelativeLayout>
 
+        <TextView
+            android:id="@+id/dropofflocation_mainactivity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/relative_layout_xxx"
+            android:layout_marginEnd="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:alpha="0.8"
+            android:background="@drawable/frameborder"
+            android:paddingBottom="10dp"
+            android:paddingLeft="20dp"
+            android:paddingStart="20dp"
+            android:paddingTop="10dp"
+            android:text="@string/explain_usage_search5"
+            android:textColor="@android:color/black" />
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/dropofflocation_mainactivity"
+            android:layout_marginEnd="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:alpha="0.8"
+            android:background="@drawable/frameborder"
+            android:paddingBottom="8dp"
+            android:paddingEnd="8dp"
+            android:paddingLeft="8dp"
+            android:paddingStart="8dp"
+            android:paddingTop="8dp"
+            android:text="@string/explain_usage_search6"
+            android:textColor="@android:color/black" />
+
         <RelativeLayout
+            android:id="@+id/layout3_main_activity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/layout3_main_activity"
-            android:layout_below="@+id/layout2_main_activity"
+            android:layout_below="@+id/textView9"
+            android:layout_centerHorizontal="true"
             android:layout_centerInParent="false"
             android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
             android:layout_marginTop="30dp">
 
             <Button
-                android:text="@string/postbutton_main_activity"
+                android:id="@+id/postbutton_main_activity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/postbutton_main_activity"
-                android:background="@color/colorPublish"
+                android:layout_marginLeft="50dp"
+                android:layout_marginStart="50dp"
+                android:layout_toEndOf="@+id/searchbutton_main_activity"
+                android:layout_toRightOf="@+id/searchbutton_main_activity"
+                android:background="@drawable/frameborder"
+                android:backgroundTint="@color/test_color"
+                android:elevation="24dp"
+                android:text="@string/postbutton_main_activity"
+                android:textAllCaps="false"
                 android:textColor="@color/cast_expanded_controller_progress_text_color"
                 android:textSize="16sp"
-                android:textAllCaps="false"
-                android:textStyle="normal|bold"
-                android:layout_toRightOf="@+id/searchbutton_main_activity"
-                android:layout_marginStart="50dp"
-                android:layout_marginLeft="50dp"
-                android:layout_toEndOf="@+id/searchbutton_main_activity"
-                android:elevation="24dp" />
+                android:textStyle="normal|bold" />
 
             <Button
-                android:text="@string/searchbutton_main_activity"
+                android:id="@+id/searchbutton_main_activity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/searchbutton_main_activity"
-                android:background="@color/colorPrimary"
-                android:textColor="@color/cast_expanded_controller_progress_text_color"
-                android:textSize="16sp"
-                android:textAllCaps="false"
-                android:textStyle="normal|bold"
-                android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:elevation="24dp" />
+                android:layout_alignParentTop="true"
+                android:background="@drawable/frameborder"
+                android:backgroundTint="@color/colorPrimary"
+                android:elevation="24dp"
+                android:text="@string/searchbutton_main_activity"
+                android:textAllCaps="false"
+                android:textColor="@color/cast_expanded_controller_progress_text_color"
+                android:textSize="16sp"
+                android:textStyle="normal|bold" />
         </RelativeLayout>
     </RelativeLayout>
 

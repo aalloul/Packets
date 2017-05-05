@@ -4,7 +4,12 @@
     <string name="mainActivity">Shippy - The delivery community</string>
     <string name="permission_position_explanation">Hey! can we know where you are?</string>
     <string name="permission_position_explanation_ok">Fair enough</string>
-    <string name="explain_usage_search">Please use the search bar to find deliverers.</string>
+    <string name="explain_usage_search">The below square is your main interaction point with the Shippy Community:</string>
+    <string name="explain_usage_search2"> 1- Choose a pick-up city</string>
+    <string name="explain_usage_search3"> 2- Choose a pick-up date</string>
+    <string name="explain_usage_search4"> 3- Choose the number and size of the packages</string>
+    <string name="explain_usage_search5"> 4- Choose a drop-off city</string>
+    <string name="explain_usage_search6">Then either hit the \"Search\" button if you want to see the available offers for this trip or the \"Publish\" button if you want to offer this trip.</string>
     <string name="sendfromtext">Send From</string>
     <string name="sendtotext">Send To</string>
     <string name="title_activity_the_search">Search for available offers</string>
@@ -29,7 +34,7 @@
     <string name="location_will_come_later">Do not worry, we will update your location when we get a signal</string>
     <string name="user_location_not_entered">For the registration process, we only need to know the city you live in</string>
     <string name="updating_location">Retrieving your location</string>
-    <string name="offers_towards">Offers towards</string>
+    <string name="offers_towards">Available offers</string>
     <!--This okay is displayed when input is missing when searching/posting offers -->
     <string name="okay">OK</string>
     <string name="join_the_community">Join the community!</string>
@@ -48,7 +53,6 @@
         <item>Large</item>
     </string-array>
     <string-array name="travelling_by">
-        <item>Travelling by</item>
         <item>Car</item>
         <item>Train</item>
         <item>Plane</item>
@@ -57,7 +61,8 @@
     <string name="publish">Publish</string>
     <string name="please_confirm">Anything to add?</string>
     <string name="please_register">One final step</string>
-    <string name="thank_you">Thank you!</string>
+    <string name="thank_you">All packed</string>
+    <string name="enjoy">Tell your friends!</string>
     <string name="back_to_main">Back</string>
 
     <string name="comment_indication">Here you can provide more details about your offer like where
@@ -71,35 +76,54 @@
         <item>New Selfie</item>
     </string-array>
     <string name="choose_gallery_or_camera">Choose from Gallery or Picture?</string>
-    <string name="privacynotice">When someone visits www.ico.org.uk we use a third party service, Google Analytics, to collect standard internet log information and details of visitor behaviour patterns. We do this to find out things such as the number of visitors to the various parts of the site. This information is only processed in a way which does not identify anyone. We do not make, and do not allow Google to make, any attempt to find out the identities of those visiting our website. If we do want to collect personally identifiable information through our website, we will be up front about this. We will make it clear when we collect personal information and will explain what we intend to do with it.
+    <string name="legal_notice">Terms and Conditions</string>
+    <string name="privacy_notice">Privacy and data collection</string>
 
-Use of cookies by the ICO
+    <string name="legal_notice2">We, at Shippy, believe that official post services are very important and useful as they provide a reliable and secure way to send goods around. We believe though that there is a category of goods that do not deserve so much \"officiality\" and that our users are happy as long as their package arrives in good order. This is exactly why we decided to create this service. \r\n
+        The below bullet points only serve at making this a bit clearer:\r\n
+        \u2022 We strongly recommend you agree with each other to agree on the content of the package. This allows for a safer and easier transaction.\r\n
+        \u2022 We recommend you only send/transport goods whose price is such that sending them trough the official post services is too expensive.\r\n
+        \u2022 When you choose to publish an offer on Shippy, you agree to share your contact details with other users of Shippy. For more details about our data privacy policy, please see below.\r\n
+        \u2022 Using Shippy is at your own risk and we strongly recommend you take actions to prevent any undesirable outcome. For example by following the above-mentioned advices. Please feel free to reach out to us if you have any idea on how we can make this service more secure.\r\n
+    </string>
+    <string name="privacy_notice2"> At Shippy, when it comes to privacy, we become very, very serious:\r\n
+        \u2022 We believe your privacy is your most important asset.\r\n
+        \u2022 We will never, ever, ever sell your personal data\r\n
+        \u2022 We actually do not collect your personal data. We do store your contact details when you publish an offer but that is strictly to ensure other users can contact you.\r\n
+        </string>
+    <string name="privacy_notice3">
+        Another important principle we follow is that we should keep improving on our Service and never consider your trust in us as permanent. We have thus decided to collect strictly anonymously some usage metrics that will drive our business decisions. For example, we are interested in knowing:\r\n
+        \u2022 How long does it take for a user to go from one secreen to another?\r\n
+        \u2022 How often did a user open the app before starting to use it?\r\n
+        \u2022 How many results were returned when the user hit the \"Search\" button?\r\n
+        We like to think of ourselves as your neighbourhood shop who has come to learn about your habits as you become a loyal customer. The only difference is that we never speak about you or your habits to anyone else.
+    </string>
 
-You can read more about how we use cookies on our Cookies page.
-
-Search engine
-
-Our website search and decision notice search is powered by System Associates. Search queries and results are logged anonymously to help us improve our website and search functionality. No user-specific data is collected by either ICO or any </string>
+    <string name="contact_us">Contact us</string>
+    <string name="contact_us2">We value your input and would love to hear from you so we can better improve our app. If you want to get in touch with us, you can send us an e-mail (click here), or go to the App Store and leave a comment there.</string>
 
 
     <string name="privacy_button">We\'re proud of our privacy notice</string>
     <string name="thankyou_registration_pt1">Welcome</string>
     <string name="thankyou_registration_pt2">and Welcome!</string>
     <string name="thankyou_registration">Thank you very much for registering with Shippy</string>
-    <string name="share_with_friends">Share with your friends</string>
+    <string name="share_with_friends">Thank you for sharing</string>
+    <string name="share_with_friends2">Share now!</string>
     <string name="thank_you_firstname">Thank you</string>
+    <string name="share_link_pt1">I\'m going to</string>
+    <string name="share_link_pt2">and can deliver for you any small thing you would like to send :)
+    http://play.google.com/store/apps/details?id=com.example.aalloul.packets</string>
+    <string name="share_link_noresults">Hey, did you hear of the Shippy app? It connects travellers to those who want to send a package. Check it out http://play.google.com/store/apps/details?id=com.example.aalloul.packets</string>
 
+    <string name="network_error">Oops</string>
+    <string name="network_erro2">A network error happened, please retry again.</string>
+    <string name="no_results_found">Hey, thank you for using Shippy we do appreciate a lot! We unfortunately do not have any offer that matches your criteria yet but we\'re working hard. Maybe you could help us a bit and invite your friends to join us?</string>
 
     <!-- ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~  -->
     <!--                       Parameters that don't need to be localized                        -->
     <!-- ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~  -->
     <string name="google_key">AIzaSyBsMFAjzpz-9YZkwzO3bO0MlvUwN04iRBs</string>
-    <!-- Minimum time between 2 post of usage data (in ms) -->
-    <integer name="time_to_post_usage_data">120000</integer>
-    <!-- Connection read time out (in ms) -->
-    <integer name="connection_read_time_out">20000</integer>
-    <!-- Connection time out (in ms) -->
-    <integer name="connection_time_out">20000</integer>
+
     <!-- Endpoint URLs -->
     <string name="backend_url">http://jsonplaceholder.typicode.com/posts</string>
     <string name="api_key">the_key_goes_here</string>
@@ -126,15 +150,15 @@ Our website search and decision notice search is powered by System Associates. S
     <string name="saved_user_firstname">userFirstName</string>
     <string name="saved_user_picture">userPicture</string>
     <string name="saved_user_phonenumber">userPhoneNumber</string>
-    <string name="saved_user_latitude">userLatitude</string>
-    <string name="saved_user_longitude">userLongitude</string>
-    <string name="saved_user_address">userAddress</string>
-    <string name="saved_user_city">userCity</string>
-    <string name="saved_user_state">userState</string>
-    <string name="saved_user_country">userCountry</string>
-    <string name="saved_user_postalcode">userPostalCode</string>
+    <string name="saved_user_latitude">pickup_latitude</string>
+    <string name="saved_user_longitude">pickup_longitude</string>
+    <string name="saved_user_address">pickup_address</string>
+    <string name="saved_user_city">pickup_city</string>
+    <string name="saved_user_state">pickup_state</string>
+    <string name="saved_user_country">pickup_country</string>
+    <string name="saved_user_postalcode">pickup_postalCode</string>
     <string name="saved_user_npromptstoregister">userNPromptsToRegister</string>
-    <string name="date_for_pickup">date_for_pickup</string>
+    <string name="date_for_pickup">pickup_date</string>
     <string name="number_packages">number_packages</string>
     <string name="size_packages">size_packages</string>
     <string name="travels_by">travels_by</string>
@@ -146,12 +170,14 @@ Our website search and decision notice search is powered by System Associates. S
     <string name="drop_off_city">drop_off_city</string>
     <string name="drop_off_state">drop_off_state</string>
     <string name="drop_off_country">drop_off_country</string>
-    <string name="drop_off_postalcode">drop_off_postalcode</string>
+    <string name="drop_off_postalcode">drop_off_postalCode</string>
     <string name="saved_user_picture_path">absolute_path_to_user_picture</string>
     <string name="user_picture_file">user_picture</string>
 
     <!--Data reporting fields-->
-    <string name="sID">sID</string>
+    <string name="deviceid">deviceid</string>
+    <string name="devicetype">devicetype</string>
+    <string name="sID">sessID</string>
     <string name="acStart">activity_start</string>
     <string name="acName">activity_name</string>
     <string name="sEnd">sessEnd</string>
@@ -206,6 +232,9 @@ Our website search and decision notice search is powered by System Associates. S
     <string name="title_activity_splash_screen">SplashScreen</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

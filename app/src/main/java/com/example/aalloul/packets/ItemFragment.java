@@ -34,7 +34,7 @@ public class ItemFragment extends Fragment {
     }
 
     public static ItemFragment newInstance(int columnCount) {
-        Log.i(LOG_TAG, "newInstance -- Start");
+        if (DEBUG) Log.i(LOG_TAG, "newInstance -- Start");
         ItemFragment fragment = new ItemFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);

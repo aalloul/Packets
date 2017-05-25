@@ -19,11 +19,12 @@ import java.util.HashMap;
 final class Utilities {
     private static HashMap<String, String> countries = new HashMap<>();
     final static String LOG_TAG = "Utilities";
+    private final static boolean DEBUG =false;
 
 
     // Maps country name to its code
     static String CountryToCountryCode(String country){
-        Log.i(LOG_TAG, "CountryToCountryCode - Start");
+        if (DEBUG) Log.i(LOG_TAG, "CountryToCountryCode - Start");
         countries.put("Afghanistan","AF");
         countries.put("Åland Islands","AX");
         countries.put("Albania","AL");
@@ -273,12 +274,12 @@ final class Utilities {
         countries.put("Yemen","YE");
         countries.put("Zambia","ZM");
         countries.put("Zimbabwe","ZW");
-        Log.d(LOG_TAG, "CountryToCountryCode - country = "+country);
+        if (DEBUG) Log.d(LOG_TAG, "CountryToCountryCode - country = "+country);
         if (countries.containsKey(country)) {
-            Log.d(LOG_TAG,"CountryToCountryCode - Found in key");
+            if (DEBUG) Log.d(LOG_TAG,"CountryToCountryCode - Found in key");
             return countries.get(country);
         } else {
-            Log.d(LOG_TAG,"CountryToCountryCode - Not found in key");
+            if (DEBUG) Log.d(LOG_TAG,"CountryToCountryCode - Not found in key");
             return country;
         }
 
@@ -297,18 +298,18 @@ final class Utilities {
         Date updatedate;
         SimpleDateFormat out_format = new SimpleDateFormat(formatString);
         SimpleDateFormat test_format = new SimpleDateFormat("yyyy");
-        Log.i(LOG_TAG, "Epoch2Date - updatedate = " +epoch);
+        if (DEBUG) Log.i(LOG_TAG, "Epoch2Date - updatedate = " +epoch);
 
         long epoch_long = Long.parseLong(epoch);
-        Log.i(LOG_TAG, "Epoch2Date - parsed(updatedate) = " +epoch_long);
+        if (DEBUG) Log.i(LOG_TAG, "Epoch2Date - parsed(updatedate) = " +epoch_long);
 
         updatedate = new Date(epoch_long);
         if (Integer.parseInt(test_format.format(updatedate)) > 2016 &&
                 Integer.parseInt(test_format.format(updatedate)) < 2100) {
-            Log.i(LOG_TAG, "Epoch2Date - it's in milli");
+            if (DEBUG) Log.i(LOG_TAG, "Epoch2Date - it's in milli");
             return (out_format.format(updatedate));
         } else {
-            Log.i(LOG_TAG, "Epoch2Date - it's in seconds");
+            if (DEBUG) Log.i(LOG_TAG, "Epoch2Date - it's in seconds");
             return out_format.format(new Date(epoch_long*1000));
         }
     }
@@ -319,20 +320,20 @@ final class Utilities {
      * @param formatString output format
      * @return formatted String
      */
-    static String Epoch2Date(long epoch, String formatString){
-        Log.i(LOG_TAG, "Epoch2Date - epoch = " +epoch);
+    private static String Epoch2Date(long epoch, String formatString){
+        if (DEBUG) Log.i(LOG_TAG, "Epoch2Date - epoch = " +epoch);
         Date updatedate;
         SimpleDateFormat out_format = new SimpleDateFormat(formatString);
         SimpleDateFormat test_format = new SimpleDateFormat("yyyy");
 
         updatedate = new Date(epoch);
-        Log.i(LOG_TAG, "Epoch2Date - updatedate = " +updatedate);
+        if (DEBUG) Log.i(LOG_TAG, "Epoch2Date - updatedate = " +updatedate);
         if (Integer.parseInt(test_format.format(updatedate)) > 2016 &&
                 Integer.parseInt(test_format.format(updatedate)) < 2100) {
-            Log.i(LOG_TAG, "Epoch2Date - it's in milli");
+            if (DEBUG) Log.i(LOG_TAG, "Epoch2Date - it's in milli");
             return (out_format.format(updatedate));
         } else {
-            Log.i(LOG_TAG, "Epoch2Date - it's in seconds");
+            if (DEBUG) Log.i(LOG_TAG, "Epoch2Date - it's in seconds");
             return out_format.format(new Date(epoch*1000));
         }
     }

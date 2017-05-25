@@ -16,7 +16,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 
     // create a local variable for identifying the class where the log statements come from
     private final static String LOG_TAG = DatePickerFragment.class.getSimpleName();
-    private final static boolean DEBUG = true;
+    private final static boolean DEBUG = false;
 
     private TheListener listener;
 

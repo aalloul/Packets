@@ -9,9 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.google.android.gms.vision.text.Text;
-
 import java.util.HashMap;
 
 

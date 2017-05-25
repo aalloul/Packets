@@ -188,15 +188,6 @@ public class ConfirmPublish extends Fragment {
         // Apply the adapter to the spinner
         travelling_by.setAdapter(adapterTravellingBy);
 
-        // Privacy button
-        TextView privacyButton = (TextView) view.findViewById(R.id.privacyButton2);
-        privacyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.OnPrivacyButtonPressed2();
-            }
-        });
-
         return view;
     }
 
@@ -313,6 +304,5 @@ public class ConfirmPublish extends Fragment {
     interface OnCofirmPublishListener {
         void onConfirmPublish();
         void onUserPicturePressed_Confirm();
-        void OnPrivacyButtonPressed2();
     }
 }

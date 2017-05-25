@@ -106,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private OfferDetail detailsFragment;
     private RequestQueue volleyQueue;
     private PrivacyNotice privacyNotice;
+    private NoResultsFound noresultsfound;
 
     // create a local variable for identifying the class where the log statements come from
     private final static String LOG_TAG = MainActivity.class.getSimpleName();
@@ -134,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         tmp.put(getString(R.string.saved_user_postalcode),
                 sharedPref.getString(getString(R.string.saved_user_postalcode), ""));
         tmp.put(getString(R.string.saved_user_city),
-                sharedPref.getString(getString(R.string.saved_user_city), "Updating"));
+                sharedPref.getString(getString(R.string.saved_user_city), ""));
 
         tmp.put(getString(R.string.saved_user_country),
                 sharedPref.getString(getString(R.string.saved_user_country), ""));
@@ -221,21 +222,31 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     private void handleNetworkResult(String queryResult) {
-        Log.i(LOG_TAG, "handleNetworkResult  - queryResult = " + queryResult);
+        if (DEBUG) Log.i(LOG_TAG, "handleNetworkResult  - queryResult = " + queryResult);
 
         if (mainFragment==null) {
-            Log.e(LOG_TAG, "handleNetworkResult - mainFragment is null");
+            if (DEBUG) Log.e(LOG_TAG, "handleNetworkResult - mainFragment is null");
         }
 
         switch (queryResult) {
             case "empty":
-                Log.i(LOG_TAG, "handleNetworkResult - empty results");
-                NoResultsFound noresultsfound = NoResultsFound.newInstance();
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .add(R.id.mainActivity_ListView, noresultsfound, "noresultsfound")
-                        .commitAllowingStateLoss();
-                break;
+                if (DEBUG) Log.i(LOG_TAG, "handleNetworkResult - empty results");
+                if (noresultsfound==null) noresultsfound = NoResultsFound.newInstance();
+
+                if (isFinishing()) {Log.i(LOG_TAG, "handleNetworkResult - Is Finishing");}
+                try {
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.mainActivity_ListView, noresultsfound, "noresultsfound")
+                            .addToBackStack("tonoresultsfound")
+                            .commitAllowingStateLoss();
+
+                    break;
+                } catch (Exception e){
+                    Log.e(LOG_TAG, "handleNetworkResult - WAS GONNA CRASH");
+                e.printStackTrace();
+                    break;
+            }
 
             case "ok":
                 if (DEBUG) Log.i(LOG_TAG, "handleNetworkResult - Notifying dataset change");
@@ -365,11 +376,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     protected void stopLocationUpdates() {
+        if (DEBUG) Log.i(LOG_TAG, "stopLocationUpdates - Enter");
         if (mGoogleApiClient == null) return;
-
+        if (DEBUG) Log.i(LOG_TAG, "stopLocationUpdates - mGoogleApiClient not null");
         if (!mGoogleApiClient.isConnected()) return;
+        if (DEBUG) Log.i(LOG_TAG, "stopLocationUpdates - mGoogleApiClient connected");
         LocationServices.FusedLocationApi.removeLocationUpdates(
                 mGoogleApiClient, this);
+        if (DEBUG) Log.i(LOG_TAG, "stopLocationUpdates - mGoogleApiClient disconnected");
     }
 
     // Tries to open the settings 
@@ -614,8 +628,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     public void onClick(DialogInterface dialog, int which) {
                         getSupportFragmentManager()
                                 .beginTransaction()
-                                .detach(itemFragment)
-                                .add(fragment, fragment.getTag())
+//                                .detach(itemFragment)
+                                .replace(R.id.mainActivity_ListView, fragment, fragment.getTag())
                                 .commit();
                     }
                 })
@@ -642,7 +656,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         headers.put("networkRequestTime", String.valueOf(Utilities.CurrentTimeMS()));
         headers.put("x-api-key","vmXvcob4V33NpNVXKsDll8nAQAcmHGZZ87Fl4HF6");
 
-//        Map<String, String> headers = new HashMap<>();
         if (DEBUG) Log.i(LOG_TAG, "searchRequest - searchParams = " + searchParams);
 
         GsonRequest request = new GsonRequest(url, searchParams, SearchResponse[].class, headers,
@@ -652,7 +665,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                         new Postman(getApplicationContext(), response);
                         Intent newdata = new Intent("newDataHasArrived");
                         if (response == null) {
-                            Log.i(LOG_TAG, "searchRequest - response is null");
+                            if (DEBUG) Log.i(LOG_TAG, "searchRequest - response is null");
                             newdata.putExtra("queryResult", "empty");
                         } else {
                             newdata.putExtra("queryResult", "ok");
@@ -666,8 +679,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     public void onErrorResponse(VolleyError error) {
                         DataBuffer.addException("searchRequestError", error.getMessage(), "mainFragment",
                                 "search");
-                        Log.i(LOG_TAG, "error.getMesage() = " + error.getMessage());
-                        Log.i(LOG_TAG, "error.getCause() = " + error.getCause());
+                        if (DEBUG) Log.i(LOG_TAG, "error.getMesage() = " + error.getMessage());
+                        if (DEBUG) Log.i(LOG_TAG, "error.getCause() = " + error.getCause());
                         informNetworkError(mainFragment);
                     }
                 }
@@ -697,7 +710,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         headers.put("networkRequestTime", String.valueOf(Utilities.CurrentTimeMS()));
         headers.put("x-api-key","vmXvcob4V33NpNVXKsDll8nAQAcmHGZZ87Fl4HF6");
 
-        Log.i(LOG_TAG, "dataToPost = " + dataToPost);
+        if (DEBUG) Log.i(LOG_TAG, "dataToPost = " + dataToPost);
 
         GsonRequest request = new GsonRequest(url, dataToPost, null, headers, Request.Method.POST,
                 new Response.Listener<Gson>() {
@@ -716,7 +729,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 }
         );
         request.setTag("usageStatsTag");
-        Log.i(LOG_TAG, "postUsageRequest - Adding to request queue");
+        if (DEBUG) Log.i(LOG_TAG, "postUsageRequest - Adding to request queue");
 //        volleyQueue.add(request);
     }
 
@@ -756,10 +769,19 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         request.setTag("postOfferTag");
         if (DEBUG) Log.i(LOG_TAG, "postUsageRequest - Adding to request queue");
         // 1st argument is initial timeout, 2nd is number of retries, 3rd is multiplier
-        request.setRetryPolicy(new DefaultRetryPolicy(2000, 0, 0.0f));
+        request.setRetryPolicy(new DefaultRetryPolicy(4000, 0, 0.0f));
 
         volleyQueue.add(request);
     }
+
+    public void OnPrivacyButtonPressed() {
+        privacyNotice = PrivacyNotice.newInstance();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.mainActivity_ListView, privacyNotice, "privacyNotice")
+                .addToBackStack("toPrivacy")
+                .commit();
+    }
+
 
     /* ***************** ***************** ***************** *****************
                         Override section
@@ -790,7 +812,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         boolean isalreadyregistered = isAlreadyRegistered();
 
         // if not already registered or the city is "updating" then connect to Google API
-        if (mGoogleApiClient == null && (!isalreadyregistered || userCity.equals("Updating"))) {
+        if (mGoogleApiClient == null || (!isalreadyregistered || userCity.equals(""))) {
             if (DEBUG) Log.i(LOG_TAG, "onCreate - mGoogleApiClient is null");
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addConnectionCallbacks(this)
@@ -828,6 +850,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     getSupportFragmentManager().findFragmentByTag("itemFragment");
             mainFragment = (MainFragment)
                     getSupportFragmentManager().findFragmentByTag("mainFragment");
+
+            noresultsfound = (NoResultsFound)
+                    getSupportFragmentManager().findFragmentByTag("noresultsfound");
         }
 
         // New data from the back-end was downloaded
@@ -1010,7 +1035,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     @SuppressWarnings("unchecked")
     protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+
         //Save the fragment's instance
         if (registrationFragment != null && registrationFragment.isAdded()) {
             getSupportFragmentManager().putFragment(outState, "registrationFragment", registrationFragment);
@@ -1027,7 +1052,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (itemFragment != null && itemFragment.isAdded()) {
             getSupportFragmentManager().putFragment(outState, "itemFragment", itemFragment);
         }
-
+        if (noresultsfound != null && noresultsfound.isAdded()) {
+            getSupportFragmentManager().putFragment(outState, "noresultsfound", noresultsfound);
+        }
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -1133,7 +1161,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         itemFragment = ItemFragment.newInstance(1);
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.mainActivity_ListView, itemFragment, "itemFragment")
+                .add(R.id.mainActivity_ListView, itemFragment, "itemFragment")
                 .addToBackStack("mainToitem")
                 .commit();
 
@@ -1171,6 +1199,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         hashMap.remove(getString(R.string.nextF));
         hashMap.remove(getString(R.string.pickup_location_edited));
 
+        stopLocationUpdates();
         // Show confirmation page
         confirmPublish = ConfirmPublish.newInstance(userDetails,hashMap);
         getSupportFragmentManager()
@@ -1431,9 +1460,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (i == 1) {
             new HandleReportingAsync().execute(u0,registrationFragment.getBlob(
                     getString(R.string.ferror),getString(R.string.reg_locnotfound)));
-            Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
-                    getResources().getString(R.string.location_will_come_later),
-                    getResources().getString(R.string.okay));
+            // if we're unable to find the user's location, then he should provide it
+//            Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
+//                    getResources().getString(R.string.location_will_come_later),
+//                    getResources().getString(R.string.okay));
         }
 
         // Store the details in SharedPref
@@ -1506,6 +1536,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void onLocationChanged(Location location) {
         if (DEBUG) Log.i(LOG_TAG, "onLocationChanged - Enter");
         if (DEBUG) Log.i(LOG_TAG, "onLocationChanged - location = " + location.toString());
+        if (mainFragment != null && !mainFragment.isVisible()) {
+            if (DEBUG) Log.i(LOG_TAG, "onLocationChanged - not visible -- Stopping" );
+            stopLocationUpdates();
+            return;
+        }
 //        stopLocationUpdates();
         if (isAlreadyRegistered()) {
             if (mainFragment != null ) {
@@ -1567,12 +1602,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             // Detaching the confirmation to avoid people re-publishing the same offer
             if (confirmPublish != null) fmg.detach(confirmPublish);
             fmg.commit();
+            return;
         }
 
         try {
+            Log.i(LOG_TAG, "onBackPressed - trying super method");
             super.onBackPressed();
+            Log.i(LOG_TAG, "onBackPressed - trying super method - succeeded");
         } catch (Exception e) {
-            if (DEBUG) Log.i(LOG_TAG, "STUCK STUCK STUCK STUCK ");
+            if (DEBUG) Log.i(LOG_TAG, "onBackPressed - STUCK STUCK STUCK STUCK ");
             DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "MainActivity",
                     "onBackPressed");
 
@@ -1609,20 +1647,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 }
                 break;
         }
-    }
-
-    @Override
-    public void OnPrivacyButtonPressed() {
-        privacyNotice = PrivacyNotice.newInstance();
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.mainActivity_ListView, privacyNotice)
-                .addToBackStack("toPrivacy")
-                .commit();
-    }
-
-    @Override
-    public void OnPrivacyButtonPressed2() {
-        this.OnPrivacyButtonPressed();
     }
 
     @Override
@@ -1699,13 +1723,19 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 u0.put(getString(R.string.fName),"shareApplication");
                 u1.put(getString(R.string.fActions), "shareApplication");
                 u1.put(getString(R.string.fStart), Long.toString(Utilities.CurrentTimeMS()));
-
+                new HandleReportingAsync().execute(u0,u1);
                 ShareActionProvider contactUsActionProvider = (ShareActionProvider)
                         MenuItemCompat.getActionProvider(item);
-
                 contactUsActionProvider.setShareIntent(getEmailItentenForContact());
 
                 return true;
+            case R.id.menu_item_legal:
+                u0.put(getString(R.string.fName),"privacyNotice");
+                u1.put(getString(R.string.fActions), "privacyNotice");
+                u1.put(getString(R.string.fStart), Long.toString(Utilities.CurrentTimeMS()));
+                new HandleReportingAsync().execute(u0,u1);
+                this.OnPrivacyButtonPressed();
+
 
             default:
                 // If we got here, the user's action was not recognized.

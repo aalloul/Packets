@@ -30,19 +30,6 @@
         android:textSize="16sp"
         android:textStyle="normal|bold" />
 
-    <TextView
-        android:id="@+id/privacyButton2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="false"
-        android:layout_below="@+id/confirm_publish"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:paddingBottom="10dp"
-        android:text="@string/privacy_button"
-        android:textColor="@color/white"
-        android:textStyle="bold" />
-
     <FrameLayout
         android:id="@+id/relativeLayout_confirm"
         android:layout_width="wrap_content"
@@ -68,18 +55,21 @@
 
                 <ImageButton
                     android:id="@+id/confirm_user_picture"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     android:layout_centerHorizontal="false"
-                    android:layout_centerInParent="true"
+                    android:layout_centerInParent="false"
                     android:layout_centerVertical="false"
                     android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="15dp"
                     android:background="@drawable/backgroundstate"
                     android:contentDescription="@string/add_profile_picture"
                     android:elevation="3dp"
                     android:scaleType="fitCenter"
-                    android:scaleX="2"
-                    android:scaleY="2"
+                    android:scaleX="1"
+                    android:scaleY="1"
                     app:srcCompat="@mipmap/user_icon_bevel" />
 
                 <TextView
@@ -92,7 +82,6 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginLeft="5dp"
                     android:layout_marginStart="5dp"
-                    android:layout_marginTop="10dp"
                     android:gravity="center"
                     android:text="@string/add_profile_picture"
                     android:textColor="@android:color/black"
@@ -198,7 +187,7 @@
             <EditText
                 android:id="@+id/comment_transporter"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="200dp"
                 android:ems="10"
                 android:gravity="top|center_vertical"
                 android:hapticFeedbackEnabled="false"

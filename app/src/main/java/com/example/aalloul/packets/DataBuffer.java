@@ -2,15 +2,10 @@ package com.example.aalloul.packets;
 
 import android.support.annotation.Nullable;
 import android.util.Log;
-
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
-/**
- * Created by adamalloul on 03/12/2016.
- */
 
 class DataBuffer {
     // We want this class to be somehow static
@@ -19,7 +14,7 @@ class DataBuffer {
     // for the logger
     private static final String LOG_TAG = "DataBuffer";
     private static String deviceId, deviceType;
-    private final static boolean DEBUG = true;
+    private final static boolean DEBUG = false;
     private final static int time_to_send = 120000;
 
     // This is an Arraylist of hashmaps that will be dumped into a JSON string -- Serves as a buffer
@@ -130,8 +125,8 @@ class DataBuffer {
         }
 
         if (DEBUG) {
-            Log.i(LOG_TAG, "ShouldIPostData - Current time = " + Utilities.CurrentTimeMS() );
-            Log.i(LOG_TAG, "ShouldIPostData - first_update= " + first_update);
+            if (DEBUG) Log.i(LOG_TAG, "ShouldIPostData - Current time = " + Utilities.CurrentTimeMS() );
+            if (DEBUG) Log.i(LOG_TAG, "ShouldIPostData - first_update= " + first_update);
         }
         if ( (Utilities.CurrentTimeMS() - first_update) >= time_to_send ) {
             if (DEBUG) Log.i(LOG_TAG, "ShouldIPostData - yes!");

@@ -18,10 +18,8 @@ public class PrivacyNotice extends Fragment {
     }
 
 
-    // TODO: Rename and change types and number of parameters
     public static PrivacyNotice newInstance() {
-        PrivacyNotice fragment = new PrivacyNotice();
-        return fragment;
+        return new PrivacyNotice();
     }
 
     @Override

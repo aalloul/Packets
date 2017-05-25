@@ -28,7 +28,7 @@ class GsonRequest<T> extends Request<T> {
     private final Response.Listener<T> listener;
     private final Object dataIn;
     private final static String LOG_TAG = GsonRequest.class.getSimpleName();
-    private final static boolean DEBUG = true;
+    private final static boolean DEBUG = false;
 
     /**
      * Make a request and return a parsed object from JSON.

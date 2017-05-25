@@ -50,7 +50,6 @@
                     android:layout_alignParentRight="false"
                     android:layout_alignParentStart="false"
                     android:layout_alignParentTop="false"
-                    android:layout_toLeftOf="@+id/number_packages"
                     android:layout_toStartOf="@+id/number_packages_detail"
                     android:background="@drawable/packageicon" />
 
@@ -66,24 +65,24 @@
                     android:textColor="@android:color/black" />
 
                 <RelativeLayout
-                    android:id="@+id/relative_detail_1"
+                    android:id="@+id/relative_detail_2"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginBottom="-5dp"
-                    android:layout_marginLeft="5dp">
+                    android:layout_marginLeft="10dp">
 
                     <ImageView
                         android:id="@+id/transporter_picture_detail"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_centerHorizontal="false"
                         android:layout_centerInParent="false"
-                        android:layout_centerVertical="true"
+                        android:layout_centerVertical="false"
                         android:layout_marginBottom="4dp"
                         android:scaleType="centerCrop"
-                        android:scaleX="1.5"
-                        android:scaleY="1.5"
+                        android:scaleX="1"
+                        android:scaleY="1"
                         app:srcCompat="@mipmap/user_icon_bevel" />
 
                     <TextView
@@ -91,7 +90,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/transporter_picture_detail"
-                        android:layout_centerHorizontal="true"
+                        android:layout_centerHorizontal="false"
                         android:text="first name "
                         android:textColor="@android:color/black"
                         android:textSize="14sp" />
@@ -133,7 +132,7 @@
                     android:layout_marginRight="5dp"
                     android:layout_marginStart="-5dp"
                     android:layout_marginTop="10dp"
-                    android:layout_toRightOf="@+id/relative_detail_1"
+                    android:layout_toRightOf="@+id/relative_detail_2"
                     android:adjustViewBounds="true"
                     android:cropToPadding="true"
                     android:scaleType="centerCrop"
@@ -148,7 +147,7 @@
                     android:layout_marginRight="5dp"
                     android:layout_marginStart="-5dp"
                     android:layout_marginTop="40dp"
-                    android:layout_toRightOf="@+id/relative_detail_1"
+                    android:layout_toRightOf="@+id/relative_detail_2"
                     android:rotation="90"
                     app:srcCompat="@drawable/bar" />
 
@@ -160,7 +159,7 @@
                     android:layout_marginRight="5dp"
                     android:layout_marginStart="-5dp"
                     android:layout_marginTop="-15dp"
-                    android:layout_toRightOf="@+id/relative_detail_1"
+                    android:layout_toRightOf="@+id/relative_detail_2"
                     android:adjustViewBounds="true"
                     android:cropToPadding="true"
                     android:scaleType="centerCrop"
@@ -182,7 +181,7 @@
         </FrameLayout>
 
         <RelativeLayout
-            android:id="@+id/relative_detail_2"
+            android:id="@+id/relative_detail_3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/frame1"
@@ -217,7 +216,7 @@
         <RelativeLayout
             android:layout_width="200dp"
             android:layout_height="match_parent"
-            android:layout_below="@+id/relative_detail_2"
+            android:layout_below="@+id/relative_detail_3"
             android:layout_centerHorizontal="true">
 
             <ImageButton

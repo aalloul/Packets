@@ -14,6 +14,7 @@ public class NoResultsFound extends Fragment {
 
     private static final String LOG_TAG = "NoResultsFound";
     private OnNoResultsFoundInteraction mListener;
+    private final static boolean DEBUG = false;
 
     public NoResultsFound() {
         // Required empty public constructor
@@ -31,7 +32,7 @@ public class NoResultsFound extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.i(LOG_TAG, "onCreateView - Enter");
+        if (DEBUG) Log.i(LOG_TAG, "onCreateView - Enter");
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_no_results_found, container, false);
         TextView textView = (TextView) view.findViewById(R.id.share_button_noresults);
@@ -63,18 +64,8 @@ public class NoResultsFound extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+
     interface OnNoResultsFoundInteraction{
-        // TODO: Update argument type and name
         void onNoResultsShareButtonPressed();
     }
 }

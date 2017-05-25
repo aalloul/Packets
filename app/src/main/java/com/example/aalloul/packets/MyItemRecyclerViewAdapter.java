@@ -30,7 +30,7 @@ import static com.example.aalloul.packets.DataBaseContracts.Postmen.COLUMN_NAME_
 class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewAdapter.ViewHolder> {
 
     private final static String LOG_TAG = MyItemRecyclerViewAdapter.class.getSimpleName();
-    private final static boolean DEBUG = true;
+    private final static boolean DEBUG = false;
 
 //    private Cursor cursor;
     private final ArrayList<String> firstnames = new ArrayList<>();
@@ -152,7 +152,7 @@ class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewA
                 Utilities.Epoch2Date(pickup_dates.get(holder.getAdapterPosition()),"dd MMM"));
 
         temp = transport_methods.get(holder.getAdapterPosition());
-        Log.i(LOG_TAG, "onBindViewHolder - Transport method = "+temp);
+        if (DEBUG) Log.i(LOG_TAG, "onBindViewHolder - Transport method = "+temp);
         switch (temp) {
             case "Car":
                 if (DEBUG) Log.d(LOG_TAG, "onBindViewHolder - Transport method = car");

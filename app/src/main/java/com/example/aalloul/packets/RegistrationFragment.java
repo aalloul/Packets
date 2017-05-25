@@ -177,14 +177,6 @@ public class RegistrationFragment extends Fragment {
         });
 
 
-        TextView privacy_button = (TextView) view.findViewById(R.id.privacyButton);
-        privacy_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.OnPrivacyButtonPressed();
-            }
-        });
-
         if (DEBUG) Log.i(LOG_TAG, "onCreateView - Exit");
         return view;
     }
@@ -195,8 +187,8 @@ public class RegistrationFragment extends Fragment {
         picture_bitmap = Utilities.BitMapToString(imageBitmap);
 //        if (DEBUG) Log.i(LOG_TAG, "setUserPicture picture_ui_bitmap = " + picture_bitmap);
         picture_ui.setImageBitmap(imageBitmap);
-        picture_ui.setScaleX(1);
-        picture_ui.setScaleY(1);
+//        picture_ui.setScaleX(1);
+//        picture_ui.setScaleY(1);
     }
 
 
@@ -315,7 +307,7 @@ public class RegistrationFragment extends Fragment {
         if (phone_number_ui == null) return 0;
         if (phone_number_ui.getText() == null || get_user_phone_number().equals("")) return 0;
         if (location_ui == null) return 0;
-        if (location_ui.getText() == null || get_user_location().equals("")) return 1;
+        if (location_ui.getText() == null || get_user_location().equals("")) return 0;
 
         return 2;
     }
@@ -366,6 +358,5 @@ public class RegistrationFragment extends Fragment {
         void onUserLocationPressed();
         void onRegisterMePressed();
         void onRegisterLaterPressed();
-        void OnPrivacyButtonPressed();
     }
 }

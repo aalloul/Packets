@@ -33,7 +33,7 @@ public class MainFragment extends Fragment {
     private long fragment_start_time;
     private Boolean edited_pickup_location = false;
     private OnFragmentInteractionListener mListener;
-    private final static boolean DEBUG = false;
+    private final static boolean DEBUG = true;
 
     public MainFragment() {
         // Required empty public constructor
@@ -297,7 +297,7 @@ public class MainFragment extends Fragment {
 
     public void setDate(String date) {
         // Most important stuff first
-        Log.i(LOG_TAG, "setDate - date = " + date);
+        if (DEBUG) Log.i(LOG_TAG, "setDate - date = " + date);
         pickupdate = date;
         pickup_date.setText(getResources().getString(R.string.explain_usage_search3) + ": " +
                 Utilities.DateToDate(pickupdate, "yyyy-MM-dd","MMM dd" ));
@@ -348,6 +348,8 @@ public class MainFragment extends Fragment {
         drop_off_detailed_location = locationAddress;
         String tmp = locationAddress.get(getString(R.string.saved_user_city));
 
+        if (tmp.equals("")) return;
+
         if (locationAddress.get(getString(R.string.saved_user_state)) == null ) {
             tmp += " ("+Utilities.CountryToCountryCode(
                     locationAddress.get(getString(R.string.saved_user_country))) +")";
@@ -364,7 +366,7 @@ public class MainFragment extends Fragment {
     }
 
     private void _setPickup_location() {
-        if (pick_up_detailed_location == null) return;
+        if (pick_up_detailed_location == null || pickup_location == null) return;
         if (!pick_up_detailed_location.containsKey(getString(R.string.saved_user_city))) return;
         if (!pick_up_detailed_location.containsKey(getString(R.string.saved_user_state))) return;
 
@@ -372,8 +374,9 @@ public class MainFragment extends Fragment {
                 pick_up_detailed_location.get(getString(R.string.saved_user_city)));
         String tmp = pick_up_detailed_location.get(getString(R.string.saved_user_city));
 
-        if (tmp.equals("Updating")) {
-            pickup_location.setText(getString(R.string.updating_location));
+        // We decided to not show "updating" if the last location is unknown as we might never get
+        // an update
+        if (tmp.equals("")) {
             return;
         }
 

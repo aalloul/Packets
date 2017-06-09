@@ -5,7 +5,7 @@
     android:layout_centerHorizontal="true"
     android:layout_centerInParent="false"
     android:background="@drawable/share_with_friends"
-    tools:context="com.example.aalloul.packets.ThankYou">
+    tools:context="com.app.shippy.android.ThankYou">
 
     <TextView
         android:id="@+id/thank_you_text"

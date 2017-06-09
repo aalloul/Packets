@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/frog_background"
-    tools:context="com.example.aalloul.packets.NoResultsFound">
+    tools:context="com.app.shippy.android.NoResultsFound">
 
     <TextView
         android:id="@+id/noresults_found"

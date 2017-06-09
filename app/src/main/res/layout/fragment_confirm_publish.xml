@@ -9,7 +9,7 @@
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context="com.example.aalloul.packets.ConfirmPublish"
+    tools:context="com.app.shippy.android.ConfirmPublish"
     android:background="@drawable/frog_background">
 
     <Button

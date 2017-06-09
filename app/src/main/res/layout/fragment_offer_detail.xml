@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/frog_background"
-        tools:context="com.example.aalloul.packets.OfferDetail">
+        tools:context="com.app.shippy.android.OfferDetail">
 
         <FrameLayout
             android:id="@+id/frame1"

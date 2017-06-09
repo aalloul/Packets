@@ -137,7 +137,7 @@
     <string name="usage_end_point" translatable="false">usageendpoint</string>
     <string name="postoffer_end_point" translatable="false">postoffer</string>
     <!-- Number Of Packages -->
-    <string-array name="number_packages_array">
+    <string-array name="number_packages_array" translatable="false">
         <item>1</item>
         <item>2</item>
         <item>3</item>

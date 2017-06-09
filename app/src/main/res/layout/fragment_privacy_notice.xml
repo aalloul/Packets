@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:layout_margin="20dp"
     android:background="@android:color/white"
-    tools:context="com.example.aalloul.packets.PrivacyNotice">
+    tools:context="com.app.shippy.android.PrivacyNotice">
 
     <RelativeLayout
         android:layout_width="match_parent"

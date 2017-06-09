@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     // create a local variable for identifying the class where the log statements come from
     private final static String LOG_TAG = MainActivity.class.getSimpleName();
-    private static boolean DEBUG = true;
+    private static boolean DEBUG = false;
 
     private boolean isAlreadyRegistered() {
         if (DEBUG) Log.i(LOG_TAG, "isAlreadyRegistered - Enter");

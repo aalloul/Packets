@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mainActivity">Shippy - La communauté de livreurs</string>
+    <string name="permission_position_explanation">Peut-on savoir où tu es?</string>
+    <string name="permission_position_explanation_ok">Pas de soucis</string>
+    <string name="sendfromtext">Envoyer de</string>
+    <string name="sendtotext">Envoyer vers</string>
+    <string name="date_send_not_set">Quand veux-tu envoyer le paquet?</string>
+    <string name="dropoff_location_not_set">Vers où veux-tu envoyer le paquet? </string>
+    <string name="pickup_location_not_set">D\'ouù veux-tu envoyer le paquet?</string>
+    <string name="no_network_connectivity">S\'il te plait connecte ton téléphone à internet</string>
+    <string name="number_packages_not_set">Combien de paquets veux-tu envoyer?</string>
+    <string name="size_packages_not_set">Quelle est la taille de(s) paquet(s)?</string>
+    <string name="enter_first_name">Prénom</string>
+    <string name="enter_surname">Nom</string>
+    <string name="enter_phone_number">Téléphone</string>
+    <string name="user_current_city">Ville</string>
+    <string name="register_me">Enregistrer</string>
+    <string name="register_not_now">Plus tard</string>
+    <string name="registration_input_incomplete">Dis-nous en plus sur toi</string>
+
+    <string name="explain_usage_search2">Ville d\'envoi</string>
+    <string name="explain_usage_search3">Date d\'envoi</string>
+    <string name="explain_usage_search4">Combien de paquets?</string>
+    <string name="explain_usage_search5">Ville de livraison</string>
+    <string name="explain_usage_search6">Appuie sur le bouton "Recherche" pour trouver les offres correspondant à ta recherche. Appuie sur le bouton "Publier", si tu veux proposer ce trajet.</string>
+
+    <string name="user_location_not_entered">Pour l\'enregistrement, nous n\'avons besoin de savoir que la ville où tu habites</string>
+    <string name="offers_towards">Offres disponibles</string>
+    <!--This okay is displayed when input is missing when searching/posting offers -->
+    <string name="okay">OK</string>
+    <string name="join_the_community">Rejoins la communauté!</string>
+    <string name="explanation_main_activity">Hey</string>
+    <string name="explanation_main_activity2">salut</string>
+    <string name="explanation_main_activity3">, et bienvenu(e)!</string>
+
+    <string name="explanation_main_activity_pt2">Pour t\'aider à commencer, nous avons déjà pré-rempli certains des champs nécesaires.</string>
+    <string name="enter_pickup_location">Oirigine d\'envoi</string>
+    <string name="enter_dropoff_location">Destination de l\'envoi</string>
+    <string name="searchbutton_main_activity">Chercher</string>
+    <string name="postbutton_main_activity">Publier</string>
+    <string-array name="package_size">
+        <item>Petit</item>
+        <item>Moyen</item>
+        <item>Large</item>
+    </string-array>
+    <string-array name="travelling_by">
+        <item>Voiture</item>
+        <item>Train</item>
+        <item>Avion</item>
+    </string-array>
+
+    <string name="publish">Publier</string>
+    <string name="please_confirm">Dis-nous en plus</string>
+    <string name="please_register">Une dernière étape</string>
+    <string name="thank_you">Est-ce que tout est prêt</string>
+    <string name="enjoy">Dis-le à tes amis!</string>
+    <string name="back_to_main">Retour</string>
+
+    <string name="comment_indication">Ici tu peux donner plus d\'explications à propos de ton offre, par exemple\r\n
+    \u2022 Comment tu veux organiser la récupération/livraison des paquets?\n
+
+    \u2022 Quand veux-tu livrer les paquets?\n
+    \u2022 Est-ce que tu veux être payé? Combien?\n
+    \u2022 … tout ce qui te parait important \n</string>
+
+    <string name="add_profile_picture">Photo de profil</string>
+
+    <string-array name="camera_or_gallery">
+        <item>De la galerie</item>
+        <item>Une nouvelle selfie</item>
+    </string-array>
+    <string name="choose_gallery_or_camera">Une nouvelle photo?</string>
+    <string name="legal_notice">Termes et Conditions</string>
+    <string name="privacy_notice">Vie privée et collecte des données</string>
+
+    <string name="legal_notice2">Nous, à Shippy, croyons que les services postaux officiels sont trés importants et utiles puisqu\'ils apportent une garantie légale à tout envoi.\r\n
+        \n
+        Nous pensons aussi qu\'il y a une catégories d\'objets pour lesquels on n\'a pas besoin d\'autant de rigueur et que nos utilisateurs seront contents tant que leur envoi arrive en bonne et dûe forme. C\'est exactement pourquoi nous avons créé ce service.\r\n
+    Les points ci-dessous servent à éclaircir un peu plus les choses:\r\n
+        \n
+        \u2022 Nous te recommendons vivement de vous mettre d\'accord avec l\'autre personne sur le contenu du paquet. Cela rendra la transation plus sûre et plus facile.\r\n
+        \n
+    \u2022 Nous recommendons vivement que tu n\'envoies que des objets dont le prix est tel que leur envoi par la poste serait trop chèr.\r\n
+        \n
+    \u2022 Quand tu choisis de publier une offre sur Shippy, tu consents à partager tes informations de contact avec les autres utilisateurs de Shippy. Pour plus d\'infos sur notre politique de vie privée, lis plus bas.\r\n
+        \n
+    \u2022 L\'utilisation de Shippy est à ton propre risque et nous te recommendons de te protéger au maximum. Par exemple, en suivant les conseils ci-dessous. \n
+        \n
+        N\'hésite pas à nous contacter si tu as une idée sur la façon dont on pourrait rendre ce service plus sûr.\r\n
+    </string>
+
+    <string name="privacy_notice2"> A Shippy, quand il s\'agit de vie privée, nous prenons les choses trés, trés au sérieux:\r\n
+        \n
+    \u2022 Nous croyons que ta vie privée n\'est pas marchandable \n
+        \n
+    \u2022 Par conséquent, nous ne vendrons jamais, sous aucune condition, tes données personnelles\r\n
+        \n
+    \u2022 En fait, nous ne collectons pas tes données personnelles. Nous ne stockons tes données de contact que quand tu publies une offre et ceci seulement pour permettre aux autres utilisateurs de te contacter.\r\n
+        \n
+        </string>
+
+    <string name="privacy_notice3">
+        Un autre principe important que nous suivons est qu\'on doit tout le temps améliorer notre Service et ne jamais considérer ta confiance comme un acquis. Nous avons donc décidé de collecter de manière strictement anonyme quelques données d\'utilisation pour aider notre orientation. Par exemple, on essaie de savoir:\r\n
+    \u2022 Combien de temps il faut à un utilisateur pour naviguer d\'un écran à un autre?\r\n
+        \n
+    \u2022 Combien de fois a-t-il fallu à un utilisateur avant de s\'enregistrer?\r\n
+        \n
+    \u2022 Combien de résultats ont été montrés quand l\'utilisateur a effectué une recherche?\r\n
+        \n
+    Cette pratique n\'est en fait pas trés loin de ce que ferait ton boulanger du coin qui sait combien de baguettes tu prends à chaque passage. La seule différence est qu\'on ne parlera absolument jamais de tes habitudes à qui que ce soit.
+    </string>
+
+    <string name="contact_us">Contacte nous</string>
+
+    <string name="contact_us2">Nous accordons beaucoup d\'importance à ton avis et on adorerait que tu nous fasses part de tes suggestions d\'amélioration. Pour nous contacter, tu peux nous envoyer un e-mail (en cliquant ici) ou aller sur l\'App Store et nous laisser un commentaire.</string>
+
+
+    <string name="privacy_button">Infos légales</string>
+    <string name="thankyou_registration_pt1">Bienvenu!</string>
+    <string name="thankyou_registration_pt2">et bienvenu!</string>
+    <string name="thankyou_registration">Merci beaucoup de vous être enregistré à Shippy</string>
+    <string name="share_with_friends">Merci d\'avoir partagé</string>
+    <string name="share_with_friends2">Partager</string>
+    <string name="thank_you_firstname">Merci beaucoup!</string>
+    <string name="share_link_pt1">Je voyage vers</string>
+
+    <string name="confirm_publish">Confirmer</string>
+
+    <string name="share_link_pt2">et je peux livrer pour toi un petit colis si jamais :) http://play.google.com/store/apps/details?id=com.app.shippy.android</string>
+
+    <string name="share_link_noresults">Salut, as-tu entendu parler de l\'application Shippy? Elle connecte les voyageurs et ceux qui ont un colis à envoyer. Découvre la ici http://play.google.com/store/apps/details?id=com.app.shippy.android</string>
+
+    <string name="network_error">Oops</string>
+    <string name="network_erro2">Une erreur de réseau s\'est produite. Veuillez réessayer, s\'il vous plait</string>
+
+    <string name="no_results_found">Salut et merci de vouloir utiliser Shippy, nous te sommes trés reconnaissant.\n
+        \n
+        Nous n\'avons malheureusement pas d\'offres qui correspondent à ta recherche mais on y travaille, trés dur!\n
+        \n
+        Peut-être pourrais-tu nous aider un peu en invitant tes amis à utiliser l\'application?</string>
+
+
+</resources>

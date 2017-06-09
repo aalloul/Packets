@@ -7,7 +7,7 @@
 
 
     <RelativeLayout
-        tools:context="com.example.aalloul.packets.MainFragment"
+        tools:context="com.app.shippy.android.MainFragment"
         android:background="@drawable/frog_background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

@@ -1,39 +1,25 @@
 <resources>
-    <string name="app_name">Shippy</string>
-    <string name="title_activity_find_someone">Shippy</string>
+    <string name="app_name" translatable="false">Shippy</string>
+    <string name="title_activity_find_someone" translatable="false">Shippy</string>
     <string name="mainActivity">Shippy - The delivery community</string>
     <string name="permission_position_explanation">Hey! can we know where you are?</string>
     <string name="permission_position_explanation_ok">Fair enough</string>
-    <string name="explain_usage_search">The below square is your main interaction point with the Shippy Community:</string>
-    <string name="explain_usage_search2"> 1- Choose a pick-up city</string>
-    <string name="explain_usage_search3"> 2- Choose a pick-up date</string>
-    <string name="explain_usage_search4"> 3- Choose the number and size of the packages</string>
-    <string name="explain_usage_search5"> 4- Choose a drop-off city</string>
-    <string name="explain_usage_search6">Then either hit the \"Search\" button if you want to see the available offers for this trip or the \"Publish\" button if you want to offer this trip.</string>
     <string name="sendfromtext">Send From</string>
     <string name="sendtotext">Send To</string>
-    <string name="title_activity_the_search">Search for available offers</string>
-    <string name="title_activity_publish_offer">Publish a new offer</string>
     <string name="date_send_not_set">Please provide the pick-up date</string>
-    <string name="date_receive_not_set">Please provide the reception date</string>
     <string name="dropoff_location_not_set">Please provide the drop-off location</string>
     <string name="pickup_location_not_set">Please provide the pick-up location</string>
     <string name="no_network_connectivity">Please enable data communication</string>
     <string name="number_packages_not_set">Please provide the number of packages</string>
     <string name="size_packages_not_set">Please provide the size of the packages</string>
-    <string name="welcome_text">Welcome to Shippy!</string>
-    <string name="welcome_text_pt2">Shippy aims at connecting travellers with people who want to send something to their relatives and friends. </string>
-    <string name="welcome_text_pt3">To get started, please enter your information below and press register</string>
     <string name="enter_first_name">First name</string>
     <string name="enter_surname">Family name</string>
     <string name="enter_phone_number">Phone number</string>
-    <string name="user_current_city">Location</string>
+    <string name="user_current_city">City</string>
     <string name="register_me">Let me in!</string>
     <string name="register_not_now">Later</string>
-    <string name="registration_input_incomplete">Please tell us more about you </string>
-    <string name="location_will_come_later">Do not worry, we will update your location when we get a signal</string>
+    <string name="registration_input_incomplete">Please tell us more about you</string>
     <string name="user_location_not_entered">For the registration process, we only need to know the city you live in</string>
-    <string name="updating_location">Retrieving your location</string>
     <string name="offers_towards">Available offers</string>
     <!--This okay is displayed when input is missing when searching/posting offers -->
     <string name="okay">OK</string>
@@ -42,7 +28,13 @@
     <string name="explanation_main_activity2">there</string>
     <string name="explanation_main_activity3">, welcome!</string>
     <string name="explanation_main_activity_pt2">To help you get started we already pre-filled some of the required fields. </string>
-    <string name="explanation_main_activity_pt3">Make sure they match your criteria and hit the "Search" or "Publish" button </string>
+    <string name="explain_usage_search2">Pick-up city</string>
+    <string name="explain_usage_search3">Pick-up date</string>
+    <string name="explain_usage_search4">How many packages?</string>
+    <string name="explain_usage_search5">Drop-off city</string>
+    <string name="explain_usage_search6">Press the Search button if you are looking to send a package. Press the Publish button if you want to deliver a package.</string>
+    <string name="confirm_publish">Confirm</string>
+
     <string name="enter_pickup_location">Pick-up location</string>
     <string name="enter_dropoff_location">Drop-off location</string>
     <string name="searchbutton_main_activity">Search</string>
@@ -65,9 +57,11 @@
     <string name="enjoy">Tell your friends!</string>
     <string name="back_to_main">Back</string>
 
-    <string name="comment_indication">Here you can provide more details about your offer like where
-        you where you would like tomeet the sender/receiver? When do you want to deliver the package?
-    (&#8230;) any other relevant information</string>
+    <string name="comment_indication">Here you can provide more information about your offer, for example:\r\n
+    \u2022 How would you want to organise the handover/delivery of the package??\n
+    \u2022 When would you like to deliver the package? \n
+    \u2022 Would you like to be paid? How much? \n
+    \u2022 … anything else you think is important \n</string>
 
     <string name="add_profile_picture">Select picture</string>
 
@@ -79,23 +73,36 @@
     <string name="legal_notice">Terms and Conditions</string>
     <string name="privacy_notice">Privacy and data collection</string>
 
-    <string name="legal_notice2">We, at Shippy, believe that official post services are very important and useful as they provide a reliable and secure way to send goods around. We believe though that there is a category of goods that do not deserve so much \"officiality\" and that our users are happy as long as their package arrives in good order. This is exactly why we decided to create this service. \r\n
+    <string name="legal_notice2">We, at Shippy, believe that official post services are very important and useful as they provide a reliable and secure way to send goods around. \r\n
+        \n
+        We also believe that there is a category of goods that do not deserve so much \"officiality\" and that our users are happy as long as their package arrives in good order. This is exactly why we decided to create this service. \r\n
         The below bullet points only serve at making this a bit clearer:\r\n
+        \n
         \u2022 We strongly recommend you agree with each other to agree on the content of the package. This allows for a safer and easier transaction.\r\n
+        \n
         \u2022 We recommend you only send/transport goods whose price is such that sending them trough the official post services is too expensive.\r\n
+        \n
         \u2022 When you choose to publish an offer on Shippy, you agree to share your contact details with other users of Shippy. For more details about our data privacy policy, please see below.\r\n
+        \n
         \u2022 Using Shippy is at your own risk and we strongly recommend you take actions to prevent any undesirable outcome. For example by following the above-mentioned advices. Please feel free to reach out to us if you have any idea on how we can make this service more secure.\r\n
     </string>
     <string name="privacy_notice2"> At Shippy, when it comes to privacy, we become very, very serious:\r\n
-        \u2022 We believe your privacy is your most important asset.\r\n
+        \n
+        \u2022 We believe your privacy is not a merchandise.\r\n
+        \n
         \u2022 We will never, ever, ever sell your personal data\r\n
+        \n
         \u2022 We actually do not collect your personal data. We do store your contact details when you publish an offer but that is strictly to ensure other users can contact you.\r\n
         </string>
     <string name="privacy_notice3">
         Another important principle we follow is that we should keep improving on our Service and never consider your trust in us as permanent. We have thus decided to collect strictly anonymously some usage metrics that will drive our business decisions. For example, we are interested in knowing:\r\n
-        \u2022 How long does it take for a user to go from one secreen to another?\r\n
+        \n
+        \u2022 How long does it take for a user to go from one screen to another?\r\n
+        \n
         \u2022 How often did a user open the app before starting to use it?\r\n
+        \n
         \u2022 How many results were returned when the user hit the \"Search\" button?\r\n
+        \n
         We like to think of ourselves as your neighbourhood shop who has come to learn about your habits as you become a loyal customer. The only difference is that we never speak about you or your habits to anyone else.
     </string>
 
@@ -103,17 +110,17 @@
     <string name="contact_us2">We value your input and would love to hear from you so we can better improve our app. If you want to get in touch with us, you can send us an e-mail (click here), or go to the App Store and leave a comment there.</string>
 
 
-    <string name="privacy_button">We\'re proud of our privacy notice</string>
+    <string name="privacy_button">The Legal stuff</string>
     <string name="thankyou_registration_pt1">Welcome</string>
     <string name="thankyou_registration_pt2">and Welcome!</string>
     <string name="thankyou_registration">Thank you very much for registering with Shippy</string>
     <string name="share_with_friends">Thank you for sharing</string>
-    <string name="share_with_friends2">Share now!</string>
+    <string name="share_with_friends2">Share</string>
     <string name="thank_you_firstname">Thank you</string>
     <string name="share_link_pt1">I\'m going to</string>
-    <string name="share_link_pt2">and can deliver for you any small thing you would like to send :)
-    http://play.google.com/store/apps/details?id=com.example.aalloul.packets</string>
-    <string name="share_link_noresults">Hey, did you hear of the Shippy app? It connects travellers to those who want to send a package. Check it out http://play.google.com/store/apps/details?id=com.example.aalloul.packets</string>
+    <string name="share_link_pt2">and can deliver for you a small package if you want :)
+    http://play.google.com/store/apps/details?id=com.app.shippy.android</string>
+    <string name="share_link_noresults">Hey, did you hear of the Shippy app? It connects travellers to those who want to send a package. Check it out http://play.google.com/store/apps/details?id=com.app.shippy.android</string>
 
     <string name="network_error">Oops</string>
     <string name="network_erro2">A network error happened, please retry again.</string>
@@ -122,16 +129,16 @@
     <!-- ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~  -->
     <!--                       Parameters that don't need to be localized                        -->
     <!-- ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~  -->
-    <string name="google_key">AIzaSyBsMFAjzpz-9YZkwzO3bO0MlvUwN04iRBs</string>
+    <string name="google_key" translatable="false">AIzaSyBsMFAjzpz-9YZkwzO3bO0MlvUwN04iRBs</string>
 
     <!-- Endpoint URLs -->
-    <string name="backend_url">http://jsonplaceholder.typicode.com/posts</string>
-    <string name="api_key">the_key_goes_here</string>
-    <string name="search_end_point">querytheengine</string>
-    <string name="usage_end_point">usageendpoint</string>
-    <string name="postoffer_end_point">postoffer</string>
+    <string name="backend_url" translatable="false">http://jsonplaceholder.typicode.com/posts</string>
+    <string name="api_key" translatable="false">the_key_goes_here</string>
+    <string name="search_end_point" translatable="false">querytheengine</string>
+    <string name="usage_end_point" translatable="false">usageendpoint</string>
+    <string name="postoffer_end_point" translatable="false">postoffer</string>
     <!-- Number Of Packages -->
-    <string-array name="number_packages_array">
+    <string-array name="number_packages_array" translatable="false">
         <item>1</item>
         <item>2</item>
         <item>3</item>
@@ -145,96 +152,92 @@
         <item>11</item>
     </string-array>
 
-    <string name="user_details_storage">com.example.aalloul.packets.user_details</string>
-    <string name="saved_user_surname">userSurName</string>
-    <string name="saved_user_firstname">userFirstName</string>
-    <string name="saved_user_picture">userPicture</string>
-    <string name="saved_user_phonenumber">userPhoneNumber</string>
-    <string name="saved_user_latitude">pickup_latitude</string>
-    <string name="saved_user_longitude">pickup_longitude</string>
-    <string name="saved_user_address">pickup_address</string>
-    <string name="saved_user_city">pickup_city</string>
-    <string name="saved_user_state">pickup_state</string>
-    <string name="saved_user_country">pickup_country</string>
-    <string name="saved_user_postalcode">pickup_postalCode</string>
-    <string name="saved_user_npromptstoregister">userNPromptsToRegister</string>
-    <string name="date_for_pickup">pickup_date</string>
-    <string name="number_packages">number_packages</string>
-    <string name="size_packages">size_packages</string>
-    <string name="travels_by">travels_by</string>
-    <string name="user_comment">user_comment</string>
+    <string name="user_details_storage" translatable="false">com.app.shippy.android.user_details</string>
+    <string name="saved_user_surname" translatable="false">userSurName</string>
+    <string name="saved_user_firstname" translatable="false">userFirstName</string>
+    <string name="saved_user_picture" translatable="false">userPicture</string>
+    <string name="saved_user_phonenumber" translatable="false">userPhoneNumber</string>
+    <string name="saved_user_latitude" translatable="false">pickup_latitude</string>
+    <string name="saved_user_longitude" translatable="false">pickup_longitude</string>
+    <string name="saved_user_address" translatable="false">pickup_address</string>
+    <string name="saved_user_city" translatable="false">pickup_city</string>
+    <string name="saved_user_state" translatable="false">pickup_state</string>
+    <string name="saved_user_country" translatable="false">pickup_country</string>
+    <string name="saved_user_postalcode" translatable="false">pickup_postalCode</string>
+    <string name="saved_user_npromptstoregister" translatable="false">userNPromptsToRegister</string>
+    <string name="date_for_pickup" translatable="false">pickup_date</string>
+    <string name="number_packages" translatable="false">number_packages</string>
+    <string name="size_packages" translatable="false">size_packages</string>
+    <string name="travels_by" translatable="false">travels_by</string>
+    <string name="user_comment" translatable="false">user_comment</string>
 
-    <string name="drop_off_latitude">drop_off_latitude</string>
-    <string name="drop_off_longitude">drop_off_longitude</string>
-    <string name="drop_off_address">drop_off_address</string>
-    <string name="drop_off_city">drop_off_city</string>
-    <string name="drop_off_state">drop_off_state</string>
-    <string name="drop_off_country">drop_off_country</string>
-    <string name="drop_off_postalcode">drop_off_postalCode</string>
-    <string name="saved_user_picture_path">absolute_path_to_user_picture</string>
-    <string name="user_picture_file">user_picture</string>
+    <string name="drop_off_latitude" translatable="false">drop_off_latitude</string>
+    <string name="drop_off_longitude" translatable="false">drop_off_longitude</string>
+    <string name="drop_off_address" translatable="false">drop_off_address</string>
+    <string name="drop_off_city" translatable="false">drop_off_city</string>
+    <string name="drop_off_state" translatable="false">drop_off_state</string>
+    <string name="drop_off_country" translatable="false">drop_off_country</string>
+    <string name="drop_off_postalcode" translatable="false">drop_off_postalCode</string>
+    <string name="saved_user_picture_path" translatable="false">absolute_path_to_user_picture</string>
+    <string name="user_picture_file" translatable="false">user_picture</string>
 
     <!--Data reporting fields-->
-    <string name="deviceid">deviceid</string>
-    <string name="devicetype">devicetype</string>
-    <string name="sID">sessID</string>
-    <string name="acStart">activity_start</string>
-    <string name="acName">activity_name</string>
-    <string name="sEnd">sessEnd</string>
-    <string name="sDuration">sessDuration</string>
-    <string name="screen_name">left_on_fragment</string>
+    <string name="deviceid" translatable="false">deviceid</string>
+    <string name="devicetype" translatable="false">devicetype</string>
+    <string name="sID" translatable="false">sessID</string>
+    <string name="acStart" translatable="false">activity_start</string>
+    <string name="acName" translatable="false">activity_name</string>
+    <string name="sEnd" translatable="false">sessEnd</string>
+    <string name="sDuration" translatable="false">sessDuration</string>
+    <string name="screen_name" translatable="false">left_on_fragment</string>
 
-    <string name="acEnd">activity_end</string>
-    <string name="fName">fragName</string>
-    <string name="fActions">fragActions</string>
-    <string name="action">action</string>
-    <string name="fStart">fragStart</string>
-    <string name="fDuration">fragDuration</string>
-    <string name="fEnd">fragEnd</string>
-    <string name="nextF">nextFrag</string>
+    <string name="acEnd" translatable="false">activity_end</string>
+    <string name="fName" translatable="false">fragName</string>
+    <string name="fActions" translatable="false">fragActions</string>
+    <string name="action" translatable="false">action</string>
+    <string name="fStart" translatable="false">fragStart</string>
+    <string name="fDuration" translatable="false">fragDuration</string>
+    <string name="fEnd" translatable="false">fragEnd</string>
+    <string name="nextF" translatable="false">nextFrag</string>
 
-    <string name="ferror">actionError</string>
+    <string name="ferror" translatable="false">actionError</string>
 
     <!-- @Reporting: Registration Fragment strings -->
-    <string name="reg_nopers">reg_nopres_detail</string>
-    <string name="reg_noloc">reg_no_location</string>
-    <string name="reg_locnotfound">reg_location_notfound</string>
-    <string name="reg_later">reg_later</string>
-    <string name="user_location_edited">user_edited_location</string>
-    <string name="nprompts">n_prompts_registration</string>
+    <string name="reg_nopers" translatable="false">reg_nopres_detail</string>
+    <string name="reg_noloc" translatable="false">reg_no_location</string>
+    <string name="reg_locnotfound" translatable="false">reg_location_notfound</string>
+    <string name="reg_later" translatable="false">reg_later</string>
+    <string name="user_location_edited" translatable="false">user_edited_location</string>
+    <string name="nprompts" translatable="false">n_prompts_registration</string>
 
     <!-- @Reporting: Main Fragment strings -->
-    <string name="no_network_error">no_network_error</string>
-    <string name="no_pickup_location">no_pickup_location_error</string>
-    <string name="no_pickup_date">no_pickup_date_error</string>
-    <string name="pickup_location_edited">pickup_location_edited</string>
+    <string name="no_network_error" translatable="false">no_network_error</string>
+    <string name="no_pickup_location" translatable="false">no_pickup_location_error</string>
+    <string name="no_pickup_date" translatable="false">no_pickup_date_error</string>
+    <string name="pickup_location_edited" translatable="false">pickup_location_edited</string>
 
-    <string name="no_dropoff_location">no_dropoff_location_error</string>
-    <string name="no_dropoff_date">no_dropoff_date_error</string>
+    <string name="no_dropoff_location" translatable="false">no_dropoff_location_error</string>
+    <string name="no_dropoff_date" translatable="false">no_dropoff_date_error</string>
 
-    <string name="n_packages">n_packages_not_set</string>
-    <string name="s_packages">size_packages_not_set</string>
+    <string name="n_packages" translatable="false">n_packages_not_set</string>
+    <string name="s_packages" translatable="false">size_packages_not_set</string>
 
     <!-- @Reporting: Confirm Publish strings -->
-    <string name="changed_prof_pic">changed_profile_picture</string>
-    <string name="confirm_no_details">not_enough_details_provided</string>
+    <string name="changed_prof_pic" translatable="false">changed_profile_picture</string>
+    <string name="confirm_no_details" translatable="false">not_enough_details_provided</string>
 
     <!-- @Reporting: item Fragment strings-->
-    <string name="n_results">query_results</string>
-    <string name="pos">position_selected_element</string>
+    <string name="n_results" translatable="false">query_results</string>
+    <string name="pos" translatable="false">position_selected_element</string>
 
     <!-- @Reporting: stack traces -->
-    <string name="class_name">class_name</string>
-    <string name="method_name">method_name</string>
-    <string name="stack">stack_trace</string>
+    <string name="class_name" translatable="false">class_name</string>
+    <string name="method_name" translatable="false">method_name</string>
+    <string name="stack" translatable="false">stack_trace</string>
 
 
-    <string name="title_activity_splash_screen">SplashScreen</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
+    <string name="title_activity_splash_screen" translatable="false">SplashScreen</string>
+    <string name="dummy_button" translatable="false">Dummy Button</string>
+    <string name="dummy_content" translatable="false">DUMMY\nCONTENT</string>
 
 </resources>

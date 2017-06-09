@@ -125,9 +125,11 @@
     <string name="thank_you_firstname">Merci beaucoup!</string>
     <string name="share_link_pt1">Je voyage vers</string>
 
-    <string name="share_link_pt2">et je peux livrer pour toi un petit colis si jamais :) http://play.google.com/store/apps/details?id=com.example.aalloul.packets</string>
+    <string name="confirm_publish">Confirmer</string>
 
-    <string name="share_link_noresults">Salut, as-tu entendu parler de l\'application Shippy? Elle connecte les voyageurs et ceux qui ont un colis à envoyer. Découvre la ici http://play.google.com/store/apps/details?id=com.example.aalloul.packets</string>
+    <string name="share_link_pt2">et je peux livrer pour toi un petit colis si jamais :) http://play.google.com/store/apps/details?id=com.app.shippy.android</string>
+
+    <string name="share_link_noresults">Salut, as-tu entendu parler de l\'application Shippy? Elle connecte les voyageurs et ceux qui ont un colis à envoyer. Découvre la ici http://play.google.com/store/apps/details?id=com.app.shippy.android</string>
 
     <string name="network_error">Oops</string>
     <string name="network_erro2">Une erreur de réseau s\'est produite. Veuillez réessayer, s\'il vous plait</string>

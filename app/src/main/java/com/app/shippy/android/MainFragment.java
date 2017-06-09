@@ -32,7 +32,7 @@ public class MainFragment extends Fragment {
     private long fragment_start_time;
     private Boolean edited_pickup_location = false;
     private OnFragmentInteractionListener mListener;
-    private final static boolean DEBUG = true;
+    private final static boolean DEBUG = false;
 
     public MainFragment() {
         // Required empty public constructor
@@ -195,7 +195,9 @@ public class MainFragment extends Fragment {
     private void getDropOffLocationButton() {
         // Drop-off and pick up location
         drop_off_location = (TextView) view.findViewById(R.id.dropofflocation_mainactivity);
-        setDrop_off_location(pick_up_detailed_location);
+
+        if (DEBUG) setDrop_off_location(pick_up_detailed_location);
+
         drop_off_location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

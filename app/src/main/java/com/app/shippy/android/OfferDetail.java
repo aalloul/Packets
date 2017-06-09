@@ -114,6 +114,9 @@ public class OfferDetail extends Fragment {
         // Display name
         nameTextView.setText(nameAndFirstName);
 
+        final TextView pickupcity = (TextView) view.findViewById(R.id.going_from);
+        pickupcity.setText(pickup_city);
+
         final TextView dropoffcity = (TextView) view.findViewById(R.id.going_to);
         dropoffcity.setText(dropoff_city);
 

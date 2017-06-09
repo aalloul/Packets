@@ -32,7 +32,8 @@
     <string name="explain_usage_search3">Pick-up date</string>
     <string name="explain_usage_search4">How many packages?</string>
     <string name="explain_usage_search5">Drop-off city</string>
-    <string name="explain_usage_search6">Press the Search button if you are looking to send a package. Pressthe Publish button if you want to deliver a package.</string>
+    <string name="explain_usage_search6">Press the Search button if you are looking to send a package. Press the Publish button if you want to deliver a package.</string>
+    <string name="confirm_publish">Confirm</string>
 
     <string name="enter_pickup_location">Pick-up location</string>
     <string name="enter_dropoff_location">Drop-off location</string>
@@ -118,8 +119,8 @@
     <string name="thank_you_firstname">Thank you</string>
     <string name="share_link_pt1">I\'m going to</string>
     <string name="share_link_pt2">and can deliver for you a small package if you want :)
-    http://play.google.com/store/apps/details?id=com.example.aalloul.packets</string>
-    <string name="share_link_noresults">Hey, did you hear of the Shippy app? It connects travellers to those who want to send a package. Check it out http://play.google.com/store/apps/details?id=com.example.aalloul.packets</string>
+    http://play.google.com/store/apps/details?id=com.app.shippy.android</string>
+    <string name="share_link_noresults">Hey, did you hear of the Shippy app? It connects travellers to those who want to send a package. Check it out http://play.google.com/store/apps/details?id=com.app.shippy.android</string>
 
     <string name="network_error">Oops</string>
     <string name="network_erro2">A network error happened, please retry again.</string>
@@ -151,7 +152,7 @@
         <item>11</item>
     </string-array>
 
-    <string name="user_details_storage" translatable="false">com.example.aalloul.packets.user_details</string>
+    <string name="user_details_storage" translatable="false">com.app.shippy.android.user_details</string>
     <string name="saved_user_surname" translatable="false">userSurName</string>
     <string name="saved_user_firstname" translatable="false">userFirstName</string>
     <string name="saved_user_picture" translatable="false">userPicture</string>

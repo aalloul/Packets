@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
         if (DEBUG) Log.i(LOG_TAG, "userFirstName = " +
                 sharedPref.getString(getString(R.string.saved_user_firstname), ""));
-        return false;
+        return true;
     }
 
     // TODO looks like our SQLite is not closed when the app crashes
@@ -201,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             devtype = Build.DEVICE;
             if (DEBUG) Log.i(LOG_TAG, "generateDeviceID - 1st install");
             if (DEBUG) Log.i(LOG_TAG, "generateDeviceID - deviceID = "+devid + " device type = "+devtype);
-            editor.putString(getString(R.string.deviceid), devtype);
+            editor.putString(getString(R.string.deviceid), devid);
             editor.putString(getString(R.string.devicetype), devtype);
             /*
              * here we use apply (asynchronous) rather then commit (synchronous), the reasoning being
@@ -730,7 +730,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         );
         request.setTag("usageStatsTag");
         if (DEBUG) Log.i(LOG_TAG, "postUsageRequest - Adding to request queue");
-//        volleyQueue.add(request);
+        volleyQueue.add(request);
     }
 
     /**

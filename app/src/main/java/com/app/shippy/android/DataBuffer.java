@@ -9,23 +9,26 @@ import java.util.concurrent.locks.ReentrantLock;
 
 class DataBuffer {
     // We want this class to be somehow static
-    private DataBuffer(){}
 
     // for the logger
     private static final String LOG_TAG = "DataBuffer";
     private static String deviceId, deviceType;
     private final static boolean DEBUG = false;
-    private final static int time_to_send = 120000;
+    private final static int time_to_send = 6000;
+    private ArrayList<HashMap<String, String>> loggerData;
+    private long session_start;
+    private boolean registrationStatus;
 
-    // This is an Arraylist of hashmaps that will be dumped into a JSON string -- Serves as a buffer
-    private static ArrayList<HashMap<String, String>> loggerData = new ArrayList<>();
+    DataBuffer(){
+        loggerData = new ArrayList<>();
+    }
 
     // This is some kind of timer that tells whether we should or not submit the data to the backend
     private static long first_update = 0;
 
     // The usage data is appended here -- requires a lock to avoid both the backend and logger
     // accessing at the same time this list
-    static void addEvent(HashMap<String, String> data) {
+    void addEvent(HashMap<String, String> data) {
         if (DEBUG) Log.i(LOG_TAG, "addEvent - Enter");
 
         if (DEBUG) Log.i(LOG_TAG, "addEvent - size loggerData before =" + loggerData.size());
@@ -54,14 +57,15 @@ class DataBuffer {
      * This method is called when a network error happens as we want to send some usage data.
      * @param data is an ArrayList holding all of the data we tried to post
      */
-    static void addEvent(ArrayList<HashMap<String, String>> data) {
-        for (HashMap<String, String> elem:data) {
-            addEvent(elem);
-        }
+    void addEvent(ArrayList<HashMap<String, Object>> data) {
+
+//        for (HashMap<String, String> elem:data) {
+//            addEvent(elem);
+//        }
     }
 
     // Generic method to catch exceptions
-    static void addException(String stack, String toString, String className, String method ){
+    void addException(String stack, String toString, String className, String method ){
         HashMap<String, String> st = new HashMap<>();
         st.put("time", Long.toString(Utilities.CurrentTimeMS()));
         st.put("class_name",className);
@@ -71,7 +75,7 @@ class DataBuffer {
         addEvent(st);
     }
 
-    static void clear(){
+    void clear(){
         if (DEBUG) Log.i(LOG_TAG, "clear - Clearing loggerData");
         loggerData.clear();
     }
@@ -79,7 +83,7 @@ class DataBuffer {
     // Called by the Backend intent service to retrieve the data and post it to the backend
     // requests a lock on loggerData in order to get its content and clear it
     @Nullable
-    static ArrayList<HashMap<String,String>> getTheData() {
+    ArrayList<HashMap<String,String>> getTheData() {
         if (DEBUG) Log.i(LOG_TAG, "getTheData - Enter");
 
         if (DEBUG) Log.i(LOG_TAG, "getTheData - loggerData = " + loggerData);
@@ -108,14 +112,20 @@ class DataBuffer {
         return jsonData;
     }
 
-    private static void resetTheTime() {
+    @Override
+    public String toString() {
+
+        return loggerData.toString();
+    }
+
+    private void resetTheTime() {
         if (DEBUG) Log.i(LOG_TAG, "resetTheTime - Enter");
         first_update = Utilities.CurrentTimeMS();
         if (DEBUG) Log.i(LOG_TAG, "resetTheTime - Exit");
     }
 
     // Method to determine whether we should post the usage data to the backend
-    static boolean ShouldIPostData() {
+    boolean ShouldIPostData() {
         if (DEBUG) Log.i(LOG_TAG, "ShouldIPostData - Enter");
 
         // Not sure whether needed
@@ -138,19 +148,32 @@ class DataBuffer {
     }
 
     // device ID and type
-    static void setDeviceId(String devid) {
+    void setDeviceId(String devid) {
         deviceId = devid;
     }
 
     // get DeviceID
-    static String getDeviceId() {
+    String getDeviceId() {
         return deviceId;
     }
 
-    static void setDeviceType(String devtype) {
+    void setDeviceType(String devtype) {
         deviceType = devtype;
     }
-    static String getDeviceType() {
+
+    void setSessionStart() {
+     session_start = Utilities.CurrentTimeMS();
+    }
+
+    void setRegistrationStatus(boolean isAlreadyRegistred) {
+        registrationStatus = isAlreadyRegistred;
+    }
+
+    void addFragmentAction(String key, String value) {
+
+    }
+
+    String getDeviceType() {
         return deviceType;
     }
 }

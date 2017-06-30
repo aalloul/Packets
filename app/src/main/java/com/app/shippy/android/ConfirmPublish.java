@@ -291,6 +291,10 @@ public class ConfirmPublish extends Fragment {
         return t;
     }
 
+    public long getFragmentStartTime() {
+        return fragment_start_time;
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated

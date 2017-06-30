@@ -362,7 +362,7 @@ final class Utilities {
         try {
             resu = output.format(input.parse(date));
         } catch (ParseException e) {
-            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "Utilities", "DateToDate");
+//            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "Utilities", "DateToDate");
             e.printStackTrace();
         }
         return resu;
@@ -399,7 +399,7 @@ final class Utilities {
             byte[] encodeByte = Base64.decode(encodedString, Base64.DEFAULT);
             return BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
         } catch (Exception e) {
-            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "Utilities", "StringToBitMap");
+//            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "Utilities", "StringToBitMap");
             e.getMessage();
             return null;
         }

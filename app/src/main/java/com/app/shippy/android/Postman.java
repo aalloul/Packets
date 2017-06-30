@@ -138,7 +138,7 @@ class Postman {
 
         } catch (Exception e){
             if (DEBUG) Log.e(LOG_TAG, "updateTable - An unknown error happened, stacktrace follows");
-            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "Postman", "updateTable");
+//            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "Postman", "updateTable");
             e.printStackTrace();
         }
 

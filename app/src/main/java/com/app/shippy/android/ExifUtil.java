@@ -57,12 +57,12 @@ class ExifUtil {
                 bitmap.recycle();
                 return oriented;
             } catch (OutOfMemoryError e) {
-                DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "ExifUtil", "rotateBitmap");
+//                databuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "ExifUtil", "rotateBitmap");
                 e.printStackTrace();
                 return bitmap;
             }
         } catch (IOException e) {
-            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "ExifUtil", "rotateBitmap");
+//            dataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "ExifUtil", "rotateBitmap");
 
             e.printStackTrace();
         }

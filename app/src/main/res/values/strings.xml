@@ -33,12 +33,12 @@
     <string name="explain_usage_search4">How many packages?</string>
     <string name="explain_usage_search5">Drop-off city</string>
     <string name="explain_usage_search6">Press the Search button if you are looking to send a package. Press the Publish button if you want to deliver a package.</string>
-    <string name="confirm_publish">Confirm</string>
+    <string name="confirm_publish">Publish offer</string>
 
     <string name="enter_pickup_location">Pick-up location</string>
     <string name="enter_dropoff_location">Drop-off location</string>
-    <string name="searchbutton_main_activity">Search</string>
-    <string name="postbutton_main_activity">Publish</string>
+    <string name="searchbutton_main_activity">Send a package</string>
+    <string name="postbutton_main_activity">I\'m travelling</string>
     <string-array name="package_size">
         <item>Small</item>
         <item>Medium</item>

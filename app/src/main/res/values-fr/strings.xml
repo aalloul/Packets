@@ -37,8 +37,8 @@
     <string name="explanation_main_activity_pt2">Pour t\'aider à commencer, nous avons déjà pré-rempli certains des champs nécesaires.</string>
     <string name="enter_pickup_location">Oirigine d\'envoi</string>
     <string name="enter_dropoff_location">Destination de l\'envoi</string>
-    <string name="searchbutton_main_activity">Chercher</string>
-    <string name="postbutton_main_activity">Publier</string>
+    <string name="searchbutton_main_activity">J\'envoie un colis</string>
+    <string name="postbutton_main_activity">Je voyage</string>
     <string-array name="package_size">
         <item>Petit</item>
         <item>Moyen</item>
@@ -50,7 +50,7 @@
         <item>Avion</item>
     </string-array>
 
-    <string name="publish">Publier</string>
+    <string name="publish">Publier offre</string>
     <string name="please_confirm">Dis-nous en plus</string>
     <string name="please_register">Une dernière étape</string>
     <string name="thank_you">Est-ce que tout est prêt</string>

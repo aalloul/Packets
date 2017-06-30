@@ -37,7 +37,7 @@ class GsonRequest<T> extends Request<T> {
      * @param clazz Relevant class object, for Gson's reflection
      * @param headers Map of request headers
      */
-    GsonRequest(String url, ArrayList<HashMap<String, String>> dataIn, Class<T> clazz,
+    GsonRequest(String url, ArrayList<HashMap<String, Object>> dataIn, Class<T> clazz,
                 Map<String, String> headers, int method, Response.Listener<T> listener,
                 Response.ErrorListener errorListener) {
         super(method, url, errorListener);
@@ -49,7 +49,7 @@ class GsonRequest<T> extends Request<T> {
         if (DEBUG) Log.i(LOG_TAG, "GsonRequest - Constructed with ArrayList");
     }
 
-    GsonRequest(String url, HashMap<String, String> dataIn, Class<T> clazz,
+    GsonRequest(String url, HashMap<String, Object> dataIn, Class<T> clazz,
                 Map<String, String> headers, int method, Response.Listener<T> listener,
                 Response.ErrorListener errorListener) {
         super(method, url, errorListener);

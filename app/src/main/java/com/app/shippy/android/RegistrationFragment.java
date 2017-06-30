@@ -28,10 +28,15 @@ public class RegistrationFragment extends Fragment {
     private Long fragment_start_time;
     private boolean edited_location = false;
     private final static boolean DEBUG = false;
+    private DataBuffer dataBuffer;
 
     public RegistrationFragment() {
         // Required empty public constructor
         fragment_start_time = Utilities.CurrentTimeMS();
+    }
+
+    public long getFragmentStartTime() {
+        return fragment_start_time;
     }
 
     public static RegistrationFragment newInstance() {
@@ -61,6 +66,11 @@ public class RegistrationFragment extends Fragment {
         if (DEBUG) Log.i(LOG_TAG, "onSaveInstanceState - picture_ui  not null");
         bundle.putString("user_picture", picture_bitmap);
         super.onSaveInstanceState(bundle);
+    }
+
+    void setDataBuffer(DataBuffer dataBuffer) {
+        this.dataBuffer = dataBuffer;
+        Log.i(LOG_TAG, "setDataBuffer - "+this.dataBuffer.toString());
     }
 
     private void getUserPicture() {

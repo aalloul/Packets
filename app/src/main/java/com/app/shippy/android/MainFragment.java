@@ -39,6 +39,10 @@ public class MainFragment extends Fragment {
         fragment_start_time = Utilities.CurrentTimeMS();
     }
 
+    public long getFragmentStartTime() {
+        return fragment_start_time;
+    }
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -78,6 +82,10 @@ public class MainFragment extends Fragment {
 
     public void setEdited_pickup_location(){
         edited_pickup_location = true;
+    }
+
+    public boolean getEditedPickupLocation() {
+        return edited_pickup_location;
     }
 
     private void getSearchButton() {
@@ -410,15 +418,6 @@ public class MainFragment extends Fragment {
     public HashMap<String, String> getTripDetails(String action, String nextFrag) {
         HashMap<String, String> out = new HashMap<>();
         Long end_time = Utilities.CurrentTimeMS();
-        out.put(getString(R.string.fActions), action);
-
-        // time fields
-        out.put(getString(R.string.fStart), Long.toString(fragment_start_time));
-        out.put(getString(R.string.fEnd), Long.toString(end_time));
-        out.put(getString(R.string.fDuration), Long.toString(end_time - fragment_start_time));
-
-        // Next Fragment
-        out.put(getString(R.string.nextF), nextFrag);
 
         // Input fields
         out.put(getString(R.string.date_for_pickup), getDateForPickUp());

@@ -16,6 +16,7 @@ class ReportingEvent {
     private String version = "0.1";
     private final String LOG_TAG = "ReportingEvent";
     private final boolean DEBUG = true;
+    private boolean END_SESSION = true;
 
     ReportingEvent() {
         sessionStart = Utilities.CurrentTimeMS();
@@ -39,6 +40,13 @@ class ReportingEvent {
     void setFragmentEnd() {fragmentEnd = Utilities.CurrentTimeMS();}
     void setSessionEnd() {sessionEnd= Utilities.CurrentTimeMS();}
 
+    void setend_session(boolean val) {
+        END_SESSION = val;
+    }
+
+    boolean end_session() {
+        return END_SESSION;
+    }
 
     @SuppressWarnings("unchecked")
     private HashMap enrichEvent(HashMap tmp) {
@@ -60,6 +68,8 @@ class ReportingEvent {
 
         return tmp;
     }
+
+
 
 
     /**

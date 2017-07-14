@@ -1173,9 +1173,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (DEBUG) Log.i(LOG_TAG, "onCallButtonPress - Start");
         if (DEBUG) Log.i(LOG_TAG, "onCallButtonPress - Calling " + phonenumber);
 
-        HashMap<String, String> u1 = detailsFragment.getBlob("call");
-        u0.put(getString(R.string.fName),"itemFragment");
-//        new HandleReportingAsync().execute(u0,u1);
+        if (reportingEvent == null) {reportingEvent = new ReportingEvent();}
+        reportingEvent.setFragmentName("OfferDetail");
+        reportingEvent.setFragmentStart(detailsFragment.getFragmentStartTime());
+        reportingEvent.setFragmentEnd();
+        reportingEvent.addEvent("action", "call");
 
         Uri number = Uri.parse("tel:" + phonenumber);
         Intent callIntent = new Intent(Intent.ACTION_DIAL, number);
@@ -1189,9 +1191,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (DEBUG) Log.i(LOG_TAG, "onMessageButtonPress - Start");
         if (DEBUG) Log.i(LOG_TAG, "onMessageButtonPress - Calling " + phonenumber);
 
-        HashMap<String, String> u1 = detailsFragment.getBlob("message");
-        u0.put(getString(R.string.fName),"itemFragment");
-//        new HandleReportingAsync().execute(u0,u1);
+        if (reportingEvent == null) {reportingEvent = new ReportingEvent();}
+        reportingEvent.setFragmentName("OfferDetail");
+        reportingEvent.setFragmentStart(detailsFragment.getFragmentStartTime());
+        reportingEvent.setFragmentEnd();
+        reportingEvent.addEvent("action", "sendMessage");
 
         Intent smsIntent = new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", phonenumber, null));
 

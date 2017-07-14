@@ -1065,25 +1065,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         super.onPause();
         stopLocationUpdates();
 
-
-        if (registrationFragment != null && registrationFragment.isVisible()) {
-            reportingEvent.setFragmentName("RegistrationFragment");
-        }
-        if (mainFragment != null && mainFragment.isVisible()) {
-            reportingEvent.setFragmentName("MainFragment");
-        }
-        if (confirmPublish != null && confirmPublish.isVisible()) {
-            reportingEvent.setFragmentName("ConfirmPublish");
-        }
-        if (thankYou != null && thankYou.isVisible()) {
-            reportingEvent.setFragmentName("ThankYou");
-        }
-        if (itemFragment != null && itemFragment.isVisible()) {
-            reportingEvent.setFragmentName("ItemFragment");
-        }
-        if (detailsFragment != null && detailsFragment.isVisible()) {
-            reportingEvent.setFragmentName("DetailsFragment");
-        }
+        reportingEvent.setFragmentName(getVisibleFragment());
 
         if (reportingEvent.end_session()){
             reportingEvent.setFragmentEnd();
@@ -1437,24 +1419,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             the fragmentSupportManager crashes with a commit (see http://stackoverflow.com/questions/7469082/getting-exception-illegalstateexception-can-not-perform-this-action-after-onsa)
             the user can decide to share the app again :)
         */
-        u0.put(getString(R.string.fName),"thankyou");
-        HashMap<String, String> u1 = new HashMap<>();
-        long end_time = Utilities.CurrentTimeMS();
-        long start_time = ThankYou.getStartTime();
-        if (start_time == 0) start_time = Utilities.CurrentTimeMS();
-        u1.put(getString(R.string.fStart), Long.toString(start_time));
-        u1.put(getString(R.string.fEnd), Long.toString(end_time));
-        u1.put(getString(R.string.fDuration),Long.toString(Utilities.CurrentTimeMS() - start_time));
-        u1.put(getString(R.string.nextF), "mainFragment");
+
+        if (reportingEvent == null) {reportingEvent = new ReportingEvent();}
+        reportingEvent.setFragmentName("ThankYou");
+        reportingEvent.setFragmentStart(thankYou.getFragmentStartTime());
 
         if (resultCode == RESULT_OK) {
             if (DEBUG) Log.i(LOG_TAG, "handleSharingResult - RESULT OK");
-            u1.put("sharing_result","OK");
-//            new HandleReportingAsync().execute(u0,u1);
+            reportingEvent.addEvent("action", "ShareSuccessful");
         } else {
             if (DEBUG) Log.i(LOG_TAG, "handleSharingResult - RESULT NOK");
-            u1.put("sharing_result","FAILED");
-//            new HandleReportingAsync().execute(u0,u1);
+            reportingEvent.addEvent("action", "ShareNotSuccessful");
         }
         if (mainFragment == null) {
             mainFragment = MainFragment.newInstance(getUserDetailedLocation(),
@@ -1806,6 +1781,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         // This is to make sure that when onStop is called, the session is not
         // ended in the reporting
         reportingEvent.setend_session(false);
+        reportingEvent.setFragmentName("ThankYou");
+        reportingEvent.setFragmentStart(thankYou.getFragmentStartTime());
+        reportingEvent.addEvent("action", "ShareApplication");
 
         HashMap<String, String> tmp = confirmPublish.getAllDetails();
         String tmp2 = tmp.get(getString(R.string.drop_off_city));
@@ -1859,17 +1837,66 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         return true;
     }
 
+    private String getVisibleFragment()  {
+
+        if (registrationFragment != null && registrationFragment.isVisible()) {
+            return "RegistrationFragment";
+        }
+        if (mainFragment != null && mainFragment.isVisible()) {
+            return "MainFragment";
+        }
+        if (confirmPublish != null && confirmPublish.isVisible()) {
+            return "ConfirmPublish";
+        }
+        if (thankYou != null && thankYou.isVisible()) {
+            return "ThankYou";
+        }
+        if (itemFragment != null && itemFragment.isVisible()) {
+            return "ItemFragment";
+        }
+        if (detailsFragment != null && detailsFragment.isVisible()) {
+            return "DetailsFragment";
+        }
+
+        return "Unknown";
+    }
+
+    private long getFragmentStartTime() {
+        if (registrationFragment != null && registrationFragment.isVisible()) {
+            return registrationFragment.getFragmentStartTime();
+        }
+        if (mainFragment != null && mainFragment.isVisible()) {
+            return mainFragment.getFragmentStartTime();
+        }
+        if (confirmPublish != null && confirmPublish.isVisible()) {
+            return confirmPublish.getFragmentStartTime();
+        }
+        if (thankYou != null && thankYou.isVisible()) {
+            return thankYou.getFragmentStartTime();
+        }
+        if (itemFragment != null && itemFragment.isVisible()) {
+            return itemFragment.getFragmentStartTime();
+        }
+        if (detailsFragment != null && detailsFragment.isVisible()) {
+            return detailsFragment.getFragmentStartTime();
+        }
+
+        return Utilities.CurrentTimeMS();
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public boolean onOptionsItemSelected(MenuItem item) {
         HashMap<String, String> u1 = new HashMap<>();
 
+        if (reportingEvent == null) {reportingEvent = new ReportingEvent();}
+        reportingEvent.setFragmentName(getVisibleFragment());
+        reportingEvent.setFragmentStart(getFragmentStartTime());
+
         switch (item.getItemId()) {
             case R.id.menu_item_share:
-                u0.put(getString(R.string.fName),"shareApplication");
-                u1.put(getString(R.string.fActions), "shareApplication");
-                u1.put(getString(R.string.fStart), Long.toString(Utilities.CurrentTimeMS()));
-//                new HandleReportingAsync().execute(u0,u1);
+                reportingEvent.setFragmentEnd();
+                reportingEvent.addEvent("action","ShareApplication");
 
                 ShareActionProvider mShareActionProvider = (ShareActionProvider)
                         MenuItemCompat.getActionProvider(item);
@@ -1878,20 +1905,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 return true;
 
             case R.id.menu_item_contact:
-                u0.put(getString(R.string.fName),"shareApplication");
-                u1.put(getString(R.string.fActions), "shareApplication");
-                u1.put(getString(R.string.fStart), Long.toString(Utilities.CurrentTimeMS()));
-//                new HandleReportingAsync().execute(u0,u1);
+                reportingEvent.setFragmentEnd();
+                reportingEvent.addEvent("action", "ContactUs");
+
                 ShareActionProvider contactUsActionProvider = (ShareActionProvider)
                         MenuItemCompat.getActionProvider(item);
                 contactUsActionProvider.setShareIntent(getEmailItentenForContact());
 
                 return true;
             case R.id.menu_item_legal:
-                u0.put(getString(R.string.fName),"privacyNotice");
-                u1.put(getString(R.string.fActions), "privacyNotice");
-                u1.put(getString(R.string.fStart), Long.toString(Utilities.CurrentTimeMS()));
-//                new HandleReportingAsync().execute(u0,u1);
+                reportingEvent.setFragmentEnd();
+                reportingEvent.addEvent("action", "ShowLegalStuff");
                 this.OnPrivacyButtonPressed();
 
 
@@ -1906,13 +1930,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     @SuppressWarnings("unchecked")
     public void onContactUsPressed() {
-        HashMap<String, String> u1 = new HashMap<>();
-        u0.put(getString(R.string.fName),"PrivacyNotice");
-        u1.put(getString(R.string.fActions), "contactUs");
-        u1.put(getString(R.string.fStart), Long.toString(privacyNotice.getFragmentStartTime()));
-//        new HandleReportingAsync().execute(u0,u1);
 
         if (reportingEvent == null) reportingEvent = new ReportingEvent();
+        reportingEvent.setFragmentName("PrivacyNotice");
+        reportingEvent.setFragmentStart(privacyNotice.getFragmentStartTime());
+        reportingEvent.setFragmentEnd();
+        reportingEvent.addEvent("action", "ContactUs");
         // This is to make sure that when onStop is called, the session is not
         // ended in the reporting
         reportingEvent.setend_session(false);

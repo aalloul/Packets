@@ -223,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     }
 
-    private void handleNetworkResult(String queryResult) {
+    private void handleNetworkResult(int queryResult) {
         if (DEBUG) Log.i(LOG_TAG, "handleNetworkResult  - queryResult = " + queryResult);
 
         if (mainFragment==null) {
@@ -231,37 +231,52 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
 
         switch (queryResult) {
-            case "empty":
+            case 0:
                 if (DEBUG) Log.i(LOG_TAG, "handleNetworkResult - empty results");
-                if (noresultsfound==null) noresultsfound = NoResultsFound.newInstance();
-
-                if (isFinishing()) {Log.i(LOG_TAG, "handleNetworkResult - Is Finishing");}
-                try {
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.mainActivity_ListView, noresultsfound, "noresultsfound")
-                            .addToBackStack("tonoresultsfound")
-                            .commitAllowingStateLoss();
-
-                    break;
-                } catch (Exception e){
-                    Log.e(LOG_TAG, "handleNetworkResult - WAS GONNA CRASH");
-                e.printStackTrace();
-                    break;
-            }
-
-            case "ok":
-                if (DEBUG) Log.i(LOG_TAG, "handleNetworkResult - Notifying dataset change");
-                if (itemFragment == null) {
-                    if (DEBUG) Log.i(LOG_TAG, "handleNetworkResult - itemFragment is null");
-                } else {
-                    itemFragment.updateData();
-                }
+                handleEmptyResults();
                 break;
 
-        default:
-            if (DEBUG) Log.i(LOG_TAG, "handleNetworkResult - An error happened with the network");
-            break;
+            default :
+                if (DEBUG) Log.i(LOG_TAG, "handleNetworkResult - Notifying dataset change");
+                handleNonEmptyResults(queryResult);
+                break;
+        }
+    }
+
+    private void handleNonEmptyResults(int responseLEngth) {
+        if (reportingEvent == null) {reportingEvent = new ReportingEvent();}
+        reportingEvent.setFragmentName("ItemFragment");
+        reportingEvent.setFragmentStart(itemFragment.getFragmentStartTime());
+        reportingEvent.setFragmentEnd();
+        reportingEvent.addEvent("searchResults", responseLEngth);
+
+        if (itemFragment == null) {
+            if (DEBUG) Log.i(LOG_TAG, "handleNetworkResult - itemFragment is null");
+        } else {
+            itemFragment.updateData();
+        }
+    }
+
+    private void handleEmptyResults(){
+        if (noresultsfound==null) noresultsfound = NoResultsFound.newInstance();
+
+        // Reporting block
+        if (reportingEvent == null) {reportingEvent = new ReportingEvent();}
+        reportingEvent.setFragmentName("ItemFragment");
+        reportingEvent.setFragmentStart(itemFragment.getFragmentStartTime());
+        reportingEvent.addEvent("searchResults", 0);
+
+        if (isFinishing()) {Log.i(LOG_TAG, "handleNetworkResult - Is Finishing");}
+        try {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.mainActivity_ListView, noresultsfound, "noresultsfound")
+                    .addToBackStack("tonoresultsfound")
+                    .commitAllowingStateLoss();
+
+        } catch (Exception e){
+            Log.e(LOG_TAG, "handleNetworkResult - WAS GONNA CRASH");
+            e.printStackTrace();
         }
     }
 
@@ -677,9 +692,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                         Intent newdata = new Intent("newDataHasArrived");
                         if (response == null) {
                             if (DEBUG) Log.i(LOG_TAG, "searchRequest - response is null");
-                            newdata.putExtra("queryResult", "empty");
+                            newdata.putExtra("queryResult", response.length);
                         } else {
-                            newdata.putExtra("queryResult", "ok");
+//                            newdata.putExtra("queryResult", "ok");
+                            newdata.putExtra("queryResult", response.length);
                         }
 
                         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(newdata);
@@ -874,7 +890,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         BroadcastReceiver receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                String queryResult = intent.getStringExtra("queryResult");
+                int queryResult = intent.getIntExtra("queryResult", 0);
                 handleNetworkResult(queryResult);
             }
         };
@@ -1057,16 +1073,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             reportingEvent.setFragmentName("MainFragment");
         }
         if (confirmPublish != null && confirmPublish.isVisible()) {
-            reportingEvent.setFragmentName("confirmPublish");
+            reportingEvent.setFragmentName("ConfirmPublish");
         }
         if (thankYou != null && thankYou.isVisible()) {
-            reportingEvent.setFragmentName("thankYou");
+            reportingEvent.setFragmentName("ThankYou");
         }
         if (itemFragment != null && itemFragment.isVisible()) {
-            reportingEvent.setFragmentName("itemFragment");
+            reportingEvent.setFragmentName("ItemFragment");
         }
         if (detailsFragment != null && detailsFragment.isVisible()) {
-            reportingEvent.setFragmentName("detailsFragment");
+            reportingEvent.setFragmentName("DetailsFragment");
         }
 
         if (reportingEvent.end_session()){
@@ -1132,19 +1148,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (DEBUG) Log.i(LOG_TAG, "onListFragmentInteraction - nameAndFirstName = " + nameAndFirstName);
         if (DEBUG) Log.i(LOG_TAG, "onListFragmentInteraction - source_city = " + pickup_city);
 
-        u0.put(getString(R.string.fName),"itemFragment");
-
-        HashMap<String, String> u1 = new HashMap<>();
-        long end_time = Utilities.CurrentTimeMS();
-        u1.put(getString(R.string.fStart), Long.toString(itemFragment.getFragment_start_time()));
-        u1.put(getString(R.string.fEnd), Long.toString(end_time));
-        u1.put(getString(R.string.fDuration), Long.toString(
-                end_time - itemFragment.getFragment_start_time()));
-        u1.put(getString(R.string.n_results), Integer.toString(itemFragment.getN_results()));
-        u1.put(getString(R.string.pos), Integer.toString(thepos));
-        u1.put(getString(R.string.nextF), "detailsFragment");
-
-//        new HandleReportingAsync().execute(u0,u1);
+        if (reportingEvent == null) {reportingEvent = new ReportingEvent();}
+        reportingEvent.setFragmentName("ItemFragment");
+        reportingEvent.setFragmentStart(itemFragment.getFragmentStartTime());
+        reportingEvent.setFragmentEnd();
+        reportingEvent.addEvent("action","selectedOffer", "offerPosition",thepos);
 
         detailsFragment =
                 OfferDetail.newInstance(nameAndFirstName, pickup_city, pickup_country, pickup_date,

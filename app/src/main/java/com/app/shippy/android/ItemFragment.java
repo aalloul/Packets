@@ -49,6 +49,8 @@ public class ItemFragment extends Fragment {
         if (getArguments() != null) mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
     }
 
+    long getFragmentStartTime() {return fragment_start_time;}
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

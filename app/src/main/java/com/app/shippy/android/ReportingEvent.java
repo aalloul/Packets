@@ -38,6 +38,7 @@ class ReportingEvent {
     }
 
     void setFragmentEnd() {fragmentEnd = Utilities.CurrentTimeMS();}
+
     void setSessionEnd() {sessionEnd= Utilities.CurrentTimeMS();}
 
     void setend_session(boolean val) {

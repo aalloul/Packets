@@ -78,6 +78,8 @@ public class OfferDetail extends Fragment {
         return fragment;
     }
 
+    long getFragmentStartTime() {return fragment_start_time;}
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

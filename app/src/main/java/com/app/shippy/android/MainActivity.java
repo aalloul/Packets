@@ -1677,11 +1677,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void onConfirmPublish() {
         if (DEBUG) Log.i(LOG_TAG, "onConfirmPublish - Publishing new offer");
 
-        u0.put(getString(R.string.fName),"confirmPublish");
+        if (reportingEvent == null) {reportingEvent = new ReportingEvent();}
+        reportingEvent.setFragmentName("ConfirmPublish");
+        reportingEvent.setFragmentStart(confirmPublish.getFragmentStartTime());
+        reportingEvent.setFragmentEnd();
 
         if (!confirmPublish.checkInputs()) {
-//            new HandleReportingAsync().execute(u0,confirmPublish.getBlob(
-//                    getString(R.string.ferror),getString(R.string.confirm_no_details)));
+            reportingEvent.addEvent("action","PublishWithIncompleteInformation",
+                    "hasEditedProfilePicture", confirmPublish.hasEditedPicture()
+                    );
 
             Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
                     getResources().getString(R.string.registration_input_incomplete),
@@ -1690,13 +1694,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             return;
         }
 
-//        new HandleReportingAsync().execute(u0,confirmPublish.getBlob("thankYou"));
 
         HashMap<String, String> tmp = confirmPublish.getAllDetails();
         /* This might need a bit more thinking -- For example, the user is temporarily in another
          * city/country but doesn't want us to consider this place as his new home.
         */
 //        storeUserDetails(tmp);
+
+        reportingEvent.addEvent("action","PublishOffer",
+                "hasEditedProfilePicture", confirmPublish.hasEditedPicture());
 
         postOfferRequest(tmp);
 

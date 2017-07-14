@@ -69,6 +69,7 @@ public class ConfirmPublish extends Fragment {
         return fragment;
     }
 
+
     @Override
     @SuppressWarnings("unchecked")
     public void onCreate(Bundle savedInstanceState) {
@@ -236,6 +237,8 @@ public class ConfirmPublish extends Fragment {
         caption_confirm_user_picture.setText(null);
     }
 
+    boolean hasEditedPicture() {return changed_profile_picture;}
+
     public boolean checkInputs() {
 
         if (DEBUG) Log.i(LOG_TAG, "checkInputs - Enter");
@@ -261,39 +264,7 @@ public class ConfirmPublish extends Fragment {
         return true;
     }
 
-    public HashMap<String, String> getBlob(String nextFrag){
-        HashMap<String, String> t = new HashMap<>();
-        long end_time = Utilities.CurrentTimeMS();
-
-        t.put(getString(R.string.fStart), Long.toString(fragment_start_time));
-        t.put(getString(R.string.fEnd), Long.toString(end_time));
-        t.put(getString(R.string.fDuration), Long.toString(end_time - fragment_start_time));
-
-        if (!nextFrag.equals("")) {
-            //Used for data reporting when switching to another fragment
-            t.put(getString(R.string.nextF), nextFrag);
-        }
-
-        t.put(getString(R.string.changed_prof_pic), Boolean.toString(changed_profile_picture));
-
-        return t;
-    }
-
-    public HashMap<String, String> getBlob(String err_field, String err_msg) {
-        HashMap<String, String> t = new HashMap<>();
-        long end_time = Utilities.CurrentTimeMS();
-        t.put(getString(R.string.fStart), Long.toString(fragment_start_time));
-        t.put(getString(R.string.fEnd), Long.toString(end_time));
-        t.put(getString(R.string.fDuration), Long.toString(end_time - fragment_start_time));
-        t.put(getString(R.string.changed_prof_pic), Boolean.toString(changed_profile_picture));
-        t.put(err_field,err_msg);
-
-        return t;
-    }
-
-    public long getFragmentStartTime() {
-        return fragment_start_time;
-    }
+    public long getFragmentStartTime() {return fragment_start_time;}
 
     /**
      * This interface must be implemented by activities that contain this

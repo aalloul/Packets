@@ -17,9 +17,10 @@ class ReportingEvent {
     private String fragmentName;
     private String version = "0.1";
     private final String LOG_TAG = "ReportingEvent";
-    private final boolean DEBUG = true;
+    private final boolean DEBUG = false;
     private boolean END_SESSION = true;
     private String deviceId, deviceType;
+    private ArrayList<String> ids = new ArrayList<>();
 
     ReportingEvent() {
         sessionStart = Utilities.CurrentTimeMS();
@@ -54,6 +55,12 @@ class ReportingEvent {
 
     void setFragmentStart(long time) {
         this.fragmentStart = time;
+
+        // It doesn't make sense to have a fragmentStart whose value is larger
+        // than fragmentEnd
+        if (this.fragmentEnd < this.fragmentStart) {
+            fragmentEnd = 0;
+        }
     }
 
     void setFragmentEnd() {fragmentEnd = Utilities.CurrentTimeMS();}
@@ -68,6 +75,18 @@ class ReportingEvent {
         return END_SESSION;
     }
 
+    private boolean isDuplicate(String stringrep) {
+        for (String id : ids) {
+            if (id.equals(stringrep)) {
+                return true;
+            }
+        }
+
+        ids.add(stringrep);
+
+        return false;
+    }
+
     @SuppressWarnings("unchecked")
     private HashMap enrichEvent(HashMap tmp) {
         tmp.put("sessionStart", sessionStart);
@@ -75,6 +94,8 @@ class ReportingEvent {
         tmp.put("fragmentName", fragmentName);
         tmp.put("dataModelVersion", version);
         tmp.put("fragmentStart", fragmentStart);
+        // Add a timestamp for all events
+        tmp.put("timestamp", Utilities.CurrentTimeMS());
 
         if (sessionEnd > 0) {
             tmp.put("sessionEnd", sessionEnd);
@@ -86,11 +107,12 @@ class ReportingEvent {
             tmp.put("fragmentDuration",fragmentEnd - fragmentStart);
         }
 
+        String jsonrep = tmp.toString();
+
+        // Check For duplicate
+        if (isDuplicate(jsonrep)) {return null;}
         return tmp;
     }
-
-
-
 
     /**
      * This method requires an even number of arguments to work. These are then
@@ -106,6 +128,7 @@ class ReportingEvent {
         String key = "";
         int i = 0;
 
+        // Check whether the number of arguments is even
         if ( (args.length & 1) != 0 ) { throw new IllegalArgumentException();}
 
         for (Object arg : args) {
@@ -116,10 +139,17 @@ class ReportingEvent {
                 i = 0;
             }
         }
-        events.add(enrichEvent(tmp));
+
+        UpdateEvents(enrichEvent(tmp));
         Gson gson = new Gson();
 
         if (DEBUG) Log.i(LOG_TAG, "events = "+ gson.toJson(events));
+    }
+
+    private void UpdateEvents(HashMap event) {
+        if (event == null) return;
+
+        events.add(event);
     }
 
     @SuppressWarnings("unchecked")
@@ -130,16 +160,26 @@ class ReportingEvent {
         tmp.put("ExceptionToString", tostring);
         tmp.put("ExceptionAction", action);
         events.add(enrichEvent(tmp));
-        if (DEBUG) Log.i(LOG_TAG, "exception = "+ events);
+        Gson gson = new Gson();
+        if (DEBUG) Log.i(LOG_TAG, "exception = "+ gson.toJson(events));
 
     }
 
     @SuppressWarnings("unchecked")
     ArrayList<HashMap<String, Object>> getEvents() {
+        Gson gson = new Gson();
+        Log.i(LOG_TAG, "getEvents - " + gson.toJson(events));
         return events;
     }
 
+    int getNumberEvents() {
+        return events.size();
+    }
+
     void clearEvents() {
+        Log.i(LOG_TAG, "clearEvnets - Clearing events" );
         events.clear();
+        ids.clear();
+        Log.i(LOG_TAG, "clearEvnets - Events left = " + events.size() );
     }
 }

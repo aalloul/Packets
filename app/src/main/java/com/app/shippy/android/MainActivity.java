@@ -721,7 +721,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         request.setRetryPolicy(new DefaultRetryPolicy(5000, 0, 0.0f));
 
         if (DEBUG) Log.i(LOG_TAG, "searchRequest - Adding request to queue");
-        volleyQueue.add(request);
+//        volleyQueue.add(request);
     }
 
     /**
@@ -808,7 +808,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         // 1st argument is initial timeout, 2nd is number of retries, 3rd is multiplier
         request.setRetryPolicy(new DefaultRetryPolicy(4000, 0, 0.0f));
 
-        volleyQueue.add(request);
+//        volleyQueue.add(request);
     }
 
     public void OnPrivacyButtonPressed() {
@@ -1054,14 +1054,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @Override
     public void onStop() {
-        if (DEBUG) Log.i(LOG_TAG, "onStop - Enter");
+        Log.i(LOG_TAG, "onStop - Enter");
         super.onStop();
 
-        if (reportingEvent != null && reportingEvent.end_session()) {
+        Log.i(LOG_TAG, "onStop - Number Events = " + reportingEvent.getNumberEvents());
+        Log.i(LOG_TAG, "onStop - Content Events = " + reportingEvent.getEvents());
+
+        if (reportingEvent != null && reportingEvent.end_session() &&
+                reportingEvent.getNumberEvents() > 0) {
             reportingEvent.setFragmentEnd();
             reportingEvent.setSessionEnd();
             reportingEvent.addEvent("action","onStop", "ReasonForReporting", "SessionEnd",
-                    "NumberEvents", reportingEvent.getEvents().size());
+                    "NumberEvents", reportingEvent.getNumberEvents()+1);
             ArrayList<HashMap<String, Object>>  thedata = reportingEvent.getEvents();
             reportingEvent.clearEvents();
             postUsageRequest(thedata);
@@ -1081,7 +1085,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     @SuppressWarnings("unchecked")
     public void onPause() {
-        if (DEBUG) Log.i(LOG_TAG, "onPause - Enter");
+        Log.i(LOG_TAG, "onPause - Enter");
         super.onPause();
         stopLocationUpdates();
 
@@ -1091,22 +1095,23 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             reportingEvent.setFragmentEnd();
             reportingEvent.setSessionEnd();
             reportingEvent.addEvent("action","onPause", "ReasonForReporting", "SessionEnd",
-                    "NumberEvents", reportingEvent.getEvents().size()+1);
+                    "NumberEvents", reportingEvent.getNumberEvents()+1);
             ArrayList<HashMap<String, Object>>  thedata = reportingEvent.getEvents();
             reportingEvent.clearEvents();
             postUsageRequest(thedata);
+            return;
         }
 
-        if (reportingEvent.getEvents().size() > 20){
+        if (reportingEvent.getNumberEvents() > 20){
             reportingEvent.setFragmentEnd();
             reportingEvent.addEvent("action","onPause", "ReasonForReporting", "ReachedEventLimit",
-                    "NumberEvents", reportingEvent.getEvents().size()+1);
+                    "NumberEvents", reportingEvent.getNumberEvents()+1);
             ArrayList<HashMap<String, Object>>  thedata = reportingEvent.getEvents();
             reportingEvent.clearEvents();
             postUsageRequest(thedata);
-        }
-
+        } else {
         reportingEvent.addEvent("action","onPause");
+        }
 
         if (DEBUG) Log.i(LOG_TAG, "onPause - Exit");
     }
@@ -1429,7 +1434,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 Bitmap bmp = BitmapFactory.decodeFile(mCurrentPhotoPath);
                 HandlePictureAsync handlepicture = new HandlePictureAsync();
 
-                reportingEvent.addEvent("action","TookPicture");
+                reportingEvent.addEvent("action","ChosePictureFromGallery");
                 if (DEBUG) Log.i(LOG_TAG, "handleUserPickPicture - async handling of the picture");
                 handlepicture.execute(bmp);
             }

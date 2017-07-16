@@ -1,5 +1,7 @@
 package com.app.shippy.android;
 import android.util.Log;
+
+import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,12 +19,29 @@ class ReportingEvent {
     private final String LOG_TAG = "ReportingEvent";
     private final boolean DEBUG = true;
     private boolean END_SESSION = true;
+    private String deviceId, deviceType;
 
     ReportingEvent() {
         sessionStart = Utilities.CurrentTimeMS();
         fragmentStart = sessionStart;
         events = new ArrayList<>();
         fragmentName = "None";
+    }
+
+    void setDeviceId(String deviceId){
+        this.deviceId = deviceId;
+    }
+
+    String getDeviceId() {
+        return deviceId;
+    }
+
+    void setDeviceType(String deviceType) {
+        this.deviceType = deviceType;
+    }
+
+    String getDeviceType() {
+        return deviceType;
     }
 
     void setActivityName(String activityName) {

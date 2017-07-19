@@ -15,7 +15,7 @@ class ReportingEvent {
     private String activityName;
     private ArrayList<HashMap<String, Object> > events;
     private String fragmentName;
-    private String version = "0.1";
+    private double version = 0.1;
     private final String LOG_TAG = "ReportingEvent";
     private final boolean DEBUG = false;
     private boolean END_SESSION = true;

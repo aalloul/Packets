@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private PrivacyNotice privacyNotice;
     private NoResultsFound noresultsfound;
     private ReportingEvent reportingEvent;
+    private User user;
 
     // create a local variable for identifying the class where the log statements come from
     private final static String LOG_TAG = MainActivity.class.getSimpleName();
@@ -181,37 +182,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
 
         editor.apply();
-    }
-
-    private void generateDeviceID(){
-        SharedPreferences sp = getPreferences(Context.MODE_PRIVATE);
-        String devid = sp.getString(getString(R.string.deviceid), "");
-        String devtype = sp.getString(getString(R.string.devicetype), "");
-
-        if (devid.equals("")) {
-            /*
-             * here we assume this is the first time this user opens the app and hope the test above
-             * will never return True while the deviceid was already set.
-             */
-            SharedPreferences.Editor editor = sp.edit();
-            devid = UUID.randomUUID().toString();
-            devtype = Build.DEVICE;
-            if (DEBUG) Log.i(LOG_TAG, "generateDeviceID - 1st install");
-            if (DEBUG) Log.i(LOG_TAG, "generateDeviceID - deviceID = "+devid + " device type = "+devtype);
-            editor.putString(getString(R.string.deviceid), devid);
-            editor.putString(getString(R.string.devicetype), devtype);
-            /*
-             * here we use apply (asynchronous) rather then commit (synchronous), the reasoning being
-             * that if this is not successful, next time we'll try again.
-             */
-            editor.apply();
-        }
-
-        if (reportingEvent == null) {reportingEvent = new ReportingEvent();}
-
-        reportingEvent.setDeviceId(devid);
-        reportingEvent.setDeviceType(devtype);
-
     }
 
     private void updateStoredLocation(Location location) {
@@ -840,19 +810,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         // This piece is to check whether the user is already registered with his city being
         // Updating
+        user = User.getInstance();
+        user.setContext(this);
+
+        reportingEvent.setDeviceId(user.getDeviceId());
+        reportingEvent.setDeviceType(user.getDeviceType());
+
         sharedPref = getPreferences(Context.MODE_PRIVATE);
-        generateDeviceID();
-        HashMap<String, String> userDetailedLocation = getUserDetailedLocation();
-        String userCity = userDetailedLocation.get(getString(R.string.saved_user_city));
-        String firstname = getUserPersonalDetails().get(getString(R.string.saved_user_firstname));
-
-        if (DEBUG) Log.i(LOG_TAG, "onCreate - userCity = " + userCity);
-        boolean isalreadyregistered = isAlreadyRegistered();
-
-        reportingEvent.addEvent("WasRegistered", isalreadyregistered);
+        reportingEvent.addEvent("WasRegistered", user.isRegistered());
 
         // if not already registered or the city is "updating" then connect to Google API
-        if (mGoogleApiClient == null || (!isalreadyregistered || userCity.equals(""))) {
+        if (mGoogleApiClient == null || (!user.isRegistered() || user.getCity().equals(""))) {
             if (DEBUG) Log.i(LOG_TAG, "onCreate - mGoogleApiClient is null");
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addConnectionCallbacks(this)
@@ -867,9 +835,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (savedInstanceState == null) {
             if (DEBUG) Log.i(LOG_TAG, "onCreate - savedInstanceState is null");
             FragmentTransaction fmg = getSupportFragmentManager().beginTransaction();
-            if (isalreadyregistered) {
+            if (user.isRegistered()) {
                 if (DEBUG) Log.i(LOG_TAG, "onCreate - user already registered");
-                mainFragment = MainFragment.newInstance(userDetailedLocation, firstname);
+                mainFragment = MainFragment.newInstance();
+                mainFragment.set_detailed_pickup_location(user.getCity(), user.getState(), user.getCountry());
+                mainFragment.setFirst_name(user.getFirstname());
                 fmg.add(R.id.mainActivity_ListView, mainFragment, "mainFragment");
             } else {
                 if (DEBUG) Log.i(LOG_TAG, "onCreate - user not registered");
@@ -924,13 +894,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 mGoogleApiClient, mLocationRequest, this);
         if (DEBUG) Log.i(LOG_TAG, "onConnected - Requested location updates");
 
-        if (registrationFragment == null) {
+        if (registrationFragment == null || !registrationFragment.isVisible()) {
             if (DEBUG) Log.i(LOG_TAG, "onConnected - Registration Fragment is null");
-            return;
-        }
-
-        if (!registrationFragment.isVisible()) {
-            if (DEBUG) Log.i(LOG_TAG, "onConnected - Registration Fragment is not visible");
             return;
         }
 
@@ -1468,8 +1433,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             reportingEvent.addEvent("Action", "ShareNotSuccessful");
         }
         if (mainFragment == null) {
-            mainFragment = MainFragment.newInstance(getUserDetailedLocation(),
-                    getUserPersonalDetails().get(getString(R.string.saved_user_firstname)));
+            mainFragment = MainFragment.newInstance();
+            mainFragment.set_detailed_pickup_location(user.getCity(), user.getState(),
+                    user.getCountry());
+            mainFragment.setFirst_name(user.getFirstname());
         }
 
     }
@@ -1620,8 +1587,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 if (mainFragment == null)
                 {
                     if (DEBUG) Log.w(LOG_TAG, "onRegisterMePressed - mainFragment is null");
-                    mainFragment = MainFragment.newInstance(getUserDetailedLocation(),
-                            getUserPersonalDetails().get(getString(R.string.saved_user_firstname)));
+                    mainFragment = MainFragment.newInstance();
+                    mainFragment.set_detailed_pickup_location(user.getCity(), user.getState(),
+                            user.getCountry());
+                    mainFragment.setFirst_name(user.getFirstname());
                 }
                 getSupportFragmentManager()
                         .beginTransaction()
@@ -1653,7 +1622,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         if (mainFragment == null) {
             if (DEBUG) Log.i(LOG_TAG, "onRegisterLaterPressed - mainFragment is null");
-            mainFragment = MainFragment.newInstance(getUserDetailedLocation(),"");
+            mainFragment = MainFragment.newInstance();
+            mainFragment.set_detailed_pickup_location(user.getCity(), user.getState(),
+                    user.getCountry());
+            mainFragment.setFirst_name(user.getFirstname());
         }
 
         getSupportFragmentManager()

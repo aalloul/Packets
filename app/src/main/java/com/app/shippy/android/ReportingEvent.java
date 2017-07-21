@@ -21,12 +21,19 @@ class ReportingEvent {
     private boolean END_SESSION = true;
     private String deviceId, deviceType;
     private ArrayList<String> ids = new ArrayList<>();
+    private static ReportingEvent mInstance = new ReportingEvent();
 
     ReportingEvent() {
         sessionStart = Utilities.CurrentTimeMS();
         fragmentStart = sessionStart;
         events = new ArrayList<>();
         fragmentName = "None";
+    }
+
+    static synchronized ReportingEvent getInstance() {
+        // We want this class to be a singleton
+        if (mInstance == null) {mInstance = new ReportingEvent();}
+        return mInstance;
     }
 
     void setDeviceId(String deviceId){

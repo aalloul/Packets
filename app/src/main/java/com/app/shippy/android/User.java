@@ -1,7 +1,5 @@
 package com.app.shippy.android;
 
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -10,7 +8,11 @@ import java.util.HashMap;
 import java.util.UUID;
 
 class User {
-    private String firstname, surname;
+    private String firstname;
+    private String surname;
+    private String picture_path;
+    private String picture;
+    private String phoneNumber;
     private String city, state, country, address, zipcode;
     private int number_prompts;
     private boolean isRegistered;
@@ -18,6 +20,7 @@ class User {
     private Context context;
     private String share_pref_file_name = "com.app.shippy.android.SharePrefUser";
     private String deviceId, deviceType;
+    private static final boolean DEBUG = true;
 
     private User () {
 
@@ -45,7 +48,27 @@ class User {
         this.setDeviceId(sharedPreferences.getString("deviceid", ""));
         this.setDeviceType(sharedPreferences.getString("devicetype", ""));
         this.setState(sharedPreferences.getString("state", ""));
+        this.setPicturePath(sharedPreferences.getString("picture", ""));
     }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    String getPhoneNumber() {
+
+        return phoneNumber;
+    }
+
+    void setPicture(String picture) {this.picture = picture;}
+
+    String getPicture() {return picture;}
+
+    public String getPicturePath() {
+        return picture_path;
+    }
+
+    void setPicturePath(String picture_path) {this.picture_path = picture_path;}
 
     void setState(String state) {this.state = state;}
 
@@ -75,36 +98,36 @@ class User {
         }
     }
 
-    public void setNumber_prompts(int number_prompts) {
+    void setNumber_prompts(int number_prompts) {
         this.number_prompts = number_prompts+1;
     }
 
-    public void setRegistered(boolean registered) {
+    void setRegistered(boolean registered) {
         isRegistered = registered;
     }
 
-    public void setFirstname(String firstname) {
+    void setFirstname(String firstname) {
 
         this.firstname = firstname;
     }
 
-    public void setSurname(String surname) {
+    void setSurname(String surname) {
         this.surname = surname;
     }
 
-    public void setCity(String city) {
+    void setCity(String city) {
         this.city = city;
     }
 
-    public void setCountry(String country) {
+    void setCountry(String country) {
         this.country = country;
     }
 
-    public void setAddress(String address) {
+    void setAddress(String address) {
         this.address = address;
     }
 
-    public void setZipcode(String zipcode) {
+    void setZipcode(String zipcode) {
         this.zipcode = zipcode;
     }
 
@@ -127,9 +150,9 @@ class User {
     }
 
 
-    public String getDeviceId() {return deviceId;}
+    String getDeviceId() {return deviceId;}
 
-    public String getDeviceType() {return deviceType;}
+    String getDeviceType() {return deviceType;}
 
     static synchronized User getInstance() {
         // We want this class to be a singleton
@@ -142,31 +165,41 @@ class User {
         return number_prompts;
     }
 
-    public boolean isRegistered() {
+    boolean isRegistered() {
+        if (DEBUG) return false;
         return isRegistered;
     }
 
-    public String getSurname() {
+    String getSurname() {
         return surname;
     }
 
-    public String getCity() {
+    String getCity() {
         return city;
     }
 
-    public String getCountry() {
+    String getCountry() {
         return country;
     }
 
-    public String getAddress() {
+    String getAddress() {
         return address;
     }
 
-    public String getZipcode() {
+    String getZipcode() {
         return zipcode;
     }
 
-    public String getFirstname() {
+    String getFirstname() {
         return firstname;
+    }
+
+    HashMap<String, String> getLocationObject() {
+        HashMap<String, String> tmp = new HashMap<>();
+        tmp.put(context.getResources().getString(R.string.saved_user_city), this.city);
+        tmp.put(context.getResources().getString(R.string.saved_user_country), this.country);
+        tmp.put(context.getResources().getString(R.string.saved_user_postalcode), this.zipcode);
+        tmp.put(context.getResources().getString(R.string.saved_user_address), this.address);
+        return tmp;
     }
 }

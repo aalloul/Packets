@@ -24,7 +24,7 @@ class User {
     }
 
     void setContext (Context context) {
-        this.context = context;
+        this.context = context.getApplicationContext();
         this.set_user_details();
     }
 
@@ -76,7 +76,7 @@ class User {
     }
 
     public void setNumber_prompts(int number_prompts) {
-        this.number_prompts = number_prompts;
+        this.number_prompts = number_prompts+1;
     }
 
     public void setRegistered(boolean registered) {
@@ -108,7 +108,7 @@ class User {
         this.zipcode = zipcode;
     }
 
-    void saveSettings() {
+    void saveDetails() {
         SharedPreferences sharedPreferences = context.getSharedPreferences(share_pref_file_name,
                 Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -123,7 +123,6 @@ class User {
         editor.putString("country", country);
         editor.putString("address", address);
         editor.putString("zipcode", zipcode);
-
         editor.apply();
     }
 

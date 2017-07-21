@@ -46,6 +46,7 @@ public class MainFragment extends Fragment {
 
     public static com.app.shippy.android.MainFragment newInstance() {
         com.app.shippy.android.MainFragment fragment = new com.app.shippy.android.MainFragment();
+        Bundle args = new Bundle();
         return fragment;
     }
 

@@ -111,79 +111,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private final static String LOG_TAG = MainActivity.class.getSimpleName();
     private static boolean DEBUG = false;
 
-    private boolean isAlreadyRegistered() {
-        if (DEBUG) Log.i(LOG_TAG, "isAlreadyRegistered - Enter");
-        sharedPref = getPreferences(Context.MODE_PRIVATE);
-
-        if (sharedPref.getString(getString(R.string.saved_user_firstname), "").equals("")) {
-            if (DEBUG) Log.i(LOG_TAG,"isAlreadyRegistered - User first name not found so not registered");
-            return false;
-        }
-        if (DEBUG) Log.i(LOG_TAG, "userFirstName = " +
-                sharedPref.getString(getString(R.string.saved_user_firstname), ""));
-        return false;
-    }
-
-    // TODO looks like our SQLite is not closed when the app crashes
-
-    protected HashMap<String, String> getUserDetailedLocation() {
-        if (DEBUG) Log.i(LOG_TAG, "getUserDetailedLocation - Enter");
-        HashMap<String, String> tmp = new HashMap<>();
-        sharedPref = getPreferences(Context.MODE_PRIVATE);
-
-        tmp.put(getString(R.string.saved_user_postalcode),
-                sharedPref.getString(getString(R.string.saved_user_postalcode), ""));
-        tmp.put(getString(R.string.saved_user_city),
-                sharedPref.getString(getString(R.string.saved_user_city), ""));
-
-        tmp.put(getString(R.string.saved_user_country),
-                sharedPref.getString(getString(R.string.saved_user_country), ""));
-        tmp.put(getString(R.string.saved_user_state),
-                sharedPref.getString(getString(R.string.saved_user_state), ""));
-        tmp.put(getString(R.string.saved_user_address),
-                sharedPref.getString(getString(R.string.saved_user_address), ""));
-        tmp.put(getString(R.string.saved_user_latitude),
-                sharedPref.getString(getString(R.string.saved_user_latitude), ""));
-        tmp.put(getString(R.string.saved_user_longitude),
-                sharedPref.getString(getString(R.string.saved_user_longitude), ""));
-        if (DEBUG) Log.i(LOG_TAG, "getUserDetailedLocation - Exit");
-        return tmp;
-    }
-
-    /**
-     * This function reads the data entered in the registration fragment
-     * and returns a hashmap
-     * @param nextFrag is used by the data reporting to know what the next fragment is
-     * @return a hashmap to send to the back-end
-     */
-    private HashMap<String, String> storeUserDetails(String nextFrag) {
-        if (DEBUG) Log.i(LOG_TAG, "storeUserDetails - Enter");
-        HashMap<String, String> tmp = registrationFragment.getBlob(nextFrag);
-        storeUserDetails(tmp);
-        sharedPref = getPreferences(Context.MODE_PRIVATE);
-        int n_prompts = sharedPref.getInt(getString(R.string.saved_user_npromptstoregister), 0);
-        tmp.put(getString(R.string.nprompts), Integer.toString(n_prompts));
-        if (DEBUG) Log.i(LOG_TAG, "storeUserDetails - Exit");
-        return tmp;
-    }
-
-    private void storeUserDetails(HashMap<String, String> details) {
-        sharedPref = getPreferences(Context.MODE_PRIVATE);
-        int n_prompts = sharedPref.getInt(getString(R.string.saved_user_npromptstoregister), 0);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putInt(getString(R.string.saved_user_npromptstoregister), n_prompts+1);
-        if (DEBUG) Log.i(LOG_TAG, "storeUserDetails(details) - saved_user_firstname = "+
-                details.get(getString(R.string.saved_user_firstname)));
-        if (DEBUG) Log.i(LOG_TAG, "storeUserDetails(details) - saved_user_firstname = "+
-                details.get(getString(R.string.saved_user_surname)));
-
-        for (Map.Entry<String, String> entry : details.entrySet()) {
-            editor.putString(entry.getKey(), entry.getValue());
-        }
-
-        editor.apply();
-    }
-
     private void updateStoredLocation(Location location) {
         HandleGeoCodingAsync handlegeocoding =
                 new HandleGeoCodingAsync(this, UPDATE_STORED_LOCATION_AIM);
@@ -664,7 +591,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                         Intent newdata = new Intent("newDataHasArrived");
                         if (response == null) {
                             if (DEBUG) Log.i(LOG_TAG, "searchRequest - response is null");
-                            newdata.putExtra("queryResult", response.length);
+                            newdata.putExtra("queryResult", 0);
                         } else {
                             newdata.putExtra("queryResult", response.length);
                         }
@@ -1566,7 +1493,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
 
         // Store the details in SharedPref
-        HashMap<String, String> tmp = storeUserDetails("mainFragment");
+        user.setRegistered(true);
+        user.saveDetails();
+
         // Report the new data
         reportingEvent.addEvent("Action","RegisterSuccessful");
 
@@ -1623,16 +1552,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (mainFragment == null) {
             if (DEBUG) Log.i(LOG_TAG, "onRegisterLaterPressed - mainFragment is null");
             mainFragment = MainFragment.newInstance();
-            mainFragment.set_detailed_pickup_location(user.getCity(), user.getState(),
-                    user.getCountry());
-            mainFragment.setFirst_name(user.getFirstname());
         }
+
+        user.setRegistered(false);
+        user.saveDetails();
 
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.mainActivity_ListView, mainFragment, "mainFragment")
                 .addToBackStack(null)
                 .commit();
+
     }
 
     @Override
@@ -1645,11 +1575,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             return;
         }
 //        stopLocationUpdates();
-        if (isAlreadyRegistered()) {
-            if (mainFragment != null ) {
-                updateStoredLocation(location);
-                mainFragment.setPickup_location(getUserDetailedLocation());
-            }
+        if (user.isRegistered() && mainFragment != null) {
+            updateStoredLocation(location);
+            mainFragment.set_detailed_pickup_location(user.getCity(), user.getState(), user.getCountry());
         } else {
             updateUserDetails(location);
         }
@@ -1682,7 +1610,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         /* This might need a bit more thinking -- For example, the user is temporarily in another
          * city/country but doesn't want us to consider this place as his new home.
         */
-//        storeUserDetails(tmp);
 
         reportingEvent.addEvent("Action","PublishOffer",
                 "hasEditedProfilePicture", confirmPublish.hasEditedPicture());
@@ -1963,7 +1890,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         email.setType("message/rfc822");
         return email;
     }
-
 
     /*
      This little class is called when the user takes a picture of himself. It crops, rotates if

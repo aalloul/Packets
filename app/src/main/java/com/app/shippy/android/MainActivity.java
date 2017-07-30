@@ -572,6 +572,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type","application/json");
+        headers.put("dataModelVersion", reportingEvent.getDataModelVersion());
         headers.put("deviceID",reportingEvent.getDeviceId());
         headers.put("deviceType",reportingEvent.getDeviceType());
         headers.put("networkRequestTime", String.valueOf(Utilities.CurrentTimeMS()));
@@ -607,6 +608,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (DEBUG) Log.i(LOG_TAG, "postUsageRequest - Enter");
 
         Map<String, String> headers = new HashMap<>();
+        headers.put("offerVersion", tripRequestDetails.getVersion());
         headers.put("Content-Type","application/json");
         headers.put("deviceID",reportingEvent.getDeviceId());
         headers.put("deviceType",reportingEvent.getDeviceType());

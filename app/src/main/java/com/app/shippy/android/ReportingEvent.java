@@ -15,7 +15,7 @@ class ReportingEvent {
     private String activityName;
     private ArrayList<HashMap<String, Object> > events;
     private String fragmentName;
-    private double version = 0.1;
+    private String dataModelVersion = "0.1";
     private final String LOG_TAG = "ReportingEvent";
     private final boolean DEBUG = false;
     private boolean END_SESSION = true;
@@ -99,7 +99,6 @@ class ReportingEvent {
         tmp.put("sessionStart", sessionStart);
         tmp.put("activityName", activityName);
         tmp.put("fragmentName", fragmentName);
-        tmp.put("dataModelVersion", version);
         tmp.put("fragmentStart", fragmentStart);
         // Add a timestamp for all events
         tmp.put("timestamp", Utilities.CurrentTimeMS());
@@ -187,5 +186,9 @@ class ReportingEvent {
         events.clear();
         ids.clear();
         Log.i(LOG_TAG, "clearEvnets - Events left = " + events.size() );
+    }
+
+    String getDataModelVersion() {
+        return dataModelVersion;
     }
 }

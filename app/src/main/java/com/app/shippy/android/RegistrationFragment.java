@@ -260,7 +260,6 @@ public class RegistrationFragment extends Fragment {
     }
 
     interface RegistrationFragmentListener {
-        // TODO: Update argument type and name
         void onUserPicturePressed();
         void onUserLocationPressed();
         void onRegisterMePressed();

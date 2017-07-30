@@ -17,6 +17,7 @@ class TripRequestDetails {
     private long pickup_date, dropoff_date;
     private LocationObject dropoffLocation, pickupLocation; 
     private static Context context;
+    private String version = "0.1";
     
     void setContext(Context context) {this.context = context;}
     
@@ -120,5 +121,8 @@ class TripRequestDetails {
         dropoffLocation = new LocationObject();
         pickupLocation = new LocationObject();
     }
-    
+
+    public String getVersion() {
+        return version;
+    }
 }

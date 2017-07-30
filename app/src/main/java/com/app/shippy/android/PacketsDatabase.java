@@ -13,7 +13,7 @@ import com.app.shippy.android.DataBaseContracts.Postmen;
  */
 class PacketsDatabase extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 8; // 16-Apr-2016 10:37
+    private static final int DATABASE_VERSION = 9; // 24-JUL-2017 12:07
     private static final String DATABASE_NAME = "Persons.db";
     private static final String LOG_TAG = "PacketsDatabase";
     private final static boolean DEBUG = false;

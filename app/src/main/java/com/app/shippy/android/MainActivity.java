@@ -68,9 +68,9 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener, ItemFragment.OnListFragmentInteractionListener,
-        OfferDetail.OnFragmentInteractionListener, MainFragment.OnFragmentInteractionListener,
+        OfferDetail.OnFragmentInteractionListener, MainFragment.OnMainFragmentInteractionListener,
         DatePickerFragment.TheListener, RegistrationFragment.RegistrationFragmentListener,
-        ConfirmPublish.OnCofirmPublishListener, CameraOrGalleryDialog.CameraOrGalleryInterface,
+        ConfirmPublish.OnConfirmPublishListener, CameraOrGalleryDialog.CameraOrGalleryInterface,
         ThankYou.ShareFragmentListener, NoResultsFound.OnNoResultsFoundInteraction, PrivacyNotice.ContactUsListener {
 
     protected final int MAP_PERMISSION = 1;
@@ -101,16 +101,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private NoResultsFound noresultsfound;
     private ReportingEvent reportingEvent;
     private User user;
+    private TripRequestDetails tripRequestDetails;
+    private TripOffer tripOfferSelected;
 
     // create a local variable for identifying the class where the log statements come from
     private final static String LOG_TAG = MainActivity.class.getSimpleName();
-    private static boolean DEBUG = false;
+    private static boolean DEBUG = true;
 
     private void updateStoredLocation(Location location) {
         HandleGeoCodingAsync handlegeocoding =
                 new HandleGeoCodingAsync(this, UPDATE_STORED_LOCATION_AIM);
         handlegeocoding.execute(new LatLng(location.getLatitude(), location.getLongitude()));
-
     }
 
     private void handleNetworkResult(int queryResult) {
@@ -197,6 +198,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 //        }
         // Okay now we can use this new location
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+        reportingEvent = ReportingEvent.getInstance();
+        reportingEvent.setFragmentName("RegistrationFragment");
+        reportingEvent.setFragmentStart(registrationFragment.getFragmentStartTime());
+        reportingEvent.addEvent("action", "UpdateLocation");
+
         HandleGeoCodingAsync handlegeocoding = new HandleGeoCodingAsync(this, REGISTRATION_AIM);
         handlegeocoding.execute(latLng);
     }
@@ -305,7 +312,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             reportingEvent.addEvent("Action", "OpenNetworkSettings");
             startActivity(gpsOptionsIntent);
         } catch (Exception e) {
-            reportingEvent.addException(e.getCause().toString(), e.toString(), "OpenNetworkSettings");
+            Log.e(LOG_TAG, "goToSettings - Exception e = " + e);
+            reportingEvent.addException(e.toString(), "OpenNetworkSettings");
             if (DEBUG) Log.w(LOG_TAG, "goToSettings - could not go to Settings");
         }
     }
@@ -320,7 +328,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
 
         reportingEvent = ReportingEvent.getInstance();
-
         reportingEvent.setFragmentName("MainFragment");
         reportingEvent.setFragmentStart(mainFragment.getFragmentStartTime());
 
@@ -340,84 +347,28 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             return false ;
         }
 
-        HashMap<String, String> pickuplocation = mainFragment.getPickupLocation();
 
-        if (pickuplocation == null ||
-                !pickuplocation.containsKey(getString(R.string.saved_user_city))) {
+        switch (mainFragment.checkInputs()) {
+            case (MainFragment.PICKUP_LOCATION_MISSING):
+                reportingEvent.addEvent("Action",action+"WithNoPickupLocation");
 
-            // Report error
-            reportingEvent.addEvent("Action",action+"WithNoPickupLocation");
+                Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
+                        getResources().getString(R.string.pickup_location_not_set),
+                        getResources().getString(R.string.okay)
+                );
+                return false ;
 
-            Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
-                    getResources().getString(R.string.pickup_location_not_set),
-                    getResources().getString(R.string.okay)
-            );
-            return false ;
+            case (MainFragment.DROPOFF_LCATION_MISSING):
+                // Report error
+                reportingEvent.addEvent("Action",action+"WithNoDropoffLocation");
+
+                if (DEBUG) Log.i(LOG_TAG, "checkMainFragmentInputs- Unbelievable!");
+                Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
+                        getResources().getString(R.string.dropoff_location_not_set),
+                        getResources().getString(R.string.okay)
+                );
+                return false ;
         }
-
-        if (DEBUG) Log.i(LOG_TAG, "checkMainFragmentInputs- pick up location = "+ pickuplocation);
-
-        String dateforpickup = mainFragment.getDateForPickUp();
-        if ( dateforpickup == null) {
-
-            // Report error
-            reportingEvent.addEvent("Action",action+"WithNoPickupDate");
-
-            Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
-                    getResources().getString(R.string.date_send_not_set),
-                    getResources().getString(R.string.okay)
-            );
-            return false ;
-        }
-        if (DEBUG) Log.i(LOG_TAG, "checkMainFragmentInputs- date of pickup= "+ dateforpickup);
-
-        String numberPackages = mainFragment.getNumberPackages();
-        if ( numberPackages == null) {
-
-            // Report error
-            reportingEvent.addEvent("Action",action+"WithNoNumberPackages");
-
-            Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
-                    getResources().getString(R.string.size_packages_not_set),
-                    getResources().getString(R.string.okay)
-            );
-            return false ;
-        }
-        if (DEBUG) Log.i(LOG_TAG, "checkMainFragmentInputs- Number of Pakcages = "+ numberPackages);
-
-        String sizePackages = mainFragment.getSizePackage();
-        if (sizePackages == null) {
-
-            // Report error
-            reportingEvent.addEvent("Action",action+"WithNoPackageSize");
-
-            Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
-                    getResources().getString(R.string.number_packages_not_set),
-                    getResources().getString(R.string.okay)
-            );
-            return false ;
-        }
-        if (DEBUG) Log.i(LOG_TAG, "checkMainFragmentInputs- Number of sizePackages = "+ sizePackages);
-
-
-        HashMap<String, String> dropOffLocation = mainFragment.getDropOffLocation();
-
-        if ( dropOffLocation == null ||
-                !dropOffLocation.containsKey(getString(R.string.saved_user_city)) ) {
-
-            // Report error
-            reportingEvent.addEvent("Action",action+"WithNoDropoffLocation");
-
-            if (DEBUG) Log.i(LOG_TAG, "checkMainFragmentInputs- Unbelievable!");
-            Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
-                    getResources().getString(R.string.dropoff_location_not_set),
-                    getResources().getString(R.string.okay)
-            );
-            return false ;
-        }
-        if (DEBUG) Log.i(LOG_TAG, "checkMainFragmentInputs- Drop off location = "+ dropOffLocation);
-
-
 
         return true;
     }
@@ -440,11 +391,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                             .build(this);
             startActivityForResult(intent, reqCode);
         } catch (GooglePlayServicesRepairableException e) {
-            reportingEvent.addException(e.getCause().toString(), e.toString(), "launchPlaceAutoCompleteRequest");
+            reportingEvent.addException(e.toString(), "launchPlaceAutoCompleteRequest");
 
             if (DEBUG) Log.e(LOG_TAG, "GooglePlayServicesRepairableException Exception");
         } catch (GooglePlayServicesNotAvailableException e) {
-            reportingEvent.addException(e.getCause().toString(), e.toString(), "launchPlaceAutoCompleteRequest");
+            reportingEvent.addException(e.toString(), "launchPlaceAutoCompleteRequest");
             if (DEBUG) Log.e(LOG_TAG, "GooglePlayServicesNotAvailableException Exception");
         }
     }
@@ -452,7 +403,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     // Returns user personal details
     protected HashMap<String, String> getUserPersonalDetails() {
         HashMap<String, String> dets = new HashMap<>();
-
+        user = User.getInstance();
         dets.put(getString(R.string.saved_user_firstname), user.getFirstname());
         dets.put(getString(R.string.saved_user_surname), user.getSurname());
         dets.put(getString(R.string.saved_user_phonenumber), user.getPhoneNumber());
@@ -504,7 +455,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     reportingEvent.setFragmentName("RegistrationFragment");
                     reportingEvent.setFragmentStart(registrationFragment.getFragmentStartTime());
                 }
-                reportingEvent.addException(ex.getCause().toString(), ex.toString(), "dispatchTakePictureIntent");
+                reportingEvent.addException(ex.toString(), "dispatchTakePictureIntent");
                 ex.printStackTrace();
             }
             // Continue only if the File was successfully created
@@ -550,10 +501,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
      * This method is used to setup a GsonRequest towards the back-end, i.e. it expects a result
      * as a JSON.
      * The request method is a POST
-     * @param searchParams is the HashMap with the search parameters
+     * @param tripRequestDetails is the @Class TripRequestDetails with the search parameters
      */
     @SuppressWarnings("unchecked")
-    private void searchRequest(HashMap<String, String> searchParams) {
+    private void searchRequest(TripRequestDetails tripRequestDetails) {
         if (DEBUG) Log.i(LOG_TAG, "searchRequest - Enter");
 
         String url = "https://2ewwhcff9d.execute-api.eu-west-1.amazonaws.com/production/shippy-search";
@@ -565,9 +516,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         headers.put("networkRequestTime", String.valueOf(Utilities.CurrentTimeMS()));
         headers.put("x-api-key","vmXvcob4V33NpNVXKsDll8nAQAcmHGZZ87Fl4HF6");
 
-        if (DEBUG) Log.i(LOG_TAG, "searchRequest - searchParams = " + searchParams);
+        if (DEBUG) {
+            Gson gson = new Gson();
+            Log.i(LOG_TAG, "searchRequest - tripRequestDetails = " +
+                    gson.toJson(tripRequestDetails.getHashMapRepresentation()));
+        }
 
-        GsonRequest request = new GsonRequest(url, searchParams, SearchResponse[].class, headers,
+        GsonRequest request = new GsonRequest(url, tripRequestDetails.getHashMapRepresentation(),
+                SearchResponse[].class, headers,
                 Request.Method.POST, new Response.Listener<SearchResponse[]>() {
                     @Override
                     public void onResponse(SearchResponse[] response) {
@@ -589,8 +545,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                         reportingEvent = ReportingEvent.getInstance();
                         reportingEvent.setFragmentName("MainFragment");
                         reportingEvent.setFragmentStart(mainFragment.getFragmentStartTime());
-                        reportingEvent.addException(error.getCause().toString(), error.toString(),
-                                "SearchForOffers");
+                        reportingEvent.addException(error.toString(), "SearchForOffers");
                         if (DEBUG) Log.i(LOG_TAG, "error.getMesage() = " + error.getMessage());
                         if (DEBUG) Log.i(LOG_TAG, "error.getCause() = " + error.getCause());
                         informNetworkError(mainFragment);
@@ -637,8 +592,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                         reportingEvent = ReportingEvent.getInstance();
                         reportingEvent.setFragmentName(getVisibleFragment());
                         reportingEvent.setFragmentStart(getFragmentStartTime());
-                        reportingEvent.addException(error.getCause().toString(), error.toString(),
-                                "PostUsageData");
+                        reportingEvent.addException(error.toString(), "PostUsageData");
                     }
                 }
         );
@@ -647,12 +601,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 //        volleyQueue.add(request);
     }
 
-    /**
-     * This method is çalled when the user wants to publish an offer
-     * @param dataToPost this is simply the data
-     */
     @SuppressWarnings("unchecked")
-    private void postOfferRequest(HashMap<String, String> dataToPost) {
+    private void postOfferRequest(User user, TripRequestDetails tripRequestDetails) {
         String url = "https://2ewwhcff9d.execute-api.eu-west-1.amazonaws.com/production/shippy-offers";
         if (DEBUG) Log.i(LOG_TAG, "postUsageRequest - Enter");
 
@@ -662,6 +612,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         headers.put("deviceType",reportingEvent.getDeviceType());
         headers.put("networkRequestTime", String.valueOf(Utilities.CurrentTimeMS()));
         headers.put("x-api-key","vmXvcob4V33NpNVXKsDll8nAQAcmHGZZ87Fl4HF6");
+
+        HashMap<String, Object> dataToPost = new HashMap<>();
+        dataToPost.putAll(user.getHashMapRepresentation());
+        dataToPost.putAll(tripRequestDetails.getHashMapRepresentation());
+
+        if (DEBUG) {
+            Gson gson = new Gson();
+            dataToPost.remove("Picture");
+            Log.i(LOG_TAG, "postOfferRequest - dataToPost = " + gson.toJson(dataToPost));
+        }
 
         GsonRequest request = new GsonRequest(url, dataToPost, null, headers, Request.Method.POST,
                 new Response.Listener<Gson>() {
@@ -677,8 +637,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                         reportingEvent = ReportingEvent.getInstance();
                         reportingEvent.setFragmentName("ConfirmPublish");
                         reportingEvent.setFragmentStart(confirmPublish.getFragmentStartTime());
-                        reportingEvent.addException(error.getCause().toString(), error.toString(),
-                                "PostNewOffer");
+                        reportingEvent.addException(error.toString(), "PostNewOffer");
 
                         informNetworkError(confirmPublish);
                     }
@@ -711,25 +670,24 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity_listview);
 
-        reportingEvent = ReportingEvent.getInstance();
-        reportingEvent.setActivityName("MainActivity");
-
-        // Initialize the volley queue
-        // Get a RequestQueue
         volleyQueue = VolleySingleton.getInstance(this.getApplicationContext()).
                 getRequestQueue();
 
-        // This piece is to check whether the user is already registered with his city being
-        // Updating
         user = User.getInstance();
-        user.setContext(this);
+        user.setContext(this.getApplicationContext());
 
+        reportingEvent = ReportingEvent.getInstance();
+        reportingEvent.setActivityName("MainActivity");
         reportingEvent.setDeviceId(user.getDeviceId());
         reportingEvent.setDeviceType(user.getDeviceType());
         reportingEvent.addEvent("WasRegistered", user.isRegistered());
 
+        tripRequestDetails = TripRequestDetails.getInstance();
+
         // if not already registered or the city is "updating" then connect to Google API
-        if (mGoogleApiClient == null || (!user.isRegistered() || user.getCity().equals(""))) {
+        if (mGoogleApiClient == null || (!user.isRegistered() ||
+                user.getLocationObject().getCity().equals(""))) {
+
             if (DEBUG) Log.i(LOG_TAG, "onCreate - mGoogleApiClient is null");
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addConnectionCallbacks(this)
@@ -746,7 +704,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             FragmentTransaction fmg = getSupportFragmentManager().beginTransaction();
             if (user.isRegistered()) {
                 if (DEBUG) Log.i(LOG_TAG, "onCreate - user already registered");
-                mainFragment = MainFragment.newInstance(user.getLocationObject(), user.getFirstname());
+                mainFragment = MainFragment.newInstance();
                 fmg.add(R.id.mainActivity_ListView, mainFragment, "mainFragment");
             } else {
                 if (DEBUG) Log.i(LOG_TAG, "onCreate - user not registered");
@@ -811,7 +769,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         if (userLastLocation == null) {
             if (DEBUG) Log.i(LOG_TAG, "onConnected - userLastLocation is null");
-            registrationFragment.set_user_detailed_location(new HashMap<String, String>());
+            registrationFragment.setLocation();
             if (DEBUG) Log.i(LOG_TAG, "onConnected - Location not available yet");
             return;
         }
@@ -914,7 +872,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         reportingEvent.setActivityName("MainActivity");
         reportingEvent.setFragmentName(getVisibleFragment());
         reportingEvent.setFragmentStart(getFragmentStartTime());
-        reportingEvent.addEvent("Action", "onResume");
+        reportingEvent.addEvent("Action", "onStart");
         reportingEvent.setend_session(true);
 
         if (DEBUG) Log.i(LOG_TAG, "onStart - Exit");
@@ -1025,14 +983,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @Override
     @SuppressWarnings("unchecked")
-    public void onOfferSelected(String nameAndFirstName, String pickup_city, String pickup_country,
-                                String pickup_date, String dropoff_city, String dropoff_country,
-                                String n_packets, String package_size, String picture,
-                                String phone_number, String transport_methods, String comments,
-                                int thepos) {
+    public void onOfferSelected(TripOffer tripOffer, int thepos) {
         if (DEBUG) Log.i(LOG_TAG, "onListFragmentInteraction - Received a click - content is");
-        if (DEBUG) Log.i(LOG_TAG, "onListFragmentInteraction - nameAndFirstName = " + nameAndFirstName);
-        if (DEBUG) Log.i(LOG_TAG, "onListFragmentInteraction - source_city = " + pickup_city);
+        if (DEBUG) Log.i(LOG_TAG, "onListFragmentInteraction - nameAndFirstName = " +
+                tripOffer.getFirstName());
+        if (DEBUG) Log.i(LOG_TAG, "onListFragmentInteraction - source_city = " +
+                tripOffer.getPickupCity());
 
         reportingEvent = ReportingEvent.getInstance();
         reportingEvent.setFragmentName("ItemFragment");
@@ -1040,10 +996,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         reportingEvent.setFragmentEnd();
         reportingEvent.addEvent("Action","selectedOffer", "OfferPosition",thepos);
 
-        detailsFragment =
-                OfferDetail.newInstance(nameAndFirstName, pickup_city, pickup_country, pickup_date,
-                        dropoff_city, dropoff_country, n_packets, package_size, picture,
-                        phone_number, transport_methods,comments);
+        tripOfferSelected = tripOffer;
+
+        detailsFragment = OfferDetail.newInstance();
+
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.mainActivity_ListView, detailsFragment, "detailsFragment")
@@ -1100,22 +1056,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         reportingEvent.setFragmentStart(mainFragment.getFragmentStartTime());
 
 
-        if (!checkMainFragmentInputs("SEARCH")) {
-            if (DEBUG) Log.i(LOG_TAG, "onSearchButtonPressed - user did not provide any input");
-            return;
-        }
+        if (!checkMainFragmentInputs("SEARCH")) {return;}
 
         reportingEvent.setFragmentEnd();
-        HashMap<String, String> tmp = mainFragment.getTripDetails("SEARCH","itemFragment");
 
         reportingEvent.addEvent("Action","Search",
-                "PickupDate",tmp.get(getString(R.string.date_for_pickup)),
-                "NumberPackages",tmp.get(getString(R.string.number_packages)),
-                "SizePackages",tmp.get(getString(R.string.size_packages)),
-                "EditedPickupLocation", mainFragment.getEditedPickupLocation()
+                "PickupDate",tripRequestDetails.getPickup_date(),
+                "NumberPackages",tripRequestDetails.getNumber_packages(),
+                "SizePackages",tripRequestDetails.getPackage_size_int(),
+                "EditedPickupLocation", mainFragment.hasEditedPickupLocation()
                 );
 
-        searchRequest(tmp);
+        searchRequest(tripRequestDetails);
 
         itemFragment = ItemFragment.newInstance(1);
         getSupportFragmentManager().beginTransaction()
@@ -1141,23 +1093,21 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         // Check whether input data is correct
         if (!checkMainFragmentInputs("POST")) { return ;}
 
-        // Gather all information
-        HashMap<String, String> userDetails = getUserPersonalDetails();
-        HashMap<String, String> hashMap = mainFragment.getTripDetails("POST", "confirmPublish");
 
         // Send data to reporting
         reportingEvent.setFragmentEnd();
         reportingEvent.addEvent( "Action", "PostOffer",
-                "PickupDate",hashMap.get(getString(R.string.date_for_pickup)),
-                "NumberPackages",hashMap.get(getString(R.string.number_packages)),
-                "SizePackages",hashMap.get(getString(R.string.size_packages)),
-                "EditedPickupLocation", mainFragment.getEditedPickupLocation()
+                "PickupDate",tripRequestDetails.getPickup_date(),
+                "NumberPackages",tripRequestDetails.getNumber_packages(),
+                "SizePackages",tripRequestDetails.getPackage_size_int(),
+                "EditedPickupLocation", mainFragment.hasEditedPickupLocation()
         );
 
-
+        // In case this was not the case already, stop requesting location updates
         stopLocationUpdates();
+
         // Show confirmation page
-        confirmPublish = ConfirmPublish.newInstance(userDetails,hashMap);
+        confirmPublish = ConfirmPublish.newInstance();
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.mainActivity_ListView, confirmPublish, "confirmPublish")
@@ -1169,24 +1119,24 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void returnDate(String date) {
         if (DEBUG) Log.i(LOG_TAG, "returnDate - called");
-        mainFragment.setDate(date);
+        tripRequestDetails.setPickup_date(date);
+        mainFragment.updatePickuppDate();
     }
 
     @Override
     public void onPickUpLocationPressed() {
         if (DEBUG) Log.i(LOG_TAG, "onPickUpLocationPressed - Enter");
+
         // This is to make sure that when onStop is called, the session is not
         // ended in the reporting
         reportingEvent.setend_session(false);
-
-        mainFragment.setEdited_pickup_location();
+        mainFragment.setHasEditedPickupLocation(true);
         launchPlaceAutoCompleteRequest(PICK_UP_LOCATION_REQUEST);
     }
 
     @Override
     public void onDropOffLocationPressed() {
         if (DEBUG) Log.i(LOG_TAG, "onDropOffLocationPressed - Enter");
-
         // This is to make sure that when onStop is called, the session is not
         // ended in the reporting
         reportingEvent.setend_session(false);
@@ -1210,9 +1160,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 case DROPOFF_AIM:
                     handlegeocoding = new HandleGeoCodingAsync(this, DROPOFF_AIM);
                     handlegeocoding.execute(place.getLatLng());
+                    break;
+
                 case REGISTRATION_AIM:
                     handlegeocoding = new HandleGeoCodingAsync(this, REGISTRATION_AIM);
                     handlegeocoding.execute(place.getLatLng());
+                    break;
             }
 
 
@@ -1248,14 +1201,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 HandlePictureAsync handlepicture = new HandlePictureAsync();
                 handlepicture.execute(bitmap);
             } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
-                reportingEvent.addException(e.getCause().toString(), e.toString(), "handleUserCameraResult");
-
+                reportingEvent.addException(e.toString(), "handleUserCameraResult");
                 e.printStackTrace();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
-                reportingEvent.addException(e.getCause().toString(), e.toString(), "handleUserCameraResult");
-
+                reportingEvent.addException(e.toString(), "handleUserCameraResult");
                 if (DEBUG) Log.w(LOG_TAG, "handleUserCameraResult - IOException");
                 e.printStackTrace();
             }
@@ -1303,7 +1252,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             }
         } catch (Exception e) {
             //TODO handle this exception
-            reportingEvent.addException(e.getCause().toString(), e.toString(), "handleUserPickPicture");
+            reportingEvent.addException(e.toString(), "handleUserPickPicture");
             if (DEBUG) Log.i(LOG_TAG, "handleUserPickPicture - Exception caught");
             e.printStackTrace();
         }
@@ -1331,7 +1280,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             reportingEvent.addEvent("Action", "ShareNotSuccessful");
         }
         if (mainFragment == null) {
-            mainFragment = MainFragment.newInstance(user.getLocationObject(), user.getFirstname());
+            mainFragment = MainFragment.newInstance();
         }
 
     }
@@ -1363,10 +1312,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 if (DEBUG) Log.i(LOG_TAG, "onActivityResult - Handling picture chosen from Gallery");
                 handleUserPickPicture(resultCode, data);
                 break;
+
             case REQUEST_SHARE_APP:
                 if (DEBUG) Log.i(LOG_TAG, "onActivityResult - Handling picture chosen from Gallery");
                 // The intent data is useless here
                 handleSharingResult(resultCode);
+                break;
         }
     }
 
@@ -1396,7 +1347,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             dialogFragment.show(fm, "Sample Fragment");
         } catch (Exception ex) {
             if (DEBUG) Log.i(LOG_TAG, "onUserPicturePressed - Exception caught");
-            reportingEvent.addException(ex.getCause().toString(), ex.toString(), "onUserPicturePressed");
+            reportingEvent.addException(ex.toString(), "onUserPicturePressed");
             ex.printStackTrace();
         } finally {
             if (DEBUG) Log.i(LOG_TAG, "onUserPicturePressed - Exit");
@@ -1412,11 +1363,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onUserLocationPressed() {
         if (DEBUG) Log.i(LOG_TAG, "onDropOffLocationPressed - Enter");
-
-        reportingEvent = ReportingEvent.getInstance();
-        reportingEvent.setFragmentName("RegistrationFragment");
-        reportingEvent.setFragmentStart(registrationFragment.getFragmentStartTime());
-        reportingEvent.addEvent("Action","EditLocation");
 
         registrationFragment.setEdited_location();
         // This is to make sure that when onStop is called, the session is not
@@ -1438,24 +1384,36 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             if (DEBUG) Log.i(LOG_TAG, "onRegisterMePressed - registrationFragment is null");
             registrationFragment = RegistrationFragment.newInstance();
         }
-        int i = registrationFragment.isInputOk();
 
-        // At least one important detail is missing
-        if (i == 0) {
-            reportingEvent.addEvent("Action","RegisterWithoutDetails");
-            Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
-                    getResources().getString(R.string.registration_input_incomplete),
-                    getResources().getString(R.string.okay));
-            return;
-        }
+        switch (registrationFragment.checkInput()) {
+            case RegistrationFragment.FIRST_NAME_MISSING:
+                reportingEvent.addEvent("Action","RegisterMeWithoutFirstName");
+                Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
+                        getResources().getString(R.string.registration_firstname_missing),
+                        getResources().getString(R.string.okay));
+                return;
 
-        // User location not provided and access not granted
-        if (i == 1 && !MAP_PERMISSION_GRANTED) {
-            reportingEvent.addEvent("Action","RegisterWithoutLocation");
+            case RegistrationFragment.SUR_NAME_MISSING:
+                reportingEvent.addEvent("Action","RegisterMeWithoutSurName");
+                Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
+                        getResources().getString(R.string.registration_surname_missing),
+                        getResources().getString(R.string.okay));
+                return;
+
+            case RegistrationFragment.LOCATION_MISSING:
+                reportingEvent.addEvent("Action","RegisterMeWithoutLocation");
                 Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
                         getResources().getString(R.string.user_location_not_entered),
                         getResources().getString(R.string.okay));
-            return;
+                return;
+
+            case RegistrationFragment.PHONE_NUMBER_MISSING:
+                reportingEvent.addEvent("Action","RegisterMeWithoutPhoneNumber");
+                Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
+                        getResources().getString(R.string.registration_phonenumber_missing),
+                        getResources().getString(R.string.okay));
+                return;
+
         }
 
         // Store the details
@@ -1464,7 +1422,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         user.saveDetails();
 
         // Report the new data
-        reportingEvent.addEvent("Action","RegisterSuccessful");
+        reportingEvent.addEvent("Action","RegisterSuccessful",
+                    "EditedLocation", registrationFragment.hasEditedLocation());
+
+        // Initialize a TripRequest Object
+        tripRequestDetails = TripRequestDetails.getInstance();
+        tripRequestDetails.setContext(this.getApplicationContext());
+        tripRequestDetails.setPickupLocation(user.getLocationObject());
+        tripRequestDetails.setPackage_size_str();
 
         // Show a thank you note for 3 seconds
         getSupportFragmentManager().beginTransaction()
@@ -1483,7 +1448,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 if (mainFragment == null)
                 {
                     if (DEBUG) Log.w(LOG_TAG, "onRegisterMePressed - mainFragment is null");
-                    mainFragment = MainFragment.newInstance(user.getLocationObject(), user.getFirstname());
+                    mainFragment = MainFragment.newInstance();
                 }
                 getSupportFragmentManager()
                         .beginTransaction()
@@ -1508,12 +1473,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         if (mainFragment == null) {
             if (DEBUG) Log.i(LOG_TAG, "onRegisterLaterPressed - mainFragment is null");
-            mainFragment = MainFragment.newInstance(user.getLocationObject(), user.getFirstname());
+            mainFragment = MainFragment.newInstance();
         }
 
         user = User.getInstance();
         user.setRegistered(false);
         user.saveDetails();
+
+        tripRequestDetails = TripRequestDetails.getInstance();
+        tripRequestDetails.setContext(this.getApplicationContext());
 
         getSupportFragmentManager()
                 .beginTransaction()
@@ -1535,7 +1503,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 //        stopLocationUpdates();
         if (user.isRegistered() && mainFragment != null) {
             updateStoredLocation(location);
-            mainFragment.set_detailed_pickup_location(user.getCity(), user.getState(), user.getCountry());
         } else {
             updateUserDetails(location);
         }
@@ -1563,19 +1530,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             return;
         }
 
-
-        HashMap<String, String> tmp = confirmPublish.getAllDetails();
-        /* This might need a bit more thinking -- For example, the user is temporarily in another
-         * city/country but doesn't want us to consider this place as his new home.
-        */
-
         reportingEvent.addEvent("Action","PublishOffer",
                 "hasEditedProfilePicture", confirmPublish.hasEditedPicture());
 
-        postOfferRequest(tmp);
+        postOfferRequest(User.getInstance(), TripRequestDetails.getInstance());
 
         // Show a thank you note
-        thankYou = ThankYou.newInstance(tmp.get(getString(R.string.saved_user_firstname)));
+        thankYou = ThankYou.newInstance(User.getInstance().getFirstname());
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.mainActivity_ListView, thankYou, "Thank you")
@@ -1615,7 +1576,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     super.onBackPressed();
                 } catch (Exception e) {
                     if (DEBUG) Log.i(LOG_TAG, "onBackPressed - STUCK STUCK STUCK STUCK ");
-                    reportingEvent.addException(e.getCause().toString(), e.toString(), "BackButtonPressed");
+                    reportingEvent.addException(e.toString(), "BackButtonPressed");
 
                     // If exception, try to detach the mainFragment
                     if (mainFragment != null ) fmg.detach(mainFragment);
@@ -1688,8 +1649,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         reportingEvent.setFragmentStart(thankYou.getFragmentStartTime());
         reportingEvent.addEvent("Action", "ShareApplication");
 
-        HashMap<String, String> tmp = confirmPublish.getAllDetails();
-        String tmp2 = tmp.get(getString(R.string.drop_off_city));
+        String tmp2 = TripRequestDetails.getInstance().getDropoffLocation().getCity();
         String mystr = getResources().getString(R.string.share_link_pt1) + " " + tmp2;
         mystr = mystr + " "+ getResources().getString(R.string.share_link_pt2);
 
@@ -1734,8 +1694,31 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     @Override
-    public User getUserInstanceToMainFragment() {
+    public TripRequestDetails getTripRequestDetailsToMainFragment() {
+        return TripRequestDetails.getInstance();
+    }
+
+    @Override
+    public User getUserForConfirmPublish() {
         return User.getInstance();
+    }
+
+    @Override
+    public User getUserForRegistrationFragment() {
+        return User.getInstance();
+    }
+
+    @Override
+    public User getUserForMainFragment() {return User.getInstance();}
+
+    @Override
+    public TripRequestDetails getTripDetailsForConfirmPublish() {
+        return TripRequestDetails.getInstance();
+    }
+
+    @Override
+    public TripOffer getTripOfferForOfferDetail() {
+        return tripOfferSelected;
     }
 
     private String getVisibleFragment()  {
@@ -1877,15 +1860,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
 
         protected void onPostExecute(Bitmap result) {
+            User.getInstance().setPictureBM(result);
+            User.getInstance().setPicture(Utilities.BitMapToString(result));
+
             if (PICTURE_FOR_CONFIRM && confirmPublish!=null){
-                confirmPublish.setUserPicture(result);
+                confirmPublish.updateUserPicture();
                 PICTURE_FOR_CONFIRM=false;
                 return;
             }
             if (registrationFragment != null && !PICTURE_FOR_CONFIRM) {
                 if (DEBUG) Log.i(LOG_TAG, "HandlePictureAsync - registrationFragment NOT NULL");
-                registrationFragment.setUserPicture(result);
-                registrationFragment.unsetCaption_user_picture();
+                registrationFragment.updateUserPicture();
             }
 
         }
@@ -1915,21 +1900,19 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             try {
                 addresses = geocoder.getFromLocation(latlong.latitude, latlong.longitude, 1);
                 HashMap<String, String> tmp = new HashMap<>();
-                tmp.put(getString(R.string.saved_user_address),addresses.get(0).getAddressLine(0));
-                tmp.put(getString(R.string.saved_user_city), addresses.get(0).getLocality());
-                tmp.put(getString(R.string.saved_user_state),addresses.get(0).getAdminArea());
-                tmp.put(getString(R.string.saved_user_country), addresses.get(0).getCountryName());
-                tmp.put(getString(R.string.saved_user_postalcode), addresses.get(0).getPostalCode());
-                tmp.put(getString(R.string.saved_user_latitude),
-                        Double.toString(addresses.get(0).getLatitude()));
-                tmp.put(getString(R.string.saved_user_longitude),
-                        Double.toString(addresses.get(0).getLongitude()));
+                tmp.put("address",addresses.get(0).getAddressLine(0));
+                tmp.put("city", addresses.get(0).getLocality());
+                tmp.put("state",addresses.get(0).getAdminArea());
+                tmp.put("country", addresses.get(0).getCountryName());
+                tmp.put("postalcode", addresses.get(0).getPostalCode());
+                tmp.put("latitude", Double.toString(addresses.get(0).getLatitude()));
+                tmp.put("longitude", Double.toString(addresses.get(0).getLongitude()));
                 return tmp;
             } catch (IOException e) {
                 //TODO this seems to lead to some problems and this URL has a solution that doesn't invole
                 // asking the user to restart their phone
                 // http://stackoverflow.com/questions/19059894/google-geocoder-service-is-unavaliable-coordinates-to-address
-                reportingEvent.addException(e.getCause().toString(), e.toString(), "HandleGeoCodingAsync");
+                reportingEvent.addException(e.toString(), "HandleGeoCodingAsync");
 
                 if (DEBUG) Log.e(LOG_TAG, "HandleGeoCodingAsync - " + e.getMessage());
                 e.printStackTrace();
@@ -1941,29 +1924,29 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             switch (pickupaim) {
                 case PICKUP_AIM:
                     if (mainFragment != null && mainFragment.isVisible()) {
-                        mainFragment.setPickup_location(res);
+                        tripRequestDetails.setPickupLocation(new LocationObject(res));
+                        mainFragment.updatePickupLocation();
                     }
                     break;
 
                 case DROPOFF_AIM:
                     if (mainFragment != null && mainFragment.isVisible()) {
-                        mainFragment.setDrop_off_location(res);
+                        tripRequestDetails.setDropoffLocation(new LocationObject(res));
+                        mainFragment.updateDropOffLocation();
                     }
                     break;
 
                 case REGISTRATION_AIM:
                     if (registrationFragment != null && registrationFragment.isVisible()) {
-                        registrationFragment.set_user_detailed_location(res);
+                        user = User.getInstance();
+                        user.updateLocation(new LocationObject(res));
+                        registrationFragment.updateLocation();
                     }
                     break;
 
                 case UPDATE_STORED_LOCATION_AIM:
                     user = User.getInstance();
-                    user.setAddress(res.get(getString(R.string.saved_user_address)));
-                    user.setCity(res.get(getString(R.string.saved_user_city)));
-                    user.setState(res.get(getString(R.string.saved_user_state)));
-                    user.setCountry(res.get(getString(R.string.saved_user_country)));
-                    user.setZipcode(res.get(getString(R.string.saved_user_postalcode)));
+                    user.updateLocation(new LocationObject(res));
             }
 
         }

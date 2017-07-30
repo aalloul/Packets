@@ -160,10 +160,9 @@ class ReportingEvent {
     }
 
     @SuppressWarnings("unchecked")
-    void addException(String cause, String tostring, String action) {
+    void addException(String tostring, String action) {
         HashMap tmp = new HashMap<>();
         tmp.put("Exception",true);
-        tmp.put("ExceptionCausedBy", cause);
         tmp.put("ExceptionToString", tostring);
         tmp.put("ExceptionAction", action);
         events.add(enrichEvent(tmp));

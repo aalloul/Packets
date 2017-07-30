@@ -22,7 +22,6 @@ public class ItemFragment extends Fragment {
     private Postman postman;
     public static MyItemRecyclerViewAdapter myItemRecyclerViewAdapter;
     private long fragment_start_time;
-    private int n_results;
     private final static boolean DEBUG = false;
 
     /**
@@ -76,7 +75,6 @@ public class ItemFragment extends Fragment {
             if (DEBUG) Log.i(LOG_TAG, "onCreateView -- Postmen stuff");
             postman = new Postman(context);
             theCursor = postman.get_Data_For_ListView();
-            n_results = theCursor.getCount();
             if (DEBUG) Log.i(LOG_TAG, "The query returned " + theCursor.getCount() + " elements");
             myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(theCursor, mListener);
             recyclerView.setAdapter(myItemRecyclerViewAdapter);
@@ -97,6 +95,7 @@ public class ItemFragment extends Fragment {
         myItemRecyclerViewAdapter.updateCursor(theCursor);
         myItemRecyclerViewAdapter.notifyDataSetChanged();
     }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -111,7 +110,19 @@ public class ItemFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+
+        // Free up resources
         mListener = null;
+
+        if (postman != null) {
+            postman.closeDatabase();
+            postman = null;
+        }
+
+        if (theCursor != null) {
+            theCursor.close();
+            theCursor = null;
+        }
     }
 
     @Override
@@ -126,14 +137,6 @@ public class ItemFragment extends Fragment {
 
     }
 
-    public long getFragment_start_time() {
-        return fragment_start_time;
-    }
-
-    public int getN_results(){
-        return n_results;
-    }
-
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -145,11 +148,7 @@ public class ItemFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     interface OnListFragmentInteractionListener {
-        void onOfferSelected(String nameAndFirstName, String source_city, String source_country,
-                             String destination_city, String destination_country, String pickup_date,
-                             String n_packets, String package_size, String picture,
-                             String phone_number, String transport_methods, String comments,
-                             int thepos);
+        void onOfferSelected(TripOffer tripOffer, int position);
     }
 
 

@@ -5,81 +5,81 @@ import com.google.gson.annotations.SerializedName;
 
 class SearchResponse {
 
-    @SerializedName("userSurName")
+    @SerializedName("Surname")
     @Expose
-    private String userSurName;
+    private String Surname;
     @SerializedName("id")
     @Expose
     private Integer id;
-    @SerializedName("userFirstName")
+    @SerializedName("Firstname")
     @Expose
-    private String userFirstName;
-    @SerializedName("userPicture")
+    private String Firstname;
+    @SerializedName("Picture")
     @Expose
-    private String userPicture;
-    @SerializedName("userPhoneNumber")
+    private String Picture;
+    @SerializedName("PhoneNumber")
     @Expose
-    private String userPhoneNumber;
-    @SerializedName("travels_by")
+    private String PhoneNumber;
+    @SerializedName("TravelBy")
     @Expose
-    private String travelsBy;
-    @SerializedName("user_comment")
+    private String TravelBy;
+    @SerializedName("Comment")
     @Expose
-    private String userComment;
-    @SerializedName("pickup_address")
+    private String Comment;
+    @SerializedName("PickupAddress")
     @Expose
-    private String pickupAddress;
-    @SerializedName("number_packages")
+    private String PickupAddress;
+    @SerializedName("NumberPackages")
     @Expose
-    private Integer numberPackages;
-    @SerializedName("drop_off_postalCode")
+    private Integer NumberPackages;
+    @SerializedName("DropoffZipcode")
     @Expose
-    private String dropOffPostalCode;
-    @SerializedName("drop_off_country")
+    private String DropoffZipcode;
+    @SerializedName("DropoffCountry")
     @Expose
-    private String dropOffCountry;
-    @SerializedName("pickup_longitude")
+    private String DropoffCountry;
+    @SerializedName("PickupLongitude")
     @Expose
-    private float pickupLongitude;
-    @SerializedName("pickup_postalCode")
+    private float PickupLongitude;
+    @SerializedName("PickupZipcode")
     @Expose
-    private String pickupPostalCode;
-    @SerializedName("pickup_city")
+    private String PickupZipcode;
+    @SerializedName("PickupCity")
     @Expose
-    private String pickupCity;
-    @SerializedName("drop_off_longitude")
+    private String PickupCity;
+    @SerializedName("DropoffLongitude")
     @Expose
-    private float dropOffLongitude;
-    @SerializedName("pickup_country")
+    private float DropoffLongitude;
+    @SerializedName("PickupCountry")
     @Expose
-    private String pickupCountry;
-    @SerializedName("size_packages")
+    private String PickupCountry;
+    @SerializedName("PackageSize")
     @Expose
-    private String sizePackages;
-    @SerializedName("drop_off_address")
+    private String PackageSize;
+    @SerializedName("DropoffAddress")
     @Expose
-    private String dropOffAddress;
-    @SerializedName("pickup_latitude")
+    private String DropoffAddress;
+    @SerializedName("PickupLatitude")
     @Expose
-    private float pickupLatitude;
-    @SerializedName("pickup_state")
+    private float PickupLatitude;
+    @SerializedName("PickupState")
     @Expose
-    private String pickupState;
-    @SerializedName("pickup_date")
+    private String PickupState;
+    @SerializedName("PickupDate")
     @Expose
-    private long pickupDate;
-    @SerializedName("drop_off_city")
+    private long PickupDate;
+    @SerializedName("DropoffCity")
     @Expose
-    private String dropOffCity;
-    @SerializedName("drop_off_latitude")
+    private String DropoffCity;
+    @SerializedName("DropoffLatitude")
     @Expose
-    private float dropOffLatitude;
+    private float DropoffLatitude;
 
-    String getUserSurName() {
-        return userSurName;
+    String getSurname() {
+        return Surname;
     }
 
-    public void setUserSurName(String userSurName) {this.userSurName = userSurName;}
+    public void setSurname(String surname) {this.Surname = surname;}
 
     public Integer getId() {
         return id;
@@ -89,152 +89,152 @@ class SearchResponse {
         this.id = id;
     }
 
-    String getUserFirstName() {
-        return userFirstName;
+    String getFirstname() {
+        return Firstname;
     }
 
-    public void setUserFirstName(String userFirstName) {this.userFirstName = userFirstName;}
+    public void setFirstname(String firstname) {this.Firstname = firstname;}
 
-    String getUserPicture() {
-        return userPicture;
+    String getPicture() {
+        return Picture;
     }
 
-    public void setUserPicture(String userPicture) {this.userPicture = userPicture;}
+    public void setPicture(String picture) {this.Picture = picture;}
 
-    String getUserPhoneNumber() {
-        return userPhoneNumber;
+    String getPhoneNumber() {
+        return PhoneNumber;
     }
 
-    public void setUserPhoneNumber(String userPhoneNumber) {this.userPhoneNumber = userPhoneNumber;}
+    public void setPhoneNumber(String phoneNumber) {this.PhoneNumber = phoneNumber;}
 
-    String getTravelsBy() {
-        return travelsBy;
+    String getTravelBy() {
+        return TravelBy;
     }
 
-    public void setTravelsBy(String travelsBy) {this.travelsBy = travelsBy;}
+    public void setTravelBy(String travelBy) {this.TravelBy = travelBy;}
 
-    String getUserComment() {
-        return userComment;
+    String getComment() {
+        return Comment;
     }
 
-    public void setUserComment(String userComment) {this.userComment = userComment;}
+    public void setComment(String comment) {this.Comment = comment;}
 
     String getPickupAddress() {
-        return pickupAddress;
+        return PickupAddress;
     }
 
-    public void setPickupAddress(String pickupAddress) {this.pickupAddress = pickupAddress;}
+    public void setPickupAddress(String pickupAddress) {this.PickupAddress = pickupAddress;}
 
     Integer getNumberPackages() {
-        return numberPackages;
+        return NumberPackages;
     }
 
-    public void setNumberPackages(Integer numberPackages) {this.numberPackages = numberPackages;}
+    public void setNumberPackages(Integer numberPackages) {this.NumberPackages = numberPackages;}
 
-    String getDropOffPostalCode() {
-        return dropOffPostalCode;
+    String getDropoffZipcode() {
+        return DropoffZipcode;
     }
 
-    public void setDropOffPostalCode(String dropOffPostalCode) {this.dropOffPostalCode = dropOffPostalCode;}
+    public void setDropoffZipcode(String dropoffZipcode) {this.DropoffZipcode = dropoffZipcode;}
 
-    String getDropOffCountry() {
-        return dropOffCountry;
+    String getDropoffCountry() {
+        return DropoffCountry;
     }
 
-    public void setDropOffCountry(String dropOffCountry) {this.dropOffCountry = dropOffCountry;}
+    public void setDropoffCountry(String dropoffCountry) {this.DropoffCountry = dropoffCountry;}
 
-    float getPickupLongitude() {return pickupLongitude;}
+    float getPickupLongitude() {return PickupLongitude;}
 
-    public void setPickupLongitude(float pickupLongitude) {this.pickupLongitude = pickupLongitude;}
+    public void setPickupLongitude(float pickupLongitude) {this.PickupLongitude = pickupLongitude;}
 
-    String getPickupPostalCode() {
-        return pickupPostalCode;
+    String getPickupZipcode() {
+        return PickupZipcode;
     }
 
-    public void setPickupPostalCode(String pickupPostalCode) {this.pickupPostalCode = pickupPostalCode;}
+    public void setPickupZipcode(String pickupZipcode) {this.PickupZipcode = pickupZipcode;}
 
     String getPickupCity() {
-        return pickupCity;
+        return PickupCity;
     }
 
     public void setPickupCity(String pickupCity) {
-        this.pickupCity = pickupCity;
+        this.PickupCity = pickupCity;
     }
 
-    float getDropOffLongitude() {
-        return dropOffLongitude;
+    float getDropoffLongitude() {
+        return DropoffLongitude;
     }
 
-    public void setDropOffLongitude(float dropOffLongitude) {
-        this.dropOffLongitude = dropOffLongitude;
+    public void setDropoffLongitude(float dropoffLongitude) {
+        this.DropoffLongitude = dropoffLongitude;
     }
 
     String getPickupCountry() {
-        return pickupCountry;
+        return PickupCountry;
     }
 
     public void setPickupCountry(String pickupCountry) {
-        this.pickupCountry = pickupCountry;
+        this.PickupCountry = pickupCountry;
     }
 
-    String getSizePackages() {
-        return sizePackages;
+    String getPackageSize() {
+        return PackageSize;
     }
 
-    public void setSizePackages(String sizePackages) {
-        this.sizePackages = sizePackages;
+    public void setPackageSize(String packageSize) {
+        this.PackageSize = packageSize;
     }
 
-    String getDropOffAddress() {
-        return dropOffAddress;
+    String getDropoffAddress() {
+        return DropoffAddress;
     }
 
-    public void setDropOffAddress(String dropOffAddress) {
-        this.dropOffAddress = dropOffAddress;
+    public void setDropoffAddress(String dropoffAddress) {
+        this.DropoffAddress = dropoffAddress;
     }
 
     float getPickupLatitude() {
-        return pickupLatitude;
+        return PickupLatitude;
     }
 
     public void setPickupLatitude(float pickupLatitude) {
-        this.pickupLatitude = pickupLatitude;
+        this.PickupLatitude = pickupLatitude;
     }
 
     public String getPickupState() {
-        return pickupState;
+        return PickupState;
     }
 
     public void setPickupState(String pickupState) {
-        this.pickupState = pickupState;
+        this.PickupState = pickupState;
     }
 
     long getPickupDate() {
-        return pickupDate;
+        return PickupDate;
     }
 
     public void setPickupDate(long pickupDate) {
-        this.pickupDate = pickupDate;
+        this.PickupDate = pickupDate;
     }
 
-    String getDropOffCity() {
-        return dropOffCity;
+    String getDropoffCity() {
+        return DropoffCity;
     }
 
-    public void setDropOffCity(String dropOffCity) {
-        this.dropOffCity = dropOffCity;
+    public void setDropoffCity(String dropoffCity) {
+        this.DropoffCity = dropoffCity;
     }
 
-    float getDropOffLatitude() {
-        return dropOffLatitude;
+    float getDropoffLatitude() {
+        return DropoffLatitude;
     }
 
-    public void setDropOffLatitude(float dropOffLatitude) {
-        this.dropOffLatitude = dropOffLatitude;
+    public void setDropoffLatitude(float dropoffLatitude) {
+        this.DropoffLatitude = dropoffLatitude;
     }
 
     @Override
     public String toString() {
-        return (this.getUserFirstName() + " going to " + this.pickupAddress);
+        return (this.getFirstname() + " going to " + this.PickupAddress);
     }
 }

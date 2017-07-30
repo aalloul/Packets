@@ -17,26 +17,23 @@ import java.util.HashMap;
 
 public class RegistrationFragment extends Fragment {
     private final static String LOG_TAG = RegistrationFragment.class.getSimpleName();
-    private ImageButton picture_ui;
-    private String picture_bitmap;
-    private EditText firstname_ui, surname_ui, phone_number_ui;
-    private TextView location_ui, caption_user_picture;
-    private String firstname, surname, phone_number;
+    private EditText firstname, surname, phone_number;
+    private TextView location, caption_user_picture ;
+    private ImageButton picture;
     private View view;
-    private HashMap<String, String> user_detailed_location = new HashMap<>();
     private RegistrationFragmentListener mListener;
     private Long fragment_start_time;
     private boolean edited_location = false;
     private final static boolean DEBUG = false;
-    private DataBuffer dataBuffer;
+    final static int FIRST_NAME_MISSING = 1;
+    final static int SUR_NAME_MISSING = 2;
+    final static int LOCATION_MISSING = 3;
+    final static int PHONE_NUMBER_MISSING = 4;
+    final static int ALL_GOOD = 0;
 
     public RegistrationFragment() {
         // Required empty public constructor
         fragment_start_time = Utilities.CurrentTimeMS();
-    }
-
-    public long getFragmentStartTime() {
-        return fragment_start_time;
     }
 
     public static RegistrationFragment newInstance() {
@@ -50,93 +47,132 @@ public class RegistrationFragment extends Fragment {
         if (DEBUG) Log.i(LOG_TAG, "onCreate - called");
 
         if (savedInstanceState != null) {
-            user_detailed_location = (HashMap<String, String>)
-                    savedInstanceState.getSerializable("user_location");
-            picture_bitmap = savedInstanceState.getString("user_picture");
+            Log.d(LOG_TAG, "onCreate - savedInstanceState not null");
         }
     }
 
     @Override
     public void onSaveInstanceState(Bundle bundle) {
         if (DEBUG) Log.i(LOG_TAG, "onSaveInstanceState - Enter");
-        HashMap<String, String> tmp = get_user_detailed_location();
-        if (DEBUG) Log.i(LOG_TAG, "onSaveInstanceState - user_location = " + tmp);
-        bundle.putSerializable("user_location", tmp);
-        if (picture_bitmap == null ) return;
-        if (DEBUG) Log.i(LOG_TAG, "onSaveInstanceState - picture_ui  not null");
-        bundle.putString("user_picture", picture_bitmap);
         super.onSaveInstanceState(bundle);
     }
 
-    void setDataBuffer(DataBuffer dataBuffer) {
-        this.dataBuffer = dataBuffer;
-        Log.i(LOG_TAG, "setDataBuffer - "+this.dataBuffer.toString());
+    long getFragmentStartTime() {
+        return fragment_start_time;
     }
 
-    private void getUserPicture() {
-        if (DEBUG) Log.i(LOG_TAG, "getUserPicture - Enter");
-        picture_ui = (ImageButton) view.findViewById(R.id.user_picture);
-        if (picture_bitmap != null) {
-            if (DEBUG) Log.i(LOG_TAG, "picture_bitmap not null");
-            picture_ui.setImageBitmap(
-                    Utilities.StringToBitMap(picture_bitmap));
-        }
-        if (DEBUG) Log.i(LOG_TAG, "picture_bitmap IS null");
-        picture_ui.setOnClickListener(new View.OnClickListener() {
+    void setFirstname() {
+        firstname = (EditText) view.findViewById(R.id.user_first_name);
+        String fname = mListener.getUserForRegistrationFragment().getFirstname();
+        if (!fname.equals("")) {firstname.setText(fname);}
+    }
+
+    void setSurname() {
+        surname = (EditText) view.findViewById(R.id.user_surname);
+        String sname = mListener.getUserForRegistrationFragment().getSurname();
+        if (!sname.equals("")) {surname.setText(sname);}
+    }
+
+    void setPhone_number() {
+        phone_number = (EditText) view.findViewById(R.id.user_phone_number);
+        String pnumber = mListener.getUserForRegistrationFragment().getPhoneNumber();
+        if (!pnumber.equals("")) {phone_number.setText(pnumber);}
+    }
+
+    void setUserPicture() {
+        if (DEBUG) Log.i(LOG_TAG, "setPicture - enter");
+        picture = (ImageButton) view.findViewById(R.id.user_picture);
+
+        picture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mListener.onUserPicturePressed();
             }
         });
-        // Text to encourage selecting a profile picture
+
+        if (!mListener.getUserForRegistrationFragment().getPicture().equals("")) {
+            picture.setImageBitmap(mListener.getUserForRegistrationFragment().getPictureBM());
+        }
+
         caption_user_picture = (TextView) view.findViewById(R.id.caption_user_picture);
-    }
-
-    private void restoreUserPicture(String bnp) {
-        if (DEBUG) Log.i(LOG_TAG, "restoreUserPicture - Enter");
-        picture_ui = (ImageButton) view.findViewById(R.id.user_picture);
-
-        if (bnp != null)  {
-            if (DEBUG) Log.i(LOG_TAG, "restoreUserPicture - bnp  not null");
-            picture_ui.setImageBitmap(Utilities.StringToBitMap(bnp));
-            picture_bitmap = bnp;
-            caption_user_picture = (TextView) view.findViewById(R.id.caption_user_picture);
-            caption_user_picture.setText(null);
-        } else {
-            if (DEBUG) Log.i(LOG_TAG, "restoreUserPicture - bnp is null");
-            caption_user_picture = (TextView) view.findViewById(R.id.caption_user_picture);
+        if (mListener.getUserForRegistrationFragment().getPicture().equals("")) {
             caption_user_picture.setText(getString(R.string.add_profile_picture));
+        } else {
+            caption_user_picture.setText(null);
         }
 
-        picture_ui.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onUserPicturePressed();
-            }
-        });
-
+//        picture_ui.setScaleX(1);
+//        picture_ui.setScaleY(1);
     }
 
-    private void getUserLocation() {
-        location_ui = (TextView) view.findViewById(R.id.user_location);
-        location_ui.setOnClickListener(new View.OnClickListener() {
+    void updateUserPicture() {
+        picture.setImageBitmap(mListener.getUserForRegistrationFragment().getPictureBM());
+        caption_user_picture.setText(null);
+    }
+
+    void setLocation() {
+
+        if (DEBUG) Log.i(LOG_TAG, "set_user_detailed_location - Enter");
+
+        location = (TextView) view.findViewById(R.id.user_location);
+        location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mListener.onUserLocationPressed();
             }
         });
-        set_user_detailed_location();
+
+        String tmp = mListener.getUserForRegistrationFragment().getLocationObject().getCity();
+        if (tmp == null || tmp.equals("")) {return;}
+
+        String tmp2 = mListener.getUserForRegistrationFragment().getLocationObject().getState();
+
+        if (tmp2 == null) {
+            tmp += " (" + Utilities.CountryToCountryCode(
+                    mListener.getUserForRegistrationFragment().getLocationObject().getCountry())+")";
+            location.setText(tmp);
+            return;
+        }
+
+        tmp += " (" + tmp2 + ")";
+        location.setText(tmp);
     }
-    private void restoreUserLocation(HashMap<String, String> val) {
-        location_ui = (TextView) view.findViewById(R.id.user_location);
-        location_ui.setOnClickListener(new View.OnClickListener() {
+
+    void updateLocation() {
+        String tmp = mListener.getUserForRegistrationFragment().getLocationObject().getCity();
+        if (tmp == null || tmp.equals("")) {return;}
+
+        String tmp2 = mListener.getUserForRegistrationFragment().getLocationObject().getState();
+
+        if (tmp2 == null) {
+            tmp += " (" + Utilities.CountryToCountryCode(
+                    mListener.getUserForRegistrationFragment().getLocationObject().getCountry())+")";
+            location.setText(tmp);
+            return;
+        }
+
+        tmp += " (" + tmp2 + ")";
+        location.setText(tmp);
+    }
+
+    void setRegisterMeButton() {
+        Button registerMe = (Button) view.findViewById(R.id.register_me);
+        registerMe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onUserLocationPressed();
+                mListener.onRegisterMePressed();
             }
         });
-        if (DEBUG) Log.i(LOG_TAG, "restoreUserLocation - val = "+val);
-        set_user_detailed_location(val);
+    }
+
+    void setRegisterLaterButton() {
+        Button registerLater = (Button) view.findViewById(R.id.register_not_now);
+        registerLater.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onRegisterLaterPressed();
+            }
+        });
     }
 
     @Override
@@ -151,76 +187,34 @@ public class RegistrationFragment extends Fragment {
 
         if (savedInstanceState == null){
             if (DEBUG) Log.i(LOG_TAG,"onCreateView - savedInstanceState is null");
-            // User picture
-            getUserPicture();
-            // Location
-            getUserLocation();
         } else {
             if (DEBUG) Log.i(LOG_TAG,"onCreateView - savedInstanceState is NOT null");
-            restoreUserPicture(savedInstanceState.getString("user_picture"));
-            restoreUserLocation((HashMap<String, String>) savedInstanceState.getSerializable("user_location"));
         }
 
         // surname, first name and phone
-        firstname_ui = (EditText) view.findViewById(R.id.user_first_name);
-        if (firstname != null) firstname_ui.setText(firstname);
-        surname_ui = (EditText) view.findViewById(R.id.user_surname);
-        if (surname != null) surname_ui.setText(surname);
-        phone_number_ui = (EditText) view.findViewById(R.id.user_phone_number);
-        if (phone_number != null) phone_number_ui.setText(phone_number);
+        setFirstname();
+        setSurname();
+        setPhone_number();
+        setUserPicture();
+        setLocation();
 
         // register buttons
-        Button registerMe = (Button) view.findViewById(R.id.register_me);
-        registerMe.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onRegisterMePressed();
-            }
-        });
-        
-        Button registerLater = (Button) view.findViewById(R.id.register_not_now);
-        registerLater.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onRegisterLaterPressed();
-            }
-        });
+        setRegisterMeButton();
+        setRegisterLaterButton();
 
 
         if (DEBUG) Log.i(LOG_TAG, "onCreateView - Exit");
         return view;
     }
-    
 
-    public void setUserPicture(Bitmap imageBitmap) {
-        if (DEBUG) Log.i(LOG_TAG, "setUserPicture - enter");
-        picture_bitmap = Utilities.BitMapToString(imageBitmap);
-//        if (DEBUG) Log.i(LOG_TAG, "setUserPicture picture_ui_bitmap = " + picture_bitmap);
-        picture_ui.setImageBitmap(imageBitmap);
-//        picture_ui.setScaleX(1);
-//        picture_ui.setScaleY(1);
-    }
-
-
-    public void unsetCaption_user_picture() {
-        caption_user_picture.setText("");
-    }
-
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public void setPhone_number(String phone_number) {
-        this.phone_number = phone_number;
+    boolean hasEditedLocation() {
+        return edited_location;
     }
 
     public void setEdited_location() {
         edited_location = true;
     }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -238,128 +232,31 @@ public class RegistrationFragment extends Fragment {
         mListener = null;
     }
 
-    public void set_user_detailed_location() {
-        if (user_detailed_location == null) return;
-        if (!user_detailed_location.containsKey(getString(R.string.saved_user_city))) return;
-
-        set_user_detailed_location(user_detailed_location);
-    }
-
-    public void set_user_detailed_location(HashMap<String, String> details) {
-
-        if (DEBUG) Log.i(LOG_TAG, "set_user_detailed_location - Enter");
-
-        user_detailed_location = details;
-        if (details == null) {
-            return;
+    public int checkInput() {
+        if (firstname == null || firstname.getText() == null ||
+                firstname.getText().toString().equals("")) {
+            return FIRST_NAME_MISSING;
         }
 
-        String tmp = details.get(getString(R.string.saved_user_city));
-        if (DEBUG) Log.i(LOG_TAG, "set_user_detailed_location - city = " + tmp);
-
-        if (tmp == null || tmp.equals("")) {
-            return;
+        if (surname == null || surname.getText() == null || surname.getText().toString().equals("")) {
+            return SUR_NAME_MISSING;
         }
 
-        String tmp2 = details.get(getString(R.string.saved_user_state));
-
-        if (DEBUG) Log.i(LOG_TAG, "set_user_detailed_location - State = " +tmp2);
-
-        if (tmp2 == null) {
-            tmp += " (" + Utilities.CountryToCountryCode(
-                    details.get(getString(R.string.saved_user_country))) + ")";
-        } else {
-            tmp += " (" + tmp2 + ")";
+        if (phone_number == null || phone_number.getText() == null ||
+                phone_number.getText().toString().equals("")) {
+            return PHONE_NUMBER_MISSING;
         }
 
-        location_ui.setText(tmp);
-    }
-
-    public String get_user_location() {
-//        setLocation(location_ui.getText().toString());
-        return location_ui.getText().toString();
-    }
-
-    public HashMap<String, String> get_user_detailed_location() {
-        if (DEBUG) Log.i(LOG_TAG, "get_user_detailed_location - Enter");
-        if (DEBUG) Log.i(LOG_TAG, "get_user_detailed_location - user_detailed_location = " + user_detailed_location);
-        return user_detailed_location;
-    }
-
-    public String get_user_phone_number() {
-        setPhone_number(phone_number_ui.getText().toString());
-        if (DEBUG) Log.i(LOG_TAG, "get_user_phone_number = "+phone_number_ui.getText().toString());
-        return phone_number_ui.getText().toString();
-    }
-
-    public String get_user_surname(){
-        setSurname(surname_ui.getText().toString());
-        if (DEBUG) Log.i(LOG_TAG, "get_user_surname = "+surname_ui.getText().toString());
-        return surname_ui.getText().toString();
-    }
-
-    public String get_user_firstname(){
-        setFirstname(firstname_ui.getText().toString());
-        if (DEBUG) Log.i(LOG_TAG, "get_user_firstname = "+firstname_ui.getText().toString());
-        return firstname_ui.getText().toString();
-    }
-
-    public String get_user_picture() {
-        if (picture_bitmap == null) return "";
-        return picture_bitmap;
-    }
-
-    public int isInputOk() {
-        if (firstname_ui == null ) return 0;
-        if (firstname_ui.getText() == null || get_user_firstname().equals("")) return 0;
-        if (surname_ui == null) return 0;
-        if (surname_ui.getText() == null|| get_user_surname().equals("")) return 0;
-        if (phone_number_ui == null) return 0;
-        if (phone_number_ui.getText() == null || get_user_phone_number().equals("")) return 0;
-        if (location_ui == null) return 0;
-        if (location_ui.getText() == null || get_user_location().equals("")) return 0;
-
-        return 2;
-    }
-
-    public HashMap<String, String> getBlob(String nextFrag) {
-        HashMap<String, String> t = new HashMap<>();
-        long end_time = Utilities.CurrentTimeMS();
-        t.put(getString(R.string.fStart), Long.toString(fragment_start_time));
-        t.put(getString(R.string.fEnd), Long.toString(end_time));
-        t.put(getString(R.string.fDuration), Long.toString(end_time - fragment_start_time));
-
-        if (!nextFrag.equals("")) {
-            //Used for data reporting when switching to another fragment
-            t.put(getString(R.string.nextF), nextFrag);
+        if (location == null || location.getText() == null ||
+                location.getText().toString().equals("")) {
+            return LOCATION_MISSING;
         }
 
-        t.put(getString(R.string.saved_user_firstname),
-                get_user_firstname());
-        t.put(getString(R.string.saved_user_surname),
-                get_user_surname());
-        t.put(getString(R.string.saved_user_picture),
-                get_user_picture());
-        t.put(getString(R.string.saved_user_phonenumber),
-                get_user_phone_number());
-        t.put(getString(R.string.saved_user_phonenumber),
-                get_user_phone_number());
+        mListener.getUserForRegistrationFragment().setFirstname(firstname.getText().toString());
+        mListener.getUserForRegistrationFragment().setSurname(surname.getText().toString());
+        mListener.getUserForRegistrationFragment().setPhoneNumber(phone_number.getText().toString());
 
-        t.put(getString(R.string.user_location_edited), Boolean.toString(edited_location));
-
-        t.putAll(get_user_detailed_location());
-        return t;
-    }
-
-    public HashMap<String, String> getBlob(String err_field, String err_msg) {
-        HashMap<String, String> t = new HashMap<>();
-        long end_time = Utilities.CurrentTimeMS();
-        t.put(getString(R.string.fStart), Long.toString(fragment_start_time));
-        t.put(getString(R.string.fEnd), Long.toString(end_time));
-        t.put(getString(R.string.fDuration), Long.toString(end_time - fragment_start_time));
-        t.put(err_field,err_msg);
-
-        return t;
+        return ALL_GOOD;
     }
 
     interface RegistrationFragmentListener {
@@ -368,5 +265,6 @@ public class RegistrationFragment extends Fragment {
         void onUserLocationPressed();
         void onRegisterMePressed();
         void onRegisterLaterPressed();
+        User getUserForRegistrationFragment();
     }
 }

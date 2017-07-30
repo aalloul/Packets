@@ -18,167 +18,71 @@ import android.widget.TextView;
 import java.util.HashMap;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ConfirmPublish.OnCofirmPublishListener} interface
- * to handle interaction events.
- * Use the {@link ConfirmPublish#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class ConfirmPublish extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PERSONAL_DETAILS = "pers_details";
-    private static final String ARG_TRIP_DETAILS= "trip_details";
     private final static String LOG_TAG = ConfirmPublish.class.getSimpleName();
-    private HashMap<String, String> mpers_details, mtrip_details;
     private final static boolean DEBUG = false;
-
-    private EditText firstname_edit, surname_edit, phone_edit, comment_user ;
     private TextView caption_confirm_user_picture;
     private ImageButton user_picture;
-    private OnCofirmPublishListener mListener;
+    private OnConfirmPublishListener mListener;
     private Spinner travelling_by;
     private FragmentActivity myContext;
-    private String user_picture_string = "";
-    private String user_picture_path;
-    private boolean changed_profile_picture=false;
     private View view;
     private Long fragment_start_time;
+    private boolean changed_profile_picture=false;
+    private EditText firstname, surname, phone, comment;
 
     public ConfirmPublish() {
         // Required empty public constructor
         fragment_start_time = Utilities.CurrentTimeMS();
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param pers_details Parameter 1.
-     * @return A new instance of fragment ConfirmPublish.
-     */
-    public static ConfirmPublish newInstance(HashMap<String, String> pers_details,
-                                             HashMap<String, String> trip_details) {
-        ConfirmPublish fragment = new ConfirmPublish();
-//        if (DEBUG) Log.i(LOG_TAG, "newInstance - pers_details = " + pers_details.toString());
-        Bundle args = new Bundle();
-        args.putSerializable(ARG_PERSONAL_DETAILS, pers_details);
-        args.putSerializable(ARG_TRIP_DETAILS, trip_details);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
+    public static ConfirmPublish newInstance() {
+        return new ConfirmPublish();
+    }
 
     @Override
     @SuppressWarnings("unchecked")
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mpers_details = (HashMap<String, String>)
-                    getArguments().getSerializable(ARG_PERSONAL_DETAILS);
-            mtrip_details = (HashMap<String, String>)
-                    getArguments().getSerializable(ARG_TRIP_DETAILS);
-        }
 
         if (savedInstanceState != null) {
-            user_picture_string = savedInstanceState.getString("user_picture");
-            user_picture_path   = savedInstanceState.getString("user_picture_path");
+
         }
     }
 
-    private void restoreUserPicture(String val, String val2) {
-        user_picture_string = val;
-        user_picture_path = val2;
-        user_picture = (ImageButton) view.findViewById(R.id.confirm_user_picture);
-        if (!user_picture_string.equals("")) {
-            caption_confirm_user_picture.setText(null);
-            user_picture.setImageBitmap(Utilities.StringToBitMap(
-                    mpers_details.get(getString(R.string.saved_user_picture))));
-            user_picture.setScaleY(1);
-            user_picture.setScaleX(1);
-
-        }
-        user_picture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onUserPicturePressed_Confirm();
-            }
-        });
-    }
-
-    private void getUserPicture(){
-        user_picture = (ImageButton) view.findViewById(R.id.confirm_user_picture);
-
-        if (!user_picture_string.equals("")) {
-            caption_confirm_user_picture.setText(null);
-            user_picture.setImageBitmap(Utilities.StringToBitMap(
-                    mpers_details.get(getString(R.string.saved_user_picture))));
-            user_picture.setScaleY(1);
-            user_picture.setScaleX(1);
-
-        }
-        user_picture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onUserPicturePressed_Confirm();
-            }
-        });
-    }
 
     @Override
     public void onSaveInstanceState(Bundle bundle) {
-        bundle.putString("user_picture", user_picture_string);
-        bundle.putString("user_picture_path", user_picture_path);
         super.onSaveInstanceState(bundle);
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        if (DEBUG) Log.i(LOG_TAG, "onCreateView - start");
-        // Inflate the layout for this fragment
-        view =  inflater.inflate(R.layout.fragment_confirm_publish, container, false);
-        caption_confirm_user_picture = (TextView) view.findViewById(
-                R.id.caption_confirm_user_picture);
+    private void setFirstname() {
+        firstname = (EditText) view.findViewById(R.id.confirm_first_name);
+        firstname.setText(mListener.getUserForConfirmPublish().getFirstname());
+    }
 
-        Button confirmAction = (Button) view.findViewById(R.id.confirm_publish);
-        confirmAction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onConfirmPublish();
-            }
-        });
+    private void setSurname() {
+        surname = (EditText) view.findViewById(R.id.confirm_surname);
+        surname.setText(mListener.getUserForConfirmPublish().getSurname());
+    }
 
-        firstname_edit = (EditText) view.findViewById(R.id.confirm_first_name);
-        surname_edit = (EditText) view.findViewById(R.id.confirm_surname);
-        phone_edit = (EditText) view.findViewById(R.id.confirm_phone_number);
-        comment_user = (EditText) view.findViewById(R.id.comment_transporter);
+    private void setPhone() {
+        phone = (EditText) view.findViewById(R.id.confirm_phone_number);
+        phone.setText(mListener.getUserForConfirmPublish().getPhoneNumber());
+    }
 
-        if (!mpers_details.get(getString(R.string.saved_user_firstname)).equals("")) {
-//            if(DEBUG) Log.i(LOG_TAG, "onCreateView - mpers_details = "+mpers_details.toString());
-            getActivity().setTitle(getString(R.string.please_confirm));
-            firstname_edit.setText(mpers_details.get(getString(R.string.saved_user_firstname)));
-            surname_edit.setText(mpers_details.get(getString(R.string.saved_user_surname)));
-            phone_edit.setText(mpers_details.get(getString(R.string.saved_user_phonenumber)));
-            user_picture_string = mpers_details.get(getString(R.string.saved_user_picture));
-            user_picture_path = mpers_details.get(getString(R.string.saved_user_picture_path));
+    private void setComment() {
+        comment = (EditText) view.findViewById(R.id.comment_transporter);
+        comment.setText(mListener.getTripDetailsForConfirmPublish().getComment());
+    }
 
-            Log.i(LOG_TAG, "onCreateView - user_picture_path = "+user_picture_path);
-//            if (DEBUG) Log.i(LOG_TAG, "onCreateView - user_picture_path = "+user_picture_string);
-        } else {
-            getActivity().setTitle(getString(R.string.please_register));
-        }
+    private void setActivityTitle() {
+        getActivity().setTitle(getString(R.string.please_register));
+    }
 
-        if (savedInstanceState != null) {
-            restoreUserPicture(savedInstanceState.getString("user_picture"),
-                    savedInstanceState.getString("user_picture_path"));
-        } else {
-            getUserPicture();
-        }
-
-
-
+    private void setTravellingBy() {
         travelling_by = (Spinner) view.findViewById(R.id.travelling_by);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapterTravellingBy= ArrayAdapter.createFromResource(myContext,
@@ -188,6 +92,68 @@ public class ConfirmPublish extends Fragment {
 
         // Apply the adapter to the spinner
         travelling_by.setAdapter(adapterTravellingBy);
+    }
+
+    void setUserPicture(){
+        if (DEBUG) Log.i(LOG_TAG, "setPicture - enter");
+        caption_confirm_user_picture = (TextView) view.findViewById(
+                R.id.caption_confirm_user_picture);
+
+        user_picture = (ImageButton) view.findViewById(R.id.confirm_user_picture);
+        user_picture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onUserPicturePressed_Confirm();
+            }
+        });
+
+        if (!mListener.getUserForConfirmPublish().getPicture().equals("")) {
+            user_picture.setImageBitmap(mListener.getUserForConfirmPublish().getPictureBM());
+            user_picture.setScaleX(1);
+            user_picture.setScaleY(1);
+            caption_confirm_user_picture.setText(null);
+        }
+    }
+
+    void updateUserPicture() {
+        if (!mListener.getUserForConfirmPublish().getPicture().equals("")) {
+            user_picture.setImageBitmap(mListener.getUserForConfirmPublish().getPictureBM());
+            user_picture.setScaleX(1);
+            user_picture.setScaleY(1);
+            caption_confirm_user_picture.setText(null);
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        if (DEBUG) Log.i(LOG_TAG, "onCreateView - start");
+        // Inflate the layout for this fragment
+        view =  inflater.inflate(R.layout.fragment_confirm_publish, container, false);
+
+        Button confirmAction = (Button) view.findViewById(R.id.confirm_publish);
+        confirmAction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onConfirmPublish();
+            }
+        });
+
+        setFirstname();
+        setSurname();
+        setPhone();
+        setComment();
+        setActivityTitle();
+        setUserPicture();
+
+        if (savedInstanceState != null) {
+        } else {
+//            getPicture();
+        }
+
+
+
+        setTravellingBy();
 
         return view;
     }
@@ -196,8 +162,8 @@ public class ConfirmPublish extends Fragment {
     public void onAttach(Context context) {
         myContext= (FragmentActivity) context;
         super.onAttach(context);
-        if (context instanceof OnCofirmPublishListener) {
-            mListener = (OnCofirmPublishListener) context;
+        if (context instanceof OnConfirmPublishListener) {
+            mListener = (OnConfirmPublishListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnCofirmPublishListener");
@@ -210,32 +176,6 @@ public class ConfirmPublish extends Fragment {
         mListener = null;
     }
 
-    public HashMap<String, String> getAllDetails() {
-        HashMap<String, String> out = new HashMap<>();
-        out.put(getString(R.string.saved_user_surname), surname_edit.getText().toString());
-        out.put(getString(R.string.saved_user_firstname), firstname_edit.getText().toString());
-        out.put(getString(R.string.saved_user_phonenumber), phone_edit.getText().toString());
-        out.put(getString(R.string.travels_by), travelling_by.getSelectedItem().toString());
-        out.put(getString(R.string.user_comment), comment_user.getText().toString());
-        out.put(getString(R.string.saved_user_picture), user_picture_string);
-        out.putAll(mtrip_details);
-//        if (DEBUG) Log.i(LOG_TAG, "getAllDetails - out" + out.toString());
-        return out;
-    }
-
-    public void setUserPicture(Bitmap imageBitmap){
-        if (DEBUG) Log.i(LOG_TAG, "setUserPicture - enter");
-
-        // This method is only called when the user chooses to edit his profile picture
-        // before publishing a new offer
-        changed_profile_picture=true;
-        user_picture_string = Utilities.BitMapToString(imageBitmap);
-//        if (DEBUG) Log.i(LOG_TAG, "setUserPicture picture_ui_bitmap = " + picture_bitmap);
-        user_picture.setImageBitmap(imageBitmap);
-        user_picture.setScaleX(1);
-        user_picture.setScaleY(1);
-        caption_confirm_user_picture.setText(null);
-    }
 
     boolean hasEditedPicture() {return changed_profile_picture;}
 
@@ -243,41 +183,34 @@ public class ConfirmPublish extends Fragment {
 
         if (DEBUG) Log.i(LOG_TAG, "checkInputs - Enter");
 
-        if (travelling_by.getSelectedItem().toString().equals("Travelling by")) {
+        if (firstname == null || firstname.getText() == null ||
+                firstname.getText().toString().equals("")) {
+            return false;
+        }
+        if (surname == null || surname.getText() == null || surname.getText().toString().equals("")) {
+            return false;
+        }
+        if (phone == null || phone.getText() == null || phone.getText().toString().equals("")) {
+            return false;
+        }
+        if (comment == null || comment.getText() == null || comment.getText().toString().equals("")) {
             return false;
         }
 
-        if (firstname_edit.getText() == null || firstname_edit.getText().toString().equals("")) {
-            return false;
-        }
-        if (surname_edit.getText() == null || surname_edit.getText().toString().equals("")) {
-            return false;
-        }
-        if (phone_edit.getText() == null || phone_edit.getText().toString().equals("")) {
-            return false;
-        }
-        if (comment_user.getText() == null || comment_user.getText().toString().equals("")) {
-            return false;
-        }
-
-
+        mListener.getUserForConfirmPublish().setFirstname(firstname.getText().toString());
+        mListener.getUserForConfirmPublish().setSurname(surname.getText().toString());
+        mListener.getUserForConfirmPublish().setPhoneNumber(phone.getText().toString());
+        mListener.getTripDetailsForConfirmPublish().setComment(comment.getText().toString());
+        mListener.getTripDetailsForConfirmPublish().setTravelBy(travelling_by.getSelectedItemPosition());
         return true;
     }
 
     public long getFragmentStartTime() {return fragment_start_time;}
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    interface OnCofirmPublishListener {
+    interface OnConfirmPublishListener {
         void onConfirmPublish();
         void onUserPicturePressed_Confirm();
+        User getUserForConfirmPublish();
+        TripRequestDetails getTripDetailsForConfirmPublish();
     }
 }

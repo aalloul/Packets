@@ -15,65 +15,20 @@ import java.util.HashMap;
 public class OfferDetail extends Fragment {
     // create a local variable for identifying the class where the log statements come from
     private final static String LOG_TAG = OfferDetail.class.getSimpleName();
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_NAMEANDFIRSTNAME = "nameAndFirstName";
-    private static final String ARG_PICKUP_CITY = "pickup_city";
-    private static final String ARG_DROPOFF_CITY = "dropoff_city";
-    private static final String ARG_N_PACKETS = "n_packets";
-    private static final String ARG_PHONE_NUMBER = "phone_number";
-    private static final String ARG_COMMENTS = "comments";
-    private static final String ARG_PICKUP_COUNTRY = "pickup_country";
-    private static final String ARG_DROPOFF_COUNTRY = "dropoff_country";
-    private static final String ARG_PACKAGE_SIZE = "package_size";
-    private static final String ARG_PICTURE = "picture";
-    private static final String ARG_PICKUP_DATE = "pickup_date";
-    private static final String ARG_TRANSPORT_METHOD = "transport_method";
-    private String nameAndFirstName;
-    private String pickup_city;
-    private String dropoff_city;
-    private String n_packets;
-    private String phone_number;
-    private String comments;
-    private String dropoff_country;
-    private String pickup_country;
-    private String picture;
-    private String package_size;
-    private String pickup_date;
     private long fragment_start_time;
+    private View view;
     private OnFragmentInteractionListener mListener;
     private final static boolean DEBUG = false;
-    private String transport_method;
 
     public OfferDetail() {
         // Required empty public constructor
         fragment_start_time = Utilities.CurrentTimeMS();
     }
 
-    public static OfferDetail newInstance(String nameAndFirstName, String pickup_city,
-                                          String pickup_country, String pickup_date,
-                                          String dropoff_city, String dropoff_country,
-                                          String n_packets, String package_size, String picture,
-                                          String phone_number, String transport_methods,
-                                          String comments) {
+    public static OfferDetail newInstance() {
         if (DEBUG) Log.i(LOG_TAG, "newInstance - Start");
         OfferDetail fragment = new OfferDetail();
-        Bundle args = new Bundle();
-        if (DEBUG) Log.i(LOG_TAG, "newInstance - nameAndFirstName = " + nameAndFirstName);
-        args.putString(ARG_NAMEANDFIRSTNAME, nameAndFirstName);
-        if (DEBUG) Log.i(LOG_TAG, "newInstance - nameAndFirstName = " + pickup_city);
-        args.putString(ARG_PICKUP_CITY, pickup_city);
-        args.putString(ARG_DROPOFF_CITY, dropoff_city);
-        args.putString(ARG_N_PACKETS, n_packets);
-        args.putString(ARG_PHONE_NUMBER, phone_number);
-        args.putString(ARG_COMMENTS, comments);
-        args.putString(ARG_PICKUP_COUNTRY, pickup_country);
-        args.putString(ARG_DROPOFF_COUNTRY, dropoff_country);
-        args.putString(ARG_PACKAGE_SIZE, package_size);
-        args.putString(ARG_PICTURE, picture);
-        args.putString(ARG_PICKUP_DATE, pickup_date);
-        args.putString(ARG_TRANSPORT_METHOD, transport_methods);
 
-        fragment.setArguments(args);
         if (DEBUG) Log.i(LOG_TAG, "newInstance - Exit");
         return fragment;
     }
@@ -84,23 +39,85 @@ public class OfferDetail extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (DEBUG) Log.i(LOG_TAG, "onCreate - Start");
-        if (getArguments() != null) {
-            if (DEBUG) Log.i(LOG_TAG, "onCreate - getArguments is not null");
-            nameAndFirstName = getArguments().getString(ARG_NAMEANDFIRSTNAME);
-            if (DEBUG) Log.i(LOG_TAG, "onCreate - nameAndFirstName = "+ nameAndFirstName);
-            pickup_city = getArguments().getString(ARG_PICKUP_CITY);
-            dropoff_city = getArguments().getString(ARG_DROPOFF_CITY);
-            n_packets = getArguments().getString(ARG_N_PACKETS);
-            phone_number = getArguments().getString(ARG_PHONE_NUMBER);
-            comments = getArguments().getString(ARG_COMMENTS);
-            dropoff_country = getArguments().getString(ARG_DROPOFF_COUNTRY);
-            pickup_country = getArguments().getString(ARG_PICKUP_COUNTRY);
-            package_size = getArguments().getString(ARG_PACKAGE_SIZE);
-            picture = getArguments().getString(ARG_PICTURE);
-            pickup_date = getArguments().getString(ARG_PICKUP_DATE);
-            transport_method = getArguments().getString(ARG_TRANSPORT_METHOD);
+    }
+
+    private void setFirstName() {
+        TextView nameTextView = (TextView) view.findViewById(R.id.name);
+        nameTextView.setText(mListener.getTripOfferForOfferDetail().getFirstName());
+    }
+
+    private void setPickupCity() {
+        TextView pickupcity = (TextView) view.findViewById(R.id.going_from);
+        pickupcity.setText(mListener.getTripOfferForOfferDetail().getPickupCity());
+    }
+
+    private void setDropoffCity() {
+        TextView dropoffcity = (TextView) view.findViewById(R.id.going_to);
+        dropoffcity.setText(mListener.getTripOfferForOfferDetail().getDropoffCity());
+    }
+
+    private void setPickupDate() {
+        TextView pickup_date_ui = (TextView) view.findViewById(R.id.pickup_date_offer);
+        pickup_date_ui.setText(Utilities.
+                Epoch2Date(mListener.getTripOfferForOfferDetail().getPickupDate(), "dd MMM"));
+    }
+
+    private void setPicture() {
+        ImageView picture_ui = (ImageView) view.findViewById(R.id.transporter_picture_detail);
+
+
+        if (!mListener.getTripOfferForOfferDetail().getPicture_str().equals("")) {
+            picture_ui.setImageBitmap(mListener.getTripOfferForOfferDetail().getPictureBM());
+            picture_ui.setScaleX(1);
+            picture_ui.setScaleY(1);
+            picture_ui.setBackground(null);
+            picture_ui.setScaleType(ImageView.ScaleType.CENTER_CROP);
         }
-        if (DEBUG) Log.i(LOG_TAG, "onCreate - Exit");
+
+    }
+
+    private void setComment() {
+        TextView descriptionTextView = (TextView) view.findViewById(R.id.comment_transporter);
+        if (mListener.getTripOfferForOfferDetail().getComment().equals("") ) {
+            //TODO improve this bit to show something meaningful when no comment is available
+            descriptionTextView.setText("");
+        } else {
+            descriptionTextView.setText(mListener.getTripOfferForOfferDetail().getComment());
+        }
+    }
+
+    private void setPackageSize() {
+        switch (mListener.getTripOfferForOfferDetail().getPackageSize()) {
+            case 0:
+                ((TextView) view.findViewById(R.id.size_package_detail)).setText("S");
+                break;
+            case 1:
+                ((TextView) view.findViewById(R.id.size_package_detail)).setText("M");
+                break;
+            case 2:
+                ((TextView) view.findViewById(R.id.size_package_detail)).setText("L");
+                break;
+        }
+    }
+
+    private void setNumberPackages() {
+        String tmp = "x"+mListener.getTripOfferForOfferDetail().getNumberPackages();
+        ((TextView) view.findViewById(R.id.number_packages_detail)).setText(tmp);
+
+    }
+
+    private void setTravelBy() {
+        switch (mListener.getTripOfferForOfferDetail().getTravelBy()) {
+            case 0:
+                ((ImageView) view.findViewById(R.id.travel_by)).setImageResource(R.drawable.car);
+                break;
+            case 1:
+                ((ImageView) view.findViewById(R.id.travel_by)).setImageResource(R.drawable.train);
+                break;
+            case 2:
+                ((ImageView) view.findViewById(R.id.travel_by)).setImageResource(R.drawable.plane);
+                break;
+        }
     }
 
     @Override
@@ -109,80 +126,26 @@ public class OfferDetail extends Fragment {
         if (DEBUG) Log.i(LOG_TAG, "onCreateView - Start");
 
         // Inflate the layout for this fragment
-        final View view = inflater.inflate(R.layout.fragment_offer_detail, container, false);
+        view = inflater.inflate(R.layout.fragment_offer_detail, container, false);
 
-        // Initialize the items of the view
-        final TextView nameTextView = (TextView) view.findViewById(R.id.name);
-        // Display name
-        nameTextView.setText(nameAndFirstName);
+        if (mListener.getTripOfferForOfferDetail() == null) {return view;}
 
-        final TextView pickupcity = (TextView) view.findViewById(R.id.going_from);
-        pickupcity.setText(pickup_city);
-
-        final TextView dropoffcity = (TextView) view.findViewById(R.id.going_to);
-        dropoffcity.setText(dropoff_city);
-
-        final TextView pickup_date_ui = (TextView) view.findViewById(R.id.pickup_date_offer);
-        pickup_date_ui.setText(Utilities.Epoch2Date(pickup_date, "dd MMM"));
-
-        final ImageView picture_ui = (ImageView) view.findViewById(R.id.transporter_picture_detail);
-
-        if (picture != null && !picture.equals("")) {
-            picture_ui.setImageBitmap(Utilities.StringToBitMap(picture));
-            picture_ui.setScaleX(1);
-            picture_ui.setScaleY(1);
-            picture_ui.setBackground(null);
-            picture_ui.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        }
-
-        final TextView descriptionTextView = (TextView) view.findViewById(R.id.comment_transporter);
-        if (comments == null || comments.equals("") ) {
-            // Convert date to human readable
-            String departure_date = "departure_date";
-            String arrival_date = "arrival_date";
-            // Build description
-            String mystr = String.format("%s is going from %s (%s) to %s (%s). He will depart at " +
-                            "%s and should arrive around %s. \nTo call him, press the phone" +
-                            "icon below. \nYou can also send him a message.",
-                    nameAndFirstName, pickup_city, pickup_country, dropoff_city, dropoff_country,
-                    departure_date, arrival_date);
-            descriptionTextView.setText(mystr);
-        } else {
-            descriptionTextView.setText(comments);
-        }
-
-        switch (package_size) {
-            case "Small":
-                ((TextView) view.findViewById(R.id.size_package_detail)).setText("S");
-                break;
-            case "Medium":
-                ((TextView) view.findViewById(R.id.size_package_detail)).setText("M");
-                break;
-            case "Large":
-                ((TextView) view.findViewById(R.id.size_package_detail)).setText("L");
-                break;
-        }
-
-        ((TextView) view.findViewById(R.id.number_packages_detail)).setText("x"+n_packets);
-
-        switch (transport_method) {
-            case "Car":
-                ((ImageView) view.findViewById(R.id.travel_by)).setImageResource(R.drawable.car);
-                break;
-            case "Train":
-                ((ImageView) view.findViewById(R.id.travel_by)).setImageResource(R.drawable.train);
-                break;
-            case "Plane":
-                ((ImageView) view.findViewById(R.id.travel_by)).setImageResource(R.drawable.plane);
-                break;
-        }
+        setFirstName();
+        setPickupCity();
+        setDropoffCity();
+        setPickupDate();
+        setPicture();
+        setComment();
+        setPackageSize();
+        setNumberPackages();
+        setTravelBy();
 
         // Call action
         ImageButton callButton = (ImageButton) view.findViewById(R.id.callButton);
         callButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onCallButtonPress(phone_number);
+                mListener.onCallButtonPress(mListener.getTripOfferForOfferDetail().getPhoneNumber());
             }
         });
 
@@ -191,7 +154,7 @@ public class OfferDetail extends Fragment {
         sendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onMessageButtonPress(phone_number);
+                mListener.onMessageButtonPress(mListener.getTripOfferForOfferDetail().getPhoneNumber());
             }
         });
 
@@ -240,5 +203,6 @@ public class OfferDetail extends Fragment {
         // TODO: Update argument type and name
         void onCallButtonPress(String phoneNumber);
         void onMessageButtonPress(String phonenumber);
+        TripOffer getTripOfferForOfferDetail();
     }
 }

@@ -18,6 +18,9 @@
     <string name="register_me">Enregistrer</string>
     <string name="register_not_now">Plus tard</string>
     <string name="registration_input_incomplete">Dis-nous en plus sur toi</string>
+    <string name="registration_firstname_missing">Veuillez indiquer votre prénom</string>
+    <string name="registration_surname_missing">Veuillez indiquer votre nom</string>
+    <string name="registration_phonenumber_missing">Veuillez indiquer votre numéro de téléphone</string>
 
     <string name="explain_usage_search2">Ville d\'envoi</string>
     <string name="explain_usage_search3">Date d\'envoi</string>

@@ -320,7 +320,7 @@ final class Utilities {
      * @param formatString output format
      * @return formatted String
      */
-    private static String Epoch2Date(long epoch, String formatString){
+    static String Epoch2Date(long epoch, String formatString){
         if (DEBUG) Log.i(LOG_TAG, "Epoch2Date - epoch = " +epoch);
         Date updatedate;
         SimpleDateFormat out_format = new SimpleDateFormat(formatString);
@@ -338,17 +338,15 @@ final class Utilities {
         }
     }
 
-    static String Date2EpochMillis(String date, String formatString) {
+    static long Date2EpochMillis(String date, String formatString) {
         SimpleDateFormat df = new SimpleDateFormat(formatString);
         try {
-            Date ddate = df.parse(date);
-            long epoch = ddate.getTime();
-            return Long.toString(epoch);
+            return df.parse(date).getTime();
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        return "";
+        return 0;
     }
 
     static String getTomorrow(String format) {
@@ -362,7 +360,7 @@ final class Utilities {
         try {
             resu = output.format(input.parse(date));
         } catch (ParseException e) {
-            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "Utilities", "DateToDate");
+//            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "Utilities", "DateToDate");
             e.printStackTrace();
         }
         return resu;
@@ -395,11 +393,12 @@ final class Utilities {
     // String to BitMap
     @Nullable
     static Bitmap StringToBitMap(String encodedString) {
+        if (encodedString.equals("")) return null;
         try {
             byte[] encodeByte = Base64.decode(encodedString, Base64.DEFAULT);
             return BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
         } catch (Exception e) {
-            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "Utilities", "StringToBitMap");
+//            DataBuffer.addException(Arrays.toString(e.getStackTrace()), e.toString(), "Utilities", "StringToBitMap");
             e.getMessage();
             return null;
         }

@@ -23,7 +23,7 @@ public class ThankYou extends Fragment {
         fragment_start_time = Utilities.CurrentTimeMS();
     }
 
-    static long getStartTime() {
+    long getFragmentStartTime() {
         return fragment_start_time;
     }
 

@@ -12,14 +12,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import com.google.android.gms.vision.text.Text;
+
 import java.util.HashMap;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class RegistrationFragment extends Fragment {
     private final static String LOG_TAG = RegistrationFragment.class.getSimpleName();
     private EditText firstname, surname, phone_number;
     private TextView location, caption_user_picture ;
-    private ImageButton picture;
+    private CircleImageView picture;
     private View view;
     private RegistrationFragmentListener mListener;
     private Long fragment_start_time;
@@ -62,26 +67,26 @@ public class RegistrationFragment extends Fragment {
     }
 
     void setFirstname() {
-        firstname = (EditText) view.findViewById(R.id.user_first_name);
+        firstname = (EditText) view.findViewById(R.id.registration_firstname);
         String fname = mListener.getUserForRegistrationFragment().getFirstname();
         if (!fname.equals("")) {firstname.setText(fname);}
     }
 
     void setSurname() {
-        surname = (EditText) view.findViewById(R.id.user_surname);
+        surname = (EditText) view.findViewById(R.id.registration_surname);
         String sname = mListener.getUserForRegistrationFragment().getSurname();
         if (!sname.equals("")) {surname.setText(sname);}
     }
 
     void setPhone_number() {
-        phone_number = (EditText) view.findViewById(R.id.user_phone_number);
+        phone_number = (EditText) view.findViewById(R.id.registration_phone_number);
         String pnumber = mListener.getUserForRegistrationFragment().getPhoneNumber();
         if (!pnumber.equals("")) {phone_number.setText(pnumber);}
     }
 
     void setUserPicture() {
         if (DEBUG) Log.i(LOG_TAG, "setPicture - enter");
-        picture = (ImageButton) view.findViewById(R.id.user_picture);
+        picture = (CircleImageView) view.findViewById(R.id.registration_picture);
 
         picture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,7 +99,7 @@ public class RegistrationFragment extends Fragment {
             picture.setImageBitmap(mListener.getUserForRegistrationFragment().getPictureBM());
         }
 
-        caption_user_picture = (TextView) view.findViewById(R.id.caption_user_picture);
+        caption_user_picture = (TextView) view.findViewById(R.id.registration_picture_text);
         if (mListener.getUserForRegistrationFragment().getPicture().equals("")) {
             caption_user_picture.setText(getString(R.string.add_profile_picture));
         } else {
@@ -114,20 +119,22 @@ public class RegistrationFragment extends Fragment {
 
         if (DEBUG) Log.i(LOG_TAG, "set_user_detailed_location - Enter");
 
-        location = (TextView) view.findViewById(R.id.user_location);
-        location.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onUserLocationPressed();
-            }
-        });
+        if (location == null) {
+            location = (TextView) view.findViewById(R.id.registration_location);
+            location.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.onUserLocationPressed();
+                }
+            });
+        }
 
         String tmp = mListener.getUserForRegistrationFragment().getLocationObject().getCity();
         if (tmp == null || tmp.equals("")) {return;}
 
         String tmp2 = mListener.getUserForRegistrationFragment().getLocationObject().getState();
 
-        if (tmp2 == null) {
+        if (tmp2 == null || tmp2.equals("")) {
             tmp += " (" + Utilities.CountryToCountryCode(
                     mListener.getUserForRegistrationFragment().getLocationObject().getCountry())+")";
             location.setText(tmp);
@@ -144,7 +151,7 @@ public class RegistrationFragment extends Fragment {
 
         String tmp2 = mListener.getUserForRegistrationFragment().getLocationObject().getState();
 
-        if (tmp2 == null) {
+        if (tmp2 == null || tmp2.equals("")) {
             tmp += " (" + Utilities.CountryToCountryCode(
                     mListener.getUserForRegistrationFragment().getLocationObject().getCountry())+")";
             location.setText(tmp);
@@ -156,7 +163,7 @@ public class RegistrationFragment extends Fragment {
     }
 
     void setRegisterMeButton() {
-        Button registerMe = (Button) view.findViewById(R.id.register_me);
+        Button registerMe = (Button) view.findViewById(R.id.registration_register);
         registerMe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -166,7 +173,7 @@ public class RegistrationFragment extends Fragment {
     }
 
     void setRegisterLaterButton() {
-        Button registerLater = (Button) view.findViewById(R.id.register_not_now);
+        TextView registerLater = (TextView) view.findViewById(R.id.registration_register_later);
         registerLater.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

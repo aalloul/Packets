@@ -13,10 +13,10 @@
     <string name="number_packages_not_set">Please provide the number of packages</string>
     <string name="size_packages_not_set">Please provide the size of the packages</string>
     <string name="enter_first_name">First name</string>
-    <string name="enter_surname">Family name</string>
+    <string name="enter_surname">Surname</string>
     <string name="enter_phone_number">Phone number</string>
-    <string name="user_current_city">City</string>
-    <string name="register_me">Let me in!</string>
+    <string name="user_current_city">Location</string>
+    <string name="register_me">Register</string>
     <string name="register_not_now">Later</string>
     <string name="registration_input_incomplete">Please tell us more about you</string>
     <string name="registration_firstname_missing">Please provide your first name</string>

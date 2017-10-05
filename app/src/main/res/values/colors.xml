@@ -1,9 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#7AB509</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#4caf50</color>
+    <color name="colorPrimaryDark">#087f23</color>
+    <color name="colorPrimaryLight">#80e27e</color>
+
     <color name="colorAccent">#ffbf0d</color>
 
+    <color name="colorSecondary">#ffc400</color>
+    <color name="colorSecondaryDark">#c79400</color>
+    <color name="colorSecondaryLight">#fff64f</color>
+
+    <color name="backgroundApp">#F2F2F4</color>
+    <color name="textBlackColor">#000000</color>
+    <color name="picture_background">#EAECEE</color>
+
+
+
+
+
+
+
+    <!--Old colors-->
     <color name="black_overlay">#66000000</color>
     <color name="cardColor">#d8eed8</color>
     <color name="regColor">#ffff</color>

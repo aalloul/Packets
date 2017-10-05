@@ -62,7 +62,24 @@ public class MainFragment extends Fragment {
 
         view = inflater.inflate(R.layout.fragment_main, container, false);
 
+        // DropOff button
+        dropOffLocation = (TextView) view.findViewById(R.id.dropofflocation_mainactivity);
+        dropOffLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onDropOffLocationPressed();
+            }
+        });
         setDropOffLocation(mListener.getTripRequestDetailsToMainFragment().getDropoffLocation());
+
+        // Pickup button
+        pickUpLocation = (TextView) view.findViewById(R.id.pickuplocation_main_activity);
+        pickUpLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onPickUpLocationPressed();
+            }
+        });
         setPickupLocation(mListener.getTripRequestDetailsToMainFragment().getPickupLocation());
         setPickupDate(mListener.getTripRequestDetailsToMainFragment().getPickup_date());
 
@@ -109,20 +126,11 @@ public class MainFragment extends Fragment {
     }
 
     private void setPickupLocation(LocationObject locationObject) {
-        pickUpLocation = (TextView) view.findViewById(R.id.pickuplocation_main_activity);
-
-        /* The on-click listener has to be first otherwise it's never reached when the location
-           is not available */
-        pickUpLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onPickUpLocationPressed();
-            }
-        });
 
         String tmp = getResources().getString(R.string.explain_usage_search2) + ": ";
 
-        if (locationObject.getCity().equals("")) {return;}
+        if (locationObject.getCity().equals("")) {
+            return;}
 
         tmp += locationObject.getCity();
 
@@ -137,16 +145,6 @@ public class MainFragment extends Fragment {
     }
 
     private void setDropOffLocation(LocationObject locationObject) {
-        dropOffLocation = (TextView) view.findViewById(R.id.dropofflocation_mainactivity);
-
-        /* The on-click listener has to be first otherwise it's never reached when the location
-           is not available */
-        dropOffLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onDropOffLocationPressed();
-            }
-        });
 
         String tmp = getResources().getString(R.string.explain_usage_search5) + ": ";
 
@@ -233,7 +231,7 @@ public class MainFragment extends Fragment {
     }
 
     void updateDropOffLocation() {
-        setPickupLocation(mListener.getTripRequestDetailsToMainFragment().getDropoffLocation());
+        setDropOffLocation(mListener.getTripRequestDetailsToMainFragment().getDropoffLocation());
     }
 
     int checkInputs() {

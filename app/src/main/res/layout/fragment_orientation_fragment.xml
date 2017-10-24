@@ -1,0 +1,94 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundApp"
+    android:orientation="vertical"
+    android:weightSum="2"
+    tools:context=".OrientationFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@color/wallet_dim_foreground_disabled_holo_dark">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"
+            android:elevation="12dp">
+
+            <TextView
+                android:id="@+id/iam_sending_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="false"
+                android:gravity="center"
+                android:text="@string/orientation_iam_sending"
+                android:textColor="@color/textBlackColor" />
+
+            <Button
+                android:id="@+id/orientation_search_offers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="false"
+                android:layout_below="@+id/iam_sending_text"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/curvedbutton"
+                android:backgroundTint="@color/colorSecondaryDark"
+                android:paddingEnd="5dp"
+                android:paddingStart="5dp"
+                android:text="@string/orientation_search" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/colorPrimaryDark"
+            android:orientation="horizontal"></LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/orientation_iam_travelling_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/orientation_iam_travelling"
+            android:textColor="@color/textBlackColor" />
+
+        <Button
+            android:id="@+id/orientation_publish_offer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/orientation_iam_travelling_text"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/curvedbutton"
+            android:backgroundTint="@color/colorSecondaryLight"
+            android:paddingEnd="5dp"
+            android:paddingStart="5dp"
+            android:text="@string/orientation_publish"
+            android:textColor="@color/textBlackColor" />
+    </RelativeLayout>
+</LinearLayout>

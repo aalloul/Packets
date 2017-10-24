@@ -131,6 +131,26 @@
     <string name="network_erro2">A network error happened, please retry again.</string>
     <string name="no_results_found">Hey, thank you for using Shippy we do appreciate a lot! We unfortunately do not have any offer that matches your criteria yet but we\'re working hard. Maybe you could help us a bit and invite your friends to join us?</string>
 
+    <string name="orientation_iam_sending">I have something to send and I want to find someone who can carry it for me</string>
+    <string name="orientation_iam_travelling">I am travelling and would like to carry a package for other persons.</string>
+    <string name="orientation_publish">Publish my trip</string>
+    <string name="orientation_search">Search offers</string>
+
+    <string name="main_set_preferences">Set preferences for travel mean</string>
+    <string name="main_next">Next</string>
+    <string name="main_pickup_city">Pick-up city</string>
+    <string name="main_pickup_date">Pick-up date</string>
+    <string name="main_dropoff_city">Drop-off city</string>
+    <string name="main_dropoff_date">Drop-off date</string>
+    <string name="main_i_am_sending">I\'m sending</string>
+    <string name="main_i_am_travelling">I\'m travelling</string>
+    <string name="main_trip_details">Trip details</string>
+    <string name="main_parcel_details">Parcel details</string>
+    <string name="pickup_chooser_travelling_text">Where and where are you going?</string>
+    <string name="pickup_chooser_sending_text">Where do you want send from and when?</string>
+    <string name="dropoff_chooser_sending_text">What is the destination of your package?</string>
+    <string name="dropoff_chooser_travelling_text">Where can you drop-off the package?</string>
+
     <!-- ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~  -->
     <!--                       Parameters that don't need to be localized                        -->
     <!-- ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~  -->

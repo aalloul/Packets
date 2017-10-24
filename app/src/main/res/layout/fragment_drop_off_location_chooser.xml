@@ -1,0 +1,173 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundApp"
+    android:clipToPadding="false"
+    android:orientation="vertical"
+    android:weightSum="3"
+    tools:context="com.app.shippy.android.DropOffLocationChooser">
+
+    <RelativeLayout
+        android:id="@+id/dropoff_chooser_checkboxes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1">
+
+        <RelativeLayout
+            android:id="@+id/rel1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="20dp"
+            android:background="@drawable/backgroundstate"
+            android:elevation="8dp">
+
+            <RadioButton
+                android:id="@+id/dropoff_chooser_send_or_travel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:checked="true"
+                android:elevation="14dp"
+                app:buttonTint="@color/colorPrimaryDark" />
+
+            <TextView
+                android:id="@+id/dropoff_chooser_send_or_travel_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/dropoff_chooser_send_or_travel"
+                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="false"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="@string/main_i_am_sending"
+                android:textColor="@color/textBlackColor" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rel2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="false"
+            android:elevation="13dp">
+
+            <RadioButton
+                android:id="@+id/dropoff_chooser_trip_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:checked="true"
+                app:buttonTint="@color/colorSecondaryLight" />
+
+            <TextView
+                android:id="@+id/dropoff_chooser_details_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/dropoff_chooser_trip_details"
+                android:layout_centerHorizontal="true"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="@string/main_trip_details"
+                android:textColor="@color/textBlackColor" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rel3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="1">
+
+            <RadioButton
+                android:id="@+id/dropoff_chooser_parcel_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:checked="false" />
+
+            <TextView
+                android:id="@+id/textView11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/dropoff_chooser_parcel_details"
+                android:layout_centerHorizontal="true"
+                android:text="@string/main_parcel_details"
+                android:textColor="@color/textBlackColor" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/dropoff_chooser_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:gravity="center_horizontal"
+        android:text="@string/dropoff_chooser_sending_text"
+        android:textColor="@color/textBlackColor"
+        android:textSize="16sp" />
+
+    <LinearLayout
+        android:id="@+id/dropoff_chooser_locations"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
+        android:background="@drawable/rectangle"
+        android:backgroundTint="@color/wallet_holo_blue_light"
+        android:elevation="2dp"
+        android:orientation="vertical"
+        android:weightSum="2">
+
+        <TextView
+            android:id="@+id/dropoff_chooser_dropoff_city"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/rectangle"
+            android:backgroundTint="@color/cast_expanded_controller_seek_bar_progress_background_tint_color"
+            android:elevation="8dp"
+            android:gravity="center"
+            android:hint="@string/main_dropoff_city"
+            android:textColor="@color/textBlackColor"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/dropoff_chooser_dropoff_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/rectangle"
+            android:backgroundTint="@color/white"
+            android:gravity="center_vertical|center"
+            android:hint="@string/main_dropoff_date"
+            android:textColor="@color/textBlackColor"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <Button
+            android:id="@+id/dropoff_chooser_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/curvedbutton"
+            android:backgroundTint="@color/backgroundApp"
+            android:elevation="24dp"
+            android:text="@string/main_next" />
+    </RelativeLayout>
+
+</LinearLayout>

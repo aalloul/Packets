@@ -6,3 +6,10 @@
 .DS_Store
 /build
 /captures
+*.py
+*.key
+*.json
+.idea/inspectionProfiles/
+.idea/vcs.xml
+app/app-prod-shippy.apk
+signature_key/

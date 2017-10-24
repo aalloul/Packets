@@ -6,15 +6,13 @@
 
     <color name="colorAccent">#ffbf0d</color>
 
-    <color name="colorSecondary">#ffc400</color>
-    <color name="colorSecondaryDark">#c79400</color>
-    <color name="colorSecondaryLight">#fff64f</color>
+    <color name="colorSecondary">#ff9100</color>
+    <color name="colorSecondaryDark">#c56200</color>
+    <color name="colorSecondaryLight">#ffc246</color>
 
     <color name="backgroundApp">#F2F2F4</color>
     <color name="textBlackColor">#000000</color>
     <color name="picture_background">#EAECEE</color>
-
-
 
 
 

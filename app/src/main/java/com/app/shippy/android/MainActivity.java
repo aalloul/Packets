@@ -67,11 +67,13 @@ import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener, ItemFragment.OnListFragmentInteractionListener,
-        OfferDetail.OnFragmentInteractionListener, MainFragment.OnMainFragmentInteractionListener,
+        GoogleApiClient.OnConnectionFailedListener, LocationListener,
+        ItemFragment.OnListFragmentInteractionListener, OrientationFragment.OnOrientationInteraction,
+        OfferDetail.OnFragmentInteractionListener, PickUpLocationChooser.OnPickUpChooserInteraction,
         DatePickerFragment.TheListener, RegistrationFragment.RegistrationFragmentListener,
         ConfirmPublish.OnConfirmPublishListener, CameraOrGalleryDialog.CameraOrGalleryInterface,
-        ThankYou.ShareFragmentListener, NoResultsFound.OnNoResultsFoundInteraction, PrivacyNotice.ContactUsListener {
+        ThankYou.ShareFragmentListener, NoResultsFound.OnNoResultsFoundInteraction,
+        PrivacyNotice.ContactUsListener, DropOffLocationChooser.OnDropOffChooserInteraction {
 
     protected final int MAP_PERMISSION = 1;
     protected final int DROP_OFF_LOCATION_REQUEST = 2;
@@ -90,7 +92,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private String mCurrentPhotoPath;
     protected boolean MAP_PERMISSION_GRANTED = false;
     private GoogleApiClient mGoogleApiClient;
-    private MainFragment mainFragment;
+    private OrientationFragment orientationFragment;
+    private PickUpLocationChooser pickUpLocationChooser;
+    private DropOffLocationChooser dropOffLocationChooser;
     private RegistrationFragment registrationFragment;
     private ConfirmPublish confirmPublish;
     private ThankYou thankYou;
@@ -117,8 +121,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private void handleNetworkResult(int queryResult) {
         if (DEBUG) Log.i(LOG_TAG, "handleNetworkResult  - queryResult = " + queryResult);
 
-        if (mainFragment==null) {
-            if (DEBUG) Log.e(LOG_TAG, "handleNetworkResult - mainFragment is null");
+        if (pickUpLocationChooser ==null) {
+            if (DEBUG) Log.e(LOG_TAG, "handleNetworkResult - pickUpLocationChooser is null");
         }
 
         switch (queryResult) {
@@ -318,61 +322,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
     }
 
-    // Checks the inputs from the Main Activity
-    @SuppressWarnings("unchecked")
-    boolean checkMainFragmentInputs(String action) {
-
-        if (mainFragment == null) {
-            if (DEBUG) Log.i(LOG_TAG, "checkMainFragmentInputs - mainFragment is null");
-            return false;
-        }
-
-        reportingEvent = ReportingEvent.getInstance();
-        reportingEvent.setFragmentName("MainFragment");
-        reportingEvent.setFragmentStart(mainFragment.getFragmentStartTime());
-
-        if (!isNetworkOk()) {
-            // Report error
-            reportingEvent.addEvent("Action",action+"WithNoNetwork");
-            final Snackbar snackbar = Snackbar.make(findViewById(R.id.mainActivity_ListView),
-                    getResources().getString(R.string.no_network_connectivity),
-                    Snackbar.LENGTH_INDEFINITE);
-            snackbar.setAction(R.string.okay, new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-                    goToSettings();
-                }
-            });
-            snackbar.show();
-            return false ;
-        }
-
-
-        switch (mainFragment.checkInputs()) {
-            case (MainFragment.PICKUP_LOCATION_MISSING):
-                reportingEvent.addEvent("Action",action+"WithNoPickupLocation");
-
-                Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
-                        getResources().getString(R.string.pickup_location_not_set),
-                        getResources().getString(R.string.okay)
-                );
-                return false ;
-
-            case (MainFragment.DROPOFF_LCATION_MISSING):
-                // Report error
-                reportingEvent.addEvent("Action",action+"WithNoDropoffLocation");
-
-                if (DEBUG) Log.i(LOG_TAG, "checkMainFragmentInputs- Unbelievable!");
-                Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
-                        getResources().getString(R.string.dropoff_location_not_set),
-                        getResources().getString(R.string.okay)
-                );
-                return false ;
-        }
-
-        return true;
-    }
-
     // Launches the request to Google Places
     protected void launchPlaceAutoCompleteRequest(int reqCode) {
         // Let's assume the fragment name is already set
@@ -543,12 +492,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         reportingEvent = ReportingEvent.getInstance();
-                        reportingEvent.setFragmentName("MainFragment");
-                        reportingEvent.setFragmentStart(mainFragment.getFragmentStartTime());
+                        reportingEvent.setFragmentName("PickUpLocationChooser");
+                        reportingEvent.setFragmentStart(pickUpLocationChooser.getFragmentStartTime());
                         reportingEvent.addException(error.toString(), "SearchForOffers");
                         if (DEBUG) Log.i(LOG_TAG, "error.getMesage() = " + error.getMessage());
                         if (DEBUG) Log.i(LOG_TAG, "error.getCause() = " + error.getCause());
-                        informNetworkError(mainFragment);
+                        informNetworkError(pickUpLocationChooser);
                     }
                 }
         );
@@ -706,8 +655,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             FragmentTransaction fmg = getSupportFragmentManager().beginTransaction();
             if (user.isRegistered()) {
                 if (DEBUG) Log.i(LOG_TAG, "onCreate - user already registered");
-                mainFragment = MainFragment.newInstance();
-                fmg.add(R.id.mainActivity_ListView, mainFragment, "mainFragment");
+                orientationFragment = OrientationFragment.newInstance();
+                fmg.add(R.id.mainActivity_ListView, orientationFragment, "orientationFragment");
             } else {
                 if (DEBUG) Log.i(LOG_TAG, "onCreate - user not registered");
                 registrationFragment = RegistrationFragment.newInstance();
@@ -724,10 +673,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     getSupportFragmentManager().findFragmentByTag("detailsFragment");
             itemFragment = (ItemFragment)
                     getSupportFragmentManager().findFragmentByTag("itemFragment");
-            mainFragment = (MainFragment)
-                    getSupportFragmentManager().findFragmentByTag("mainFragment");
+            pickUpLocationChooser = (PickUpLocationChooser)
+                    getSupportFragmentManager().findFragmentByTag("pickUpLocationChooser");
+            dropOffLocationChooser = (DropOffLocationChooser)
+                    getSupportFragmentManager().findFragmentByTag("dropOffLocationChooser");
             noresultsfound = (NoResultsFound)
                     getSupportFragmentManager().findFragmentByTag("noresultsfound");
+            orientationFragment = (OrientationFragment)
+                    getSupportFragmentManager().findFragmentByTag("orientationFragment");
         }
 
         // New data from the back-end was downloaded
@@ -952,9 +905,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (registrationFragment != null && registrationFragment.isAdded()) {
             getSupportFragmentManager().putFragment(outState, "registrationFragment", registrationFragment);
         }
-        if (mainFragment != null && mainFragment.isAdded()) {
-            getSupportFragmentManager().putFragment(outState, "mainFragment", mainFragment);
+        if (pickUpLocationChooser != null && pickUpLocationChooser.isAdded()) {
+            getSupportFragmentManager().putFragment(outState, "pickUpLocationChooser", pickUpLocationChooser);
         }
+
+        if (dropOffLocationChooser != null && dropOffLocationChooser.isAdded()) {
+            getSupportFragmentManager().putFragment(outState, "dropOffLocationChooser", dropOffLocationChooser);
+        }
+
         if (detailsFragment != null && detailsFragment.isAdded() ) {
             getSupportFragmentManager().putFragment(outState, "detailsFragment", detailsFragment);
         }
@@ -966,6 +924,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
         if (noresultsfound != null && noresultsfound.isAdded()) {
             getSupportFragmentManager().putFragment(outState, "noresultsfound", noresultsfound);
+        }
+
+        if (orientationFragment != null && orientationFragment.isAdded()) {
+            getSupportFragmentManager().putFragment(outState, "orientationFragment",
+                    orientationFragment);
         }
         super.onSaveInstanceState(outState);
     }
@@ -1047,82 +1010,65 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (DEBUG) Log.i(LOG_TAG, "onMessageButtonPress - Exit");
     }
 
-    // Method for search_button
-    @Override
-    @SuppressWarnings("unchecked")
-    public void onSearchButtonPressed() {
-        if (DEBUG) Log.i(LOG_TAG, "onSearchButtonPressed - start");
-
-        reportingEvent = ReportingEvent.getInstance();
-        reportingEvent.setFragmentName("MainFragment");
-        reportingEvent.setFragmentStart(mainFragment.getFragmentStartTime());
-
-
-        if (!checkMainFragmentInputs("SEARCH")) {return;}
-
-        reportingEvent.setFragmentEnd();
-
-        reportingEvent.addEvent("Action","Search",
-                "PickupDate",tripRequestDetails.getPickup_date(),
-                "NumberPackages",tripRequestDetails.getNumber_packages(),
-                "SizePackages",tripRequestDetails.getPackage_size_int(),
-                "EditedPickupLocation", mainFragment.hasEditedPickupLocation()
-                );
-
-        searchRequest(tripRequestDetails);
-
-        itemFragment = ItemFragment.newInstance(1);
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.mainActivity_ListView, itemFragment, "itemFragment")
-                .addToBackStack("mainToitem")
-                .commit();
-
-
-        if (DEBUG) Log.i(LOG_TAG, "onSearchButtonPressed - exit");
-    }
-
     // Method for publish offer
     @Override
     @SuppressWarnings("unchecked")
-    public void onPostButtonPressed() {
-        if (DEBUG) Log.i(LOG_TAG, "onPostButtonPressed - start");
+    public void onPickupNextButtonPressed() {
+        if (DEBUG) Log.i(LOG_TAG, "onPickupNextButtonPressed - start");
 
         reportingEvent = ReportingEvent.getInstance();
-
-        reportingEvent.setFragmentName("MainFragment");
-        reportingEvent.setFragmentStart(mainFragment.getFragmentStartTime());
+        reportingEvent.setFragmentName("PickUpLocationChooser");
+        reportingEvent.setFragmentStart(pickUpLocationChooser.getFragmentStartTime());
 
         // Check whether input data is correct
-        if (!checkMainFragmentInputs("POST")) { return ;}
+        if (!isNetworkOk()) {
+            reportingEvent.addEvent("Action","PickupWithNoNetwork");
+            Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
+                    getResources().getString(R.string.no_network_connectivity),
+                    "Ok");
+            return ;}
 
+        switch (pickUpLocationChooser.checkInputs()) {
+            case PickUpLocationChooser.PICKUP_LOCATION_MISSING:
+                reportingEvent.addEvent("Action","PickupLocationMissing");
+                Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
+                        getResources().getString(R.string.pickup_location_not_set),
+                        getResources().getString(R.string.okay));
+                return;
+
+            case PickUpLocationChooser.PICKUP_DATE_MISSING:
+                reportingEvent.addEvent("Action","PickupLocationMissing");
+                Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
+                        getResources().getString(R.string.no_pickup_date),
+                        getResources().getString(R.string.okay));
+                return;
+        }
 
         // Send data to reporting
         reportingEvent.setFragmentEnd();
-        reportingEvent.addEvent( "Action", "PostOffer",
+        reportingEvent.addEvent( "Action", "onPickupNextButtonPressed",
+                "PickupLocation", tripRequestDetails.getPickupLocation().toString(),
                 "PickupDate",tripRequestDetails.getPickup_date(),
-                "NumberPackages",tripRequestDetails.getNumber_packages(),
-                "SizePackages",tripRequestDetails.getPackage_size_int(),
-                "EditedPickupLocation", mainFragment.hasEditedPickupLocation()
-        );
+                "EditedPickupLocation", pickUpLocationChooser.hasEditedPickupLocation());
 
         // In case this was not the case already, stop requesting location updates
         stopLocationUpdates();
 
         // Show confirmation page
-        confirmPublish = ConfirmPublish.newInstance();
+        dropOffLocationChooser = DropOffLocationChooser.newInstance();
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.mainActivity_ListView, confirmPublish, "confirmPublish")
-                .addToBackStack("MainFragmentToConfirmPublish")
+                .replace(R.id.mainActivity_ListView, dropOffLocationChooser, "dropOffLocationChooser")
+                .addToBackStack("PickupChooserToDropOffChooser")
                 .commit();
-        if (DEBUG) Log.i(LOG_TAG, "onPostButtonPressed - exit");
+        if (DEBUG) Log.i(LOG_TAG, "onPickupNextButtonPressed - exit");
     }
 
     @Override
     public void returnDate(String date) {
         if (DEBUG) Log.i(LOG_TAG, "returnDate - called");
         tripRequestDetails.setPickup_date(date);
-        mainFragment.updatePickuppDate();
+        pickUpLocationChooser.updatePickuppDate();
     }
 
     @Override
@@ -1132,18 +1078,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         // This is to make sure that when onStop is called, the session is not
         // ended in the reporting
         reportingEvent.setend_session(false);
-        mainFragment.setHasEditedPickupLocation(true);
+        pickUpLocationChooser.setHasEditedPickupLocation(true);
         launchPlaceAutoCompleteRequest(PICK_UP_LOCATION_REQUEST);
-    }
-
-    @Override
-    public void onDropOffLocationPressed() {
-        if (DEBUG) Log.i(LOG_TAG, "onDropOffLocationPressed - Enter");
-        // This is to make sure that when onStop is called, the session is not
-        // ended in the reporting
-        reportingEvent.setend_session(false);
-
-        launchPlaceAutoCompleteRequest(DROP_OFF_LOCATION_REQUEST);
     }
 
     // Handles the callback result when the user enters a location somewhere
@@ -1151,6 +1087,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (resultCode == RESULT_OK) {
             Place place = PlaceAutocomplete.getPlace(this, data);
             if (DEBUG) Log.i(LOG_TAG, "Place: " + place.getName());
+
             HandleGeoCodingAsync handlegeocoding;
 
             switch (requestAim) {
@@ -1281,8 +1218,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             if (DEBUG) Log.i(LOG_TAG, "handleSharingResult - RESULT NOK");
             reportingEvent.addEvent("Action", "ShareNotSuccessful");
         }
-        if (mainFragment == null) {
-            mainFragment = MainFragment.newInstance();
+        if (pickUpLocationChooser == null) {
+            pickUpLocationChooser = PickUpLocationChooser.newInstance();
         }
 
     }
@@ -1373,6 +1310,41 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         launchPlaceAutoCompleteRequest(USER_LOCATION_REQUEST);
     }
 
+    private boolean isInputOk(int input_missing) {
+        switch (input_missing) {
+            case RegistrationFragment.FIRST_NAME_MISSING:
+                reportingEvent.addEvent("Action","RegisterMeWithoutFirstName");
+                Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
+                        getResources().getString(R.string.registration_firstname_missing),
+                        getResources().getString(R.string.okay));
+                return false;
+
+            case RegistrationFragment.SUR_NAME_MISSING:
+                reportingEvent.addEvent("Action","RegisterMeWithoutSurName");
+                Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
+                        getResources().getString(R.string.registration_surname_missing),
+                        getResources().getString(R.string.okay));
+                return false;
+
+            case RegistrationFragment.LOCATION_MISSING:
+                reportingEvent.addEvent("Action","RegisterMeWithoutLocation");
+                Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
+                        getResources().getString(R.string.user_location_not_entered),
+                        getResources().getString(R.string.okay));
+                return false;
+
+            case RegistrationFragment.PHONE_NUMBER_MISSING:
+                reportingEvent.addEvent("Action","RegisterMeWithoutPhoneNumber");
+                Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
+                        getResources().getString(R.string.registration_phonenumber_missing),
+                        getResources().getString(R.string.okay));
+                return false;
+
+        }
+
+        return true;
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public void onRegisterMePressed() {
@@ -1387,35 +1359,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             registrationFragment = RegistrationFragment.newInstance();
         }
 
-        switch (registrationFragment.checkInput()) {
-            case RegistrationFragment.FIRST_NAME_MISSING:
-                reportingEvent.addEvent("Action","RegisterMeWithoutFirstName");
-                Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
-                        getResources().getString(R.string.registration_firstname_missing),
-                        getResources().getString(R.string.okay));
-                return;
-
-            case RegistrationFragment.SUR_NAME_MISSING:
-                reportingEvent.addEvent("Action","RegisterMeWithoutSurName");
-                Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
-                        getResources().getString(R.string.registration_surname_missing),
-                        getResources().getString(R.string.okay));
-                return;
-
-            case RegistrationFragment.LOCATION_MISSING:
-                reportingEvent.addEvent("Action","RegisterMeWithoutLocation");
-                Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
-                        getResources().getString(R.string.user_location_not_entered),
-                        getResources().getString(R.string.okay));
-                return;
-
-            case RegistrationFragment.PHONE_NUMBER_MISSING:
-                reportingEvent.addEvent("Action","RegisterMeWithoutPhoneNumber");
-                Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
-                        getResources().getString(R.string.registration_phonenumber_missing),
-                        getResources().getString(R.string.okay));
-                return;
-
+        if (!isInputOk(registrationFragment.checkInput())) {
+            // Input was missing, nothing to do.
+            return;
         }
 
         // Store the details
@@ -1426,12 +1372,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         // Report the new data
         reportingEvent.addEvent("Action","RegisterSuccessful",
                     "EditedLocation", registrationFragment.hasEditedLocation());
-
-        // Initialize a TripRequest Object
-        tripRequestDetails = TripRequestDetails.getInstance();
-        tripRequestDetails.setContext(this.getApplicationContext());
-        tripRequestDetails.setPickupLocation(user.getLocationObject());
-        tripRequestDetails.setPackage_size_str();
 
         // Show a thank you note for 3 seconds
         getSupportFragmentManager().beginTransaction()
@@ -1447,16 +1387,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         new CountDownTimer(3000, 1000) {
             public void onTick(long millisUntilFinished) { }
             public void onFinish() {
-                if (mainFragment == null)
+                if (orientationFragment == null)
                 {
-                    if (DEBUG) Log.w(LOG_TAG, "onRegisterMePressed - mainFragment is null");
-                    mainFragment = MainFragment.newInstance();
+                    if (DEBUG) Log.w(LOG_TAG, "onRegisterMePressed - orientationFragment is null");
+                    orientationFragment = OrientationFragment.newInstance();
                 }
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.mainActivity_ListView, mainFragment, "mainFragment")
+                        .replace(R.id.mainActivity_ListView, orientationFragment,
+                                "orientationFragment")
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        .addToBackStack("RegisterToMainFragment")
+                        .addToBackStack("RegisterToOrientationFragment")
                         .commit();
             }
         }.start();
@@ -1473,21 +1414,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         reportingEvent.addEvent("Action","RegisterLater", "n_prompts", user.getNumber_prompts());
 
 
-        if (mainFragment == null) {
-            if (DEBUG) Log.i(LOG_TAG, "onRegisterLaterPressed - mainFragment is null");
-            mainFragment = MainFragment.newInstance();
+        if (orientationFragment == null) {
+            if (DEBUG) Log.i(LOG_TAG, "onRegisterLaterPressed - orientationFragment is null");
+            orientationFragment = OrientationFragment.newInstance();
         }
 
         user = User.getInstance();
         user.setRegistered(false);
         user.saveDetails();
 
-        tripRequestDetails = TripRequestDetails.getInstance();
-        tripRequestDetails.setContext(this.getApplicationContext());
-
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.mainActivity_ListView, mainFragment, "mainFragment")
+                .replace(R.id.mainActivity_ListView, orientationFragment, "orientationFragment")
                 .addToBackStack(null)
                 .commit();
 
@@ -1497,13 +1435,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void onLocationChanged(Location location) {
         if (DEBUG) Log.i(LOG_TAG, "onLocationChanged - Enter");
         if (DEBUG) Log.i(LOG_TAG, "onLocationChanged - location = " + location.toString());
-        if (mainFragment != null && !mainFragment.isVisible()) {
+        if (pickUpLocationChooser != null && !pickUpLocationChooser.isVisible()) {
             if (DEBUG) Log.i(LOG_TAG, "onLocationChanged - not visible -- Stopping" );
             stopLocationUpdates();
             return;
         }
 //        stopLocationUpdates();
-        if (user.isRegistered() && mainFragment != null) {
+        if (user.isRegistered() && pickUpLocationChooser != null) {
             updateStoredLocation(location);
         } else {
             updateUserDetails(location);
@@ -1580,8 +1518,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     if (DEBUG) Log.i(LOG_TAG, "onBackPressed - STUCK STUCK STUCK STUCK ");
                     reportingEvent.addException(e.toString(), "BackButtonPressed");
 
-                    // If exception, try to detach the mainFragment
-                    if (mainFragment != null ) fmg.detach(mainFragment);
+                    // If exception, try to detach the pickUpLocationChooser
+                    if (pickUpLocationChooser != null ) fmg.detach(pickUpLocationChooser);
                     /* if we try to detach registrationFragment, then the back button will open a white
                     screen which is ugly -- so better just leave it there
                     fmg.detach(registrationFragment);
@@ -1696,7 +1634,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     @Override
-    public TripRequestDetails getTripRequestDetailsToMainFragment() {
+    public TripRequestDetails getTripRequestDetailsToPickUpChooser() {
         return TripRequestDetails.getInstance();
     }
 
@@ -1711,7 +1649,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     @Override
-    public User getUserForMainFragment() {return User.getInstance();}
+    public User getUserForPickupChooser() {return User.getInstance();}
 
     @Override
     public TripRequestDetails getTripDetailsForConfirmPublish() {
@@ -1723,14 +1661,60 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         return tripOfferSelected;
     }
 
+    @Override
+    public void onOrientationSearchOffersPressed(){
+
+        if (pickUpLocationChooser == null) {
+            pickUpLocationChooser = PickUpLocationChooser.newInstance();
+        }
+
+        // Initialize a TripRequest Object
+        tripRequestDetails = TripRequestDetails.getInstance();
+        tripRequestDetails.setContext(this.getApplicationContext());
+        tripRequestDetails.setPickupLocation(user.getLocationObject());
+        tripRequestDetails.setSearching(true);
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.mainActivity_ListView, pickUpLocationChooser, "pickUpLocationChooser")
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .addToBackStack("OrientationToMainFragment")
+                .commit();
+    }
+
+    @Override
+    public void onOrientationPublishOfferPressed(){
+        if (pickUpLocationChooser == null) {
+            pickUpLocationChooser = PickUpLocationChooser.newInstance();
+        }
+
+        // Initialize a TripRequest Object
+        tripRequestDetails = TripRequestDetails.getInstance();
+        tripRequestDetails.setContext(this.getApplicationContext());
+        tripRequestDetails.setPickupLocation(user.getLocationObject());
+        tripRequestDetails.setSearching(false);
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.mainActivity_ListView, pickUpLocationChooser, "pickUpLocationChooser")
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .addToBackStack("OrientationToMainFragment")
+                .commit();
+    }
+
     private String getVisibleFragment()  {
 
         if (registrationFragment != null && registrationFragment.isVisible()) {
             return "RegistrationFragment";
         }
-        if (mainFragment != null && mainFragment.isVisible()) {
-            return "MainFragment";
+        if (pickUpLocationChooser != null && pickUpLocationChooser.isVisible()) {
+            return "PickUpLocationChooser";
         }
+
+        if (orientationFragment != null && orientationFragment.isVisible()) {
+            return "OrientationFragment";
+        }
+
         if (confirmPublish != null && confirmPublish.isVisible()) {
             return "ConfirmPublish";
         }
@@ -1744,6 +1728,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             return "DetailsFragment";
         }
 
+        if (dropOffLocationChooser != null && dropOffLocationChooser.isVisible()) {
+            return "dropOffLocationChooser";
+        }
         return "Unknown";
     }
 
@@ -1751,8 +1738,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (registrationFragment != null && registrationFragment.isVisible()) {
             return registrationFragment.getFragmentStartTime();
         }
-        if (mainFragment != null && mainFragment.isVisible()) {
-            return mainFragment.getFragmentStartTime();
+        if (pickUpLocationChooser != null && pickUpLocationChooser.isVisible()) {
+            return pickUpLocationChooser.getFragmentStartTime();
         }
         if (confirmPublish != null && confirmPublish.isVisible()) {
             return confirmPublish.getFragmentStartTime();
@@ -1765,6 +1752,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
         if (detailsFragment != null && detailsFragment.isVisible()) {
             return detailsFragment.getFragmentStartTime();
+        }
+
+        if (orientationFragment != null && orientationFragment.isVisible()) {
+            return orientationFragment.getFragmentStartTime();
+        }
+
+        if (dropOffLocationChooser != null && dropOffLocationChooser.isVisible()) {
+            return dropOffLocationChooser.getFragmentStartTime();
         }
 
         return Utilities.CurrentTimeMS();
@@ -1837,6 +1832,30 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         return email;
     }
 
+    @Override
+    public void onDropOffNextButtonPressed() {
+
+    }
+
+    @Override
+    public void onDropoffLocationPressed() {
+        // This is to make sure that when onStop is called, the session is not
+        // ended in the reporting
+        reportingEvent.setend_session(false);
+        pickUpLocationChooser.setHasEditedPickupLocation(true);
+        launchPlaceAutoCompleteRequest(DROP_OFF_LOCATION_REQUEST);
+    }
+
+    @Override
+    public TripRequestDetails getTripRequestDetailsToDropOffChooser() {
+        return TripRequestDetails.getInstance();
+    }
+
+    @Override
+    public User getUserForDropOff() {
+        return User.getInstance();
+    }
+
     /*
      This little class is called when the user takes a picture of himself. It crops, rotates if
      necessary and displays the picture on the registration page.
@@ -1886,6 +1905,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         private Context context;
         private int pickupaim;
 
+        //TODO geocoder returns null city name. Show error or something
+
         private HandleGeoCodingAsync(Context ctx, int pickupaim) {
             context = ctx;
             this.pickupaim = pickupaim;
@@ -1923,18 +1944,22 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
 
         protected void onPostExecute(HashMap<String, String> res) {
+            Log.i("onPostExecute", "Enter " + res);
+            Log.i("onPostExecute", "res = " + res);
             switch (pickupaim) {
                 case PICKUP_AIM:
-                    if (mainFragment != null && mainFragment.isVisible()) {
+                    Log.i("onPostExecute", "PICKUP_AIM");
+                    if (pickUpLocationChooser != null && pickUpLocationChooser.isVisible()) {
                         tripRequestDetails.setPickupLocation(new LocationObject(res));
-                        mainFragment.updatePickupLocation();
+                        pickUpLocationChooser.updatePickupLocation();
                     }
                     break;
 
                 case DROPOFF_AIM:
-                    if (mainFragment != null && mainFragment.isVisible()) {
+                    Log.i("onPostExecute", "DROPOFF_AIM");
+                    if (dropOffLocationChooser != null && dropOffLocationChooser.isVisible()) {
                         tripRequestDetails.setDropoffLocation(new LocationObject(res));
-                        mainFragment.updateDropOffLocation();
+                        dropOffLocationChooser.updatedropOffLocation();
                     }
                     break;
 

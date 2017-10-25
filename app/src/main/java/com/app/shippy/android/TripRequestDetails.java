@@ -18,7 +18,17 @@ class TripRequestDetails {
     private LocationObject dropoffLocation, pickupLocation; 
     private static Context context;
     private String version = "0.1";
-    
+    private boolean isSearching = false;
+
+    void setSearching(boolean searching) {
+        isSearching = searching;
+    }
+
+    boolean isSearching() {
+
+        return isSearching;
+    }
+
     void setContext(Context context) {this.context = context;}
     
     void setPackage_size_str() {
@@ -82,10 +92,12 @@ class TripRequestDetails {
         this.pickupLocation = new LocationObject(pickupLocation);
     }
 
+    /**
+     *
+     * @param travelBy Represents the position in the array
+    travelling_by in the strings assets.
+     */
     void setTravelBy(int travelBy) {
-        /* This integer represents the position in the array
-        travelling_by in the strings assets.
-         */
         this.travelBy = travelBy;
     }
 
@@ -120,6 +132,7 @@ class TripRequestDetails {
         pickup_date = Utilities.CurrentTimeMS() + 24*3600*1000;
         dropoffLocation = new LocationObject();
         pickupLocation = new LocationObject();
+        this.setPackage_size_str();
     }
 
     public String getVersion() {

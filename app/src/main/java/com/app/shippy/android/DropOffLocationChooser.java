@@ -22,8 +22,10 @@ public class DropOffLocationChooser extends Fragment {
     private FragmentActivity myContext;
     private TextView dropOffLocation;
     private Button next_button;
+    private TextView dropOffDate;
     private boolean hasEditeddropOffLocation = false;
     final static int DROPOFF_LCATION_MISSING = 1;
+    final static int DROPOFF_DATE_MISSING = 2;
     final static int ALL_GOOD = 0;
 
     public DropOffLocationChooser() {
@@ -70,7 +72,7 @@ public class DropOffLocationChooser extends Fragment {
             }
         });
         setdropOffLocation(mListener.getTripRequestDetailsToDropOffChooser().getDropoffLocation());
-        setDropOffDate(mListener.getTripRequestDetailsToDropOffChooser().getPickup_date());
+        setDropOffDate(mListener.getTripRequestDetailsToDropOffChooser().getDropoff_date());
 
         setActivityTitle();
         setSendOrTravelText();
@@ -134,8 +136,12 @@ public class DropOffLocationChooser extends Fragment {
     }
 
     private void setDropOffDate(long date) {
-        TextView dropOffDate = (TextView) view.findViewById(R.id.dropoff_chooser_dropoff_date);
-        dropOffDate.setText(Utilities.Epoch2Date(date, "yyyy-MM-dd"));
+        Log.i(LOG_TAG, "setDropOffDate - Enter");
+        Log.i(LOG_TAG, "setDropOffDate - date = " + date);
+        dropOffDate = (TextView) view.findViewById(R.id.dropoff_chooser_dropoff_date);
+        if (date > 0){
+            dropOffDate.setText(Utilities.Epoch2Date(date, "yyyy-MM-dd"));
+        }
         dropOffDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -175,7 +181,7 @@ public class DropOffLocationChooser extends Fragment {
             mListener = (OnDropOffChooserInteraction) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnDropOffChooserInteraction");
         }
     }
 
@@ -193,7 +199,7 @@ public class DropOffLocationChooser extends Fragment {
         hasEditeddropOffLocation = bool;
     }
 
-    void updatePickuppDate() {
+    void updateDropoffDate() {
         setDropOffDate(mListener.getTripRequestDetailsToDropOffChooser().getPickup_date());
     }
 
@@ -206,6 +212,10 @@ public class DropOffLocationChooser extends Fragment {
 
         if (dropOffLocation == null || dropOffLocation.getText().toString().equals("")) {
             return DROPOFF_LCATION_MISSING;
+        }
+
+        if (dropOffDate == null || dropOffDate.getText().toString().equals("")) {
+            return DROPOFF_DATE_MISSING;
         }
 
         return ALL_GOOD;

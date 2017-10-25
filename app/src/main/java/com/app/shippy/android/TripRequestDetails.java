@@ -55,8 +55,8 @@ class TripRequestDetails {
         pickup_date = Utilities.Date2EpochMillis(date, "yyyy-MM-dd");
     }
 
-    void setDropoff_date(long dropoff_date) {
-        this.dropoff_date = dropoff_date;
+    void setDropoff_date(String date) {
+        dropoff_date = Utilities.Date2EpochMillis(date, "yyyy-MM-dd");
     }
 
     String getPackage_size_str() {

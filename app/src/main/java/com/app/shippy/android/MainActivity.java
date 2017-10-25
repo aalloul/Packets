@@ -1067,9 +1067,20 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void returnDate(String date) {
         if (DEBUG) Log.i(LOG_TAG, "returnDate - called");
-        tripRequestDetails.setPickup_date(date);
-        pickUpLocationChooser.updatePickuppDate();
+
+        if (pickUpLocationChooser != null && pickUpLocationChooser.isVisible()) {
+            tripRequestDetails.setPickup_date(date);
+            pickUpLocationChooser.updatePickuppDate();
+            return;
+        }
+
+        if (dropOffLocationChooser != null && dropOffLocationChooser.isVisible()) {
+            tripRequestDetails.setDropoff_date(date);
+            dropOffLocationChooser.updateDropoffDate();
+        }
+
     }
+
 
     @Override
     public void onPickUpLocationPressed() {
@@ -1834,7 +1845,54 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @Override
     public void onDropOffNextButtonPressed() {
+        if (DEBUG) Log.i(LOG_TAG, "onPickupNextButtonPressed - start");
 
+        reportingEvent = ReportingEvent.getInstance();
+        reportingEvent.setFragmentName("DropOffLocationChooser");
+        reportingEvent.setFragmentStart(dropOffLocationChooser.getFragmentStartTime());
+
+        // Check whether input data is correct
+        if (!isNetworkOk()) {
+            reportingEvent.addEvent("Action","DropoffWithNoNetwork");
+            Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
+                    getResources().getString(R.string.no_network_connectivity),
+                    "Ok");
+            return ;}
+
+        switch (dropOffLocationChooser.checkInputs()) {
+            case DropOffLocationChooser.DROPOFF_LCATION_MISSING:
+                reportingEvent.addEvent("Action","PickupLocationMissing");
+                Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
+                        getResources().getString(R.string.pickup_location_not_set),
+                        getResources().getString(R.string.okay));
+                return;
+
+            case DropOffLocationChooser.DROPOFF_DATE_MISSING:
+                reportingEvent.addEvent("Action","DropoffLocationDateMissing");
+                Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
+                        getResources().getString(R.string.no_dropoff_date),
+                        getResources().getString(R.string.okay));
+                return;
+        }
+
+        // Send data to reporting
+        reportingEvent.setFragmentEnd();
+        reportingEvent.addEvent( "Action", "onPickupNextButtonPressed",
+                "PickupLocation", tripRequestDetails.getPickupLocation().toString(),
+                "PickupDate",tripRequestDetails.getPickup_date(),
+                "EditedPickupLocation", pickUpLocationChooser.hasEditedPickupLocation());
+
+        // In case this was not the case already, stop requesting location updates
+        stopLocationUpdates();
+
+        // Show confirmation page
+        dropOffLocationChooser = DropOffLocationChooser.newInstance();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.mainActivity_ListView, dropOffLocationChooser, "dropOffLocationChooser")
+                .addToBackStack("PickupChooserToDropOffChooser")
+                .commit();
+        if (DEBUG) Log.i(LOG_TAG, "onPickupNextButtonPressed - exit");
     }
 
     @Override

@@ -114,6 +114,7 @@ public class PickUpLocationChooser extends Fragment {
     }
 
     private void setPickupDate(long date) {
+
         TextView pickupDate = (TextView) view.findViewById(R.id.pickup_chooser_pickup_date);
         pickupDate.setText(Utilities.Epoch2Date(date, "yyyy-MM-dd"));
         pickupDate.setOnClickListener(new View.OnClickListener() {
@@ -155,7 +156,7 @@ public class PickUpLocationChooser extends Fragment {
             mListener = (OnPickUpChooserInteraction) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnPickUpChooserInteraction");
         }
     }
 

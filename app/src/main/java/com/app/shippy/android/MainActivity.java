@@ -1087,6 +1087,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (resultCode == RESULT_OK) {
             Place place = PlaceAutocomplete.getPlace(this, data);
             if (DEBUG) Log.i(LOG_TAG, "Place: " + place.getName());
+
             HandleGeoCodingAsync handlegeocoding;
 
             switch (requestAim) {
@@ -1842,7 +1843,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         // ended in the reporting
         reportingEvent.setend_session(false);
         pickUpLocationChooser.setHasEditedPickupLocation(true);
-        launchPlaceAutoCompleteRequest(PICK_UP_LOCATION_REQUEST);
+        launchPlaceAutoCompleteRequest(DROP_OFF_LOCATION_REQUEST);
     }
 
     @Override
@@ -1904,6 +1905,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         private Context context;
         private int pickupaim;
 
+        //TODO geocoder returns null city name. Show error or something
+
         private HandleGeoCodingAsync(Context ctx, int pickupaim) {
             context = ctx;
             this.pickupaim = pickupaim;
@@ -1941,8 +1944,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
 
         protected void onPostExecute(HashMap<String, String> res) {
+            Log.i("onPostExecute", "Enter " + res);
+            Log.i("onPostExecute", "res = " + res);
             switch (pickupaim) {
                 case PICKUP_AIM:
+                    Log.i("onPostExecute", "PICKUP_AIM");
                     if (pickUpLocationChooser != null && pickUpLocationChooser.isVisible()) {
                         tripRequestDetails.setPickupLocation(new LocationObject(res));
                         pickUpLocationChooser.updatePickupLocation();
@@ -1950,9 +1956,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     break;
 
                 case DROPOFF_AIM:
-                    if (pickUpLocationChooser != null && pickUpLocationChooser.isVisible()) {
+                    Log.i("onPostExecute", "DROPOFF_AIM");
+                    if (dropOffLocationChooser != null && dropOffLocationChooser.isVisible()) {
                         tripRequestDetails.setDropoffLocation(new LocationObject(res));
-//                        pickUpLocationChooser.updateDropOffLocation();
+                        dropOffLocationChooser.updatedropOffLocation();
                     }
                     break;
 

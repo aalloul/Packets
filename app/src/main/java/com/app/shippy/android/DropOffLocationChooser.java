@@ -74,7 +74,7 @@ public class DropOffLocationChooser extends Fragment {
 
         setActivityTitle();
         setSendOrTravelText();
-
+        setPickupPlace();
         return view;
     }
 
@@ -85,6 +85,20 @@ public class DropOffLocationChooser extends Fragment {
         } else {
             send_or_travel.setText(R.string.main_i_am_travelling);
         }
+    }
+
+    private void setPickupPlace() {
+        TextView pickup_location = (TextView) view.findViewById(R.id.dropoff_chooser_details_text);
+        if (mListener == null || mListener.getTripRequestDetailsToDropOffChooser() == null || mListener.getTripRequestDetailsToDropOffChooser().getPickupLocation() == null) {
+            return;
+        }
+
+        if (mListener.getTripRequestDetailsToDropOffChooser().getPickupLocation().getCity().equals("")) {
+            return;
+        }
+
+        pickup_location.setText(
+                mListener.getTripRequestDetailsToDropOffChooser().getPickupLocation().getCity());
     }
 
     private void setActivityTitle() {
@@ -102,10 +116,17 @@ public class DropOffLocationChooser extends Fragment {
 
     private void setdropOffLocation(LocationObject locationObject) {
 
-        if (locationObject == null) return;
+        Log.i(LOG_TAG, "setdropOffLocation - Enter");
+        if (locationObject == null || locationObject.getCity() == null) {
+            Log.i(LOG_TAG, "setdropOffLocation - locationObject is null");
+            return;
+        }
 
         if (locationObject.getCity().equals("")) {
-            return;}
+            Log.i(LOG_TAG, "setdropOffLocation - city is empty");
+            return;
+        }
+        Log.i(LOG_TAG, "setdropOffLocation - city = "+locationObject.getCity());
 
         dropOffLocation.setText(locationObject.getCity());
         setNextButtonColor();
@@ -141,7 +162,8 @@ public class DropOffLocationChooser extends Fragment {
             next_button.setBackgroundTintList(ContextCompat.getColorStateList(
                     getActivity(), R.color.colorSecondary));
         } else {
-            next_button.setBackgroundTintList(null);
+            next_button.setBackgroundTintList(ContextCompat.getColorStateList(
+                    getActivity(), R.color.backgroundApp));
         }
     }
 

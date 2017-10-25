@@ -142,7 +142,8 @@ public class PickUpLocationChooser extends Fragment {
             next_button.setBackgroundTintList(ContextCompat.getColorStateList(
                     getActivity(), R.color.colorSecondary));
         } else {
-            next_button.setBackgroundTintList(null);
+            next_button.setBackgroundTintList(ContextCompat.getColorStateList(
+                    getActivity(), R.color.backgroundApp));
         }
     }
 

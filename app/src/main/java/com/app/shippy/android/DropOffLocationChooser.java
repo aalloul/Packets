@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.Date;
+
 
 public class DropOffLocationChooser extends Fragment {
     private long fragment_start_time;
@@ -145,8 +147,10 @@ public class DropOffLocationChooser extends Fragment {
         dropOffDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DatePickerFragment()
-                        .show(myContext.getSupportFragmentManager(), "datePicker");
+                DatePickerFragment datePickerFragment = new DatePickerFragment();
+                datePickerFragment.setMin_date(
+                        mListener.getTripRequestDetailsToDropOffChooser().getPickup_date());
+                datePickerFragment.show(myContext.getSupportFragmentManager(), "datePicker");
             }
         });
         setNextButtonColor();
@@ -200,7 +204,7 @@ public class DropOffLocationChooser extends Fragment {
     }
 
     void updateDropoffDate() {
-        setDropOffDate(mListener.getTripRequestDetailsToDropOffChooser().getPickup_date());
+        setDropOffDate(mListener.getTripRequestDetailsToDropOffChooser().getDropoff_date());
     }
 
     void updatedropOffLocation() {

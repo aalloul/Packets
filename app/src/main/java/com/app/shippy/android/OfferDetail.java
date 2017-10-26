@@ -109,13 +109,13 @@ public class OfferDetail extends Fragment {
     private void setTravelBy() {
         switch (mListener.getTripOfferForOfferDetail().getTravelBy()) {
             case 0:
-                ((ImageView) view.findViewById(R.id.travel_by)).setImageResource(R.drawable.car);
+                ((ImageView) view.findViewById(R.id.travel_by)).setImageResource(R.mipmap.car);
                 break;
             case 1:
-                ((ImageView) view.findViewById(R.id.travel_by)).setImageResource(R.drawable.train);
+                ((ImageView) view.findViewById(R.id.travel_by)).setImageResource(R.mipmap.train);
                 break;
             case 2:
-                ((ImageView) view.findViewById(R.id.travel_by)).setImageResource(R.drawable.plane);
+                ((ImageView) view.findViewById(R.id.travel_by)).setImageResource(R.mipmap.plane);
                 break;
         }
     }

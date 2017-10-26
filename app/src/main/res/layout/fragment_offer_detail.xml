@@ -123,7 +123,7 @@
                     android:layout_alignParentEnd="false"
                     android:layout_below="@+id/going_from"
                     android:layout_toRightOf="@+id/bar_detail"
-                    app:srcCompat="@drawable/car" />
+                    app:srcCompat="@mipmap/car" />
 
                 <ImageView
                     android:id="@+id/dot_from_detail"

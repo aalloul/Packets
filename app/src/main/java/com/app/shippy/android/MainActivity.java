@@ -73,7 +73,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         DatePickerFragment.TheListener, RegistrationFragment.RegistrationFragmentListener,
         ConfirmPublish.OnConfirmPublishListener, CameraOrGalleryDialog.CameraOrGalleryInterface,
         ThankYou.ShareFragmentListener, NoResultsFound.OnNoResultsFoundInteraction,
-        PrivacyNotice.ContactUsListener, DropOffLocationChooser.OnDropOffChooserInteraction {
+        PrivacyNotice.ContactUsListener, DropOffLocationChooser.OnDropOffChooserInteraction,
+        TransportMethodChooser.onTransportMethodChooserInteraction {
 
     protected final int MAP_PERMISSION = 1;
     protected final int DROP_OFF_LOCATION_REQUEST = 2;
@@ -107,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private User user;
     private TripRequestDetails tripRequestDetails;
     private TripOffer tripOfferSelected;
+    private TransportMethodChooser transportMethodChooser;
 
     // create a local variable for identifying the class where the log statements come from
     private final static String LOG_TAG = MainActivity.class.getSimpleName();
@@ -681,6 +683,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     getSupportFragmentManager().findFragmentByTag("noresultsfound");
             orientationFragment = (OrientationFragment)
                     getSupportFragmentManager().findFragmentByTag("orientationFragment");
+            transportMethodChooser = (TransportMethodChooser)
+                    getSupportFragmentManager().findFragmentByTag("transportMethodChooser");
         }
 
         // New data from the back-end was downloaded
@@ -929,6 +933,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (orientationFragment != null && orientationFragment.isAdded()) {
             getSupportFragmentManager().putFragment(outState, "orientationFragment",
                     orientationFragment);
+        }
+
+        if (transportMethodChooser != null && transportMethodChooser.isAdded()) {
+            getSupportFragmentManager().putFragment(outState, "transportMethodChooser",
+                    transportMethodChooser);
         }
         super.onSaveInstanceState(outState);
     }
@@ -1886,13 +1895,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         stopLocationUpdates();
 
         // Show confirmation page
-        dropOffLocationChooser = DropOffLocationChooser.newInstance();
+        transportMethodChooser = TransportMethodChooser.newInstance();
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.mainActivity_ListView, dropOffLocationChooser, "dropOffLocationChooser")
-                .addToBackStack("PickupChooserToDropOffChooser")
+                .replace(R.id.mainActivity_ListView, transportMethodChooser, "transportMethodChooser")
+                .addToBackStack("DropoffToTransportChooser")
                 .commit();
-        if (DEBUG) Log.i(LOG_TAG, "onPickupNextButtonPressed - exit");
+        if (DEBUG) Log.i(LOG_TAG, "onDropOffNextButtonPressed - exit");
     }
 
     @Override
@@ -1912,6 +1921,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public User getUserForDropOff() {
         return User.getInstance();
+    }
+
+    @Override
+    public void onTransportMethodChooserNextButtonPressed() {
+
     }
 
     /*

@@ -142,19 +142,19 @@ class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewA
         switch (temp_int) {
             case 0:
                 if (DEBUG) Log.d(LOG_TAG, "onBindViewHolder - Transport method = car");
-                holder.transport_icon.setImageResource(R.drawable.car);
+                holder.transport_icon.setImageResource(R.mipmap.car);
                 break;
             case 1:
                 if (DEBUG) Log.d(LOG_TAG, "onBindViewHolder - Transport method = train");
-                holder.transport_icon.setImageResource(R.drawable.train);
+                holder.transport_icon.setImageResource(R.mipmap.train);
                 break;
             case 2:
                 if (DEBUG) Log.d(LOG_TAG, "onBindViewHolder - Transport method = plane");
-                holder.transport_icon.setImageResource(R.drawable.plane);
+                holder.transport_icon.setImageResource(R.mipmap.plane);
                 break;
             default:
                 if (DEBUG) Log.d(LOG_TAG, "onBindViewHolder - Transport method unknown");
-                holder.transport_icon.setImageResource(R.drawable.car);
+                holder.transport_icon.setImageResource(R.mipmap.car);
                 break;
         }
     }

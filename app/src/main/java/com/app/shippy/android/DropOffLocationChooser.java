@@ -22,8 +22,10 @@ public class DropOffLocationChooser extends Fragment {
     private FragmentActivity myContext;
     private TextView dropOffLocation;
     private Button next_button;
+    private TextView dropOffDate;
     private boolean hasEditeddropOffLocation = false;
     final static int DROPOFF_LCATION_MISSING = 1;
+    final static int DROPOFF_DATE_MISSING = 2;
     final static int ALL_GOOD = 0;
 
     public DropOffLocationChooser() {
@@ -70,7 +72,7 @@ public class DropOffLocationChooser extends Fragment {
             }
         });
         setdropOffLocation(mListener.getTripRequestDetailsToDropOffChooser().getDropoffLocation());
-        setDropOffDate(mListener.getTripRequestDetailsToDropOffChooser().getPickup_date());
+        setDropOffDate(mListener.getTripRequestDetailsToDropOffChooser().getDropoff_date());
 
         setActivityTitle();
         setSendOrTravelText();
@@ -80,7 +82,7 @@ public class DropOffLocationChooser extends Fragment {
 
     private void setSendOrTravelText() {
         TextView send_or_travel = (TextView) view.findViewById(R.id.dropoff_chooser_send_or_travel_text);
-        if (mListener.getTripRequestDetailsToDropOffChooser().isSearching()) {
+        if (mListener.getTripRequestDetailsToDropOffChooser().isSendingAPackage()) {
             send_or_travel.setText(R.string.main_i_am_sending);
         } else {
             send_or_travel.setText(R.string.main_i_am_travelling);
@@ -134,13 +136,19 @@ public class DropOffLocationChooser extends Fragment {
     }
 
     private void setDropOffDate(long date) {
-        TextView dropOffDate = (TextView) view.findViewById(R.id.dropoff_chooser_dropoff_date);
-        dropOffDate.setText(Utilities.Epoch2Date(date, "yyyy-MM-dd"));
+        Log.i(LOG_TAG, "setDropOffDate - Enter");
+        Log.i(LOG_TAG, "setDropOffDate - date = " + date);
+        dropOffDate = (TextView) view.findViewById(R.id.dropoff_chooser_dropoff_date);
+        if (date > 0){
+            dropOffDate.setText(Utilities.Epoch2Date(date, "yyyy-MM-dd"));
+        }
         dropOffDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DatePickerFragment()
-                        .show(myContext.getSupportFragmentManager(), "datePicker");
+                DatePickerFragment datePickerFragment = new DatePickerFragment();
+                datePickerFragment.setMin_date(
+                        mListener.getTripRequestDetailsToDropOffChooser().getPickup_date());
+                datePickerFragment.show(myContext.getSupportFragmentManager(), "datePicker");
             }
         });
         setNextButtonColor();
@@ -175,7 +183,7 @@ public class DropOffLocationChooser extends Fragment {
             mListener = (OnDropOffChooserInteraction) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnDropOffChooserInteraction");
         }
     }
 
@@ -193,11 +201,17 @@ public class DropOffLocationChooser extends Fragment {
         hasEditeddropOffLocation = bool;
     }
 
-    void updatePickuppDate() {
-        setDropOffDate(mListener.getTripRequestDetailsToDropOffChooser().getPickup_date());
+    void updateDropoffDate() {
+        if (DEBUG) {
+            setDropOffDate(mListener.getTripRequestDetailsToDropOffChooser().getPickup_date());
+        }
+        setDropOffDate(mListener.getTripRequestDetailsToDropOffChooser().getDropoff_date());
     }
 
     void updatedropOffLocation() {
+        if (DEBUG) {
+            setdropOffLocation(mListener.getTripRequestDetailsToDropOffChooser().getPickupLocation());
+        }
         setdropOffLocation(mListener.getTripRequestDetailsToDropOffChooser().getDropoffLocation());
     }
 
@@ -206,6 +220,10 @@ public class DropOffLocationChooser extends Fragment {
 
         if (dropOffLocation == null || dropOffLocation.getText().toString().equals("")) {
             return DROPOFF_LCATION_MISSING;
+        }
+
+        if (dropOffDate == null || dropOffDate.getText().toString().equals("")) {
+            return DROPOFF_DATE_MISSING;
         }
 
         return ALL_GOOD;

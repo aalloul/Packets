@@ -17,11 +17,20 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     // create a local variable for identifying the class where the log statements come from
     private final static String LOG_TAG = DatePickerFragment.class.getSimpleName();
     private final static boolean DEBUG = false;
-
+    private long min_date;
     private TheListener listener;
 
     interface TheListener{
         void returnDate(String date);
+    }
+
+    public DatePickerFragment() {
+        min_date = Utilities.CurrentTimeMS();
+    }
+
+
+    void setMin_date(long min_date) {
+        this.min_date = min_date;
     }
 
     public void onAttach(Context context){
@@ -50,7 +59,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         // Create a new instance of DatePickerDialog and return it
         DatePickerDialog datePickerDialog = new
                 DatePickerDialog(getActivity(), this, year, month, day);
-        datePickerDialog.getDatePicker().setMinDate(Utilities.CurrentTimeMS());
+        datePickerDialog.getDatePicker().setMinDate(min_date);
         return datePickerDialog;
     }
 

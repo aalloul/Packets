@@ -120,7 +120,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="35dp"
             android:layout_toRightOf="@+id/bar"
-            app:srcCompat="@drawable/car" />
+            app:srcCompat="@mipmap/car" />
 
         <RelativeLayout
             android:id="@+id/therelative"

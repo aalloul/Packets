@@ -81,7 +81,7 @@ public class PickUpLocationChooser extends Fragment {
 
     private void setSendOrTravelText() {
         TextView send_or_travel = (TextView) view.findViewById(R.id.pickup_chooser_send_or_travel_text);
-        if (mListener.getTripRequestDetailsToPickUpChooser().isSearching()) {
+        if (mListener.getTripRequestDetailsToPickUpChooser().isSendingAPackage()) {
             send_or_travel.setText(R.string.main_i_am_sending);
         } else {
             send_or_travel.setText(R.string.main_i_am_travelling);
@@ -114,6 +114,7 @@ public class PickUpLocationChooser extends Fragment {
     }
 
     private void setPickupDate(long date) {
+
         TextView pickupDate = (TextView) view.findViewById(R.id.pickup_chooser_pickup_date);
         pickupDate.setText(Utilities.Epoch2Date(date, "yyyy-MM-dd"));
         pickupDate.setOnClickListener(new View.OnClickListener() {
@@ -155,7 +156,7 @@ public class PickUpLocationChooser extends Fragment {
             mListener = (OnPickUpChooserInteraction) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnPickUpChooserInteraction");
         }
     }
 

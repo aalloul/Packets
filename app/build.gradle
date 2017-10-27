@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion '25.0.0'
+    compileSdkVersion 26
+    buildToolsVersion '26.0.2'
 
     defaultConfig {
         applicationId "com.app.shippy.android"
@@ -12,16 +12,22 @@ android {
         versionCode 4
         versionName "1.2.1"
     }
+
+    // Specifies two flavor dimensions.
+    flavorDimensions "dev", "prod"
+
     productFlavors {
         dev {
             // Enable pre-dexing to produce an APK that can be tested on
             // Android 5.0+ without the time-consuming DEX build processes.
             minSdkVersion 21
+            dimension "dev"
         }
         prod {
             // The actual minSdkVersion for the production version.
             minSdkVersion 15
             targetSdkVersion 24
+            dimension "prod"
         }
     }
     buildTypes {
@@ -33,10 +39,11 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    //    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.android.support:appcompat-v7:26.0.0-beta1'
+    compile 'com.android.support:design:26.0.0-beta1'
     compile 'com.google.android.gms:play-services-location:10.0.1'
     compile 'com.google.android.gms:play-services:10.0.1'
-    compile 'com.android.support:design:23.4.0'
+//    compile 'com.android.support:design:23.4.0'
     compile 'com.android.support:support-v4:23.4.0'
     compile 'com.android.support:recyclerview-v7:23.4.0'
     compile 'com.google.code.gson:gson:2.8.0'

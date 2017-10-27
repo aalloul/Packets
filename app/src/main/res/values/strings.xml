@@ -150,6 +150,9 @@
     <string name="pickup_chooser_sending_text">Where do you want send from and when?</string>
     <string name="dropoff_chooser_sending_text">What is the destination of your package?</string>
     <string name="dropoff_chooser_travelling_text">Where can you drop-off the package?</string>
+    <string name="transport_chooser_sending_text">Any preference for the transport method?</string>
+    <string name="transport_chooser_travelling_text">How are you travelling?</string>
+    <string name="transport_chooser_no_transport">Please choose at least 1 transport method</string>
 
     <!-- ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~  -->
     <!--                       Parameters that don't need to be localized                        -->

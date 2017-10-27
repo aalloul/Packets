@@ -73,7 +73,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         DatePickerFragment.TheListener, RegistrationFragment.RegistrationFragmentListener,
         ConfirmPublish.OnConfirmPublishListener, CameraOrGalleryDialog.CameraOrGalleryInterface,
         ThankYou.ShareFragmentListener, NoResultsFound.OnNoResultsFoundInteraction,
-        PrivacyNotice.ContactUsListener, DropOffLocationChooser.OnDropOffChooserInteraction {
+        PrivacyNotice.ContactUsListener, DropOffLocationChooser.OnDropOffChooserInteraction,
+        TransportMethodChooser.onTransportMethodChooserInteraction {
 
     protected final int MAP_PERMISSION = 1;
     protected final int DROP_OFF_LOCATION_REQUEST = 2;
@@ -107,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private User user;
     private TripRequestDetails tripRequestDetails;
     private TripOffer tripOfferSelected;
+    private TransportMethodChooser transportMethodChooser;
 
     // create a local variable for identifying the class where the log statements come from
     private final static String LOG_TAG = MainActivity.class.getSimpleName();
@@ -681,6 +683,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     getSupportFragmentManager().findFragmentByTag("noresultsfound");
             orientationFragment = (OrientationFragment)
                     getSupportFragmentManager().findFragmentByTag("orientationFragment");
+            transportMethodChooser = (TransportMethodChooser)
+                    getSupportFragmentManager().findFragmentByTag("transportMethodChooser");
         }
 
         // New data from the back-end was downloaded
@@ -930,6 +934,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             getSupportFragmentManager().putFragment(outState, "orientationFragment",
                     orientationFragment);
         }
+
+        if (transportMethodChooser != null && transportMethodChooser.isAdded()) {
+            getSupportFragmentManager().putFragment(outState, "transportMethodChooser",
+                    transportMethodChooser);
+        }
         super.onSaveInstanceState(outState);
     }
 
@@ -1047,6 +1056,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         // Send data to reporting
         reportingEvent.setFragmentEnd();
         reportingEvent.addEvent( "Action", "onPickupNextButtonPressed",
+                "isSending", tripRequestDetails.isSendingAPackage(),
                 "PickupLocation", tripRequestDetails.getPickupLocation().toString(),
                 "PickupDate",tripRequestDetails.getPickup_date(),
                 "EditedPickupLocation", pickUpLocationChooser.hasEditedPickupLocation());
@@ -1067,9 +1077,20 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void returnDate(String date) {
         if (DEBUG) Log.i(LOG_TAG, "returnDate - called");
-        tripRequestDetails.setPickup_date(date);
-        pickUpLocationChooser.updatePickuppDate();
+
+        if (pickUpLocationChooser != null && pickUpLocationChooser.isVisible()) {
+            tripRequestDetails.setPickup_date(date);
+            pickUpLocationChooser.updatePickuppDate();
+            return;
+        }
+
+        if (dropOffLocationChooser != null && dropOffLocationChooser.isVisible()) {
+            tripRequestDetails.setDropoff_date(date);
+            dropOffLocationChooser.updateDropoffDate();
+        }
+
     }
+
 
     @Override
     public void onPickUpLocationPressed() {
@@ -1834,7 +1855,52 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @Override
     public void onDropOffNextButtonPressed() {
+        if (DEBUG) Log.i(LOG_TAG, "onPickupNextButtonPressed - start");
 
+        reportingEvent = ReportingEvent.getInstance();
+        reportingEvent.setFragmentName("DropOffLocationChooser");
+        reportingEvent.setFragmentStart(dropOffLocationChooser.getFragmentStartTime());
+
+        // Check whether input data is correct
+        if (!isNetworkOk()) {
+            reportingEvent.addEvent("Action","DropoffWithNoNetwork");
+            Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
+                    getResources().getString(R.string.no_network_connectivity),
+                    "Ok");
+            return ;}
+
+        switch (dropOffLocationChooser.checkInputs()) {
+            case DropOffLocationChooser.DROPOFF_LCATION_MISSING:
+                reportingEvent.addEvent("Action","DropoffLocationMissing");
+                Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
+                        getResources().getString(R.string.pickup_location_not_set),
+                        getResources().getString(R.string.okay));
+                return;
+
+            case DropOffLocationChooser.DROPOFF_DATE_MISSING:
+                reportingEvent.addEvent("Action","DropoffDateMissing");
+                Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
+                        getResources().getString(R.string.no_dropoff_date),
+                        getResources().getString(R.string.okay));
+                return;
+        }
+
+        // Send data to reporting
+        reportingEvent.setFragmentEnd();
+        reportingEvent.addEvent( "Action", "onDropoffNextButtonPressed",
+                "isSending", tripRequestDetails.isSendingAPackage(),
+                "PickupLocation", tripRequestDetails.getPickupLocation().toString(),
+                "PickupDate",tripRequestDetails.getPickup_date(),
+                "EditedPickupLocation", pickUpLocationChooser.hasEditedPickupLocation());
+
+        // Move to next
+        transportMethodChooser = TransportMethodChooser.newInstance();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.mainActivity_ListView, transportMethodChooser, "transportMethodChooser")
+                .addToBackStack("DropoffToTransportChooser")
+                .commit();
+        if (DEBUG) Log.i(LOG_TAG, "onDropOffNextButtonPressed - exit");
     }
 
     @Override
@@ -1854,6 +1920,60 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public User getUserForDropOff() {
         return User.getInstance();
+    }
+
+    @Override
+    public TripRequestDetails getTripRequestDetailsForTransportChooser() {
+        return TripRequestDetails.getInstance();
+    }
+
+    @Override
+    public void onTransportMethodChooserNextButtonPressed() {
+        // This should not happen but just in case
+        if (transportMethodChooser == null) {return;}
+        if (tripRequestDetails==null) {tripRequestDetails = TripRequestDetails.getInstance();}
+
+        if (DEBUG) Log.i(LOG_TAG, "onTransportMethodChooserNextButtonPressed - start");
+
+        reportingEvent = ReportingEvent.getInstance();
+        reportingEvent.setFragmentName("TransportMethodChooser");
+        reportingEvent.setFragmentStart(transportMethodChooser.getFragmentStartTime());
+
+        if (!isNetworkOk()) {
+            reportingEvent.addEvent("Action","DropoffWithNoNetwork");
+            Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
+                    getResources().getString(R.string.no_network_connectivity),
+                    "Ok");
+            return ;}
+
+        if (!transportMethodChooser.isInputOk()) {
+            reportingEvent.addEvent("Action","TransportMethodMissing");
+                Utilities.makeThesnack(findViewById(R.id.mainActivity_ListView),
+                        getResources().getString(R.string.transport_chooser_no_transport),
+                        getResources().getString(R.string.okay));
+                return;
+        }
+
+        // Set travel mean
+        tripRequestDetails.setTravellingByCar(transportMethodChooser.isCarChecked());
+        tripRequestDetails.setTravellingByPlane(transportMethodChooser.isPlaneChecked());
+        tripRequestDetails.setTravellingByTrain(transportMethodChooser.isTrainChecked());
+
+        // Send data to reporting
+        reportingEvent.setFragmentEnd();
+        reportingEvent.addEvent( "Action", "onTransportChooserNextButtonPressed",
+                "isSending", tripRequestDetails.isSendingAPackage(),
+                "transportByCar", transportMethodChooser.isCarChecked(),
+                "transportByPlane",transportMethodChooser.isPlaneChecked(),
+                "transportByTrain", transportMethodChooser.isTrainChecked());
+
+        // Show confirmation page
+//        parcelDetails = TransportMethodChooser.newInstance();
+//        getSupportFragmentManager()
+//                .beginTransaction()
+//                .replace(R.id.mainActivity_ListView, transportMethodChooser, "transportMethodChooser")
+//                .addToBackStack("DropoffToTransportChooser")
+//                .commit();
     }
 
     /*

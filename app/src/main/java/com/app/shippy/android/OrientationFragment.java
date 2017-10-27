@@ -78,7 +78,7 @@ public class OrientationFragment extends Fragment {
             mListener = (OnOrientationInteraction) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnOrientationInteraction");
         }
     }
 

@@ -12,8 +12,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.util.Date;
-
 
 public class DropOffLocationChooser extends Fragment {
     private long fragment_start_time;
@@ -84,7 +82,7 @@ public class DropOffLocationChooser extends Fragment {
 
     private void setSendOrTravelText() {
         TextView send_or_travel = (TextView) view.findViewById(R.id.dropoff_chooser_send_or_travel_text);
-        if (mListener.getTripRequestDetailsToDropOffChooser().isSearching()) {
+        if (mListener.getTripRequestDetailsToDropOffChooser().isSendingAPackage()) {
             send_or_travel.setText(R.string.main_i_am_sending);
         } else {
             send_or_travel.setText(R.string.main_i_am_travelling);
@@ -204,10 +202,16 @@ public class DropOffLocationChooser extends Fragment {
     }
 
     void updateDropoffDate() {
+        if (DEBUG) {
+            setDropOffDate(mListener.getTripRequestDetailsToDropOffChooser().getPickup_date());
+        }
         setDropOffDate(mListener.getTripRequestDetailsToDropOffChooser().getDropoff_date());
     }
 
     void updatedropOffLocation() {
+        if (DEBUG) {
+            setdropOffLocation(mListener.getTripRequestDetailsToDropOffChooser().getPickupLocation());
+        }
         setdropOffLocation(mListener.getTripRequestDetailsToDropOffChooser().getDropoffLocation());
     }
 

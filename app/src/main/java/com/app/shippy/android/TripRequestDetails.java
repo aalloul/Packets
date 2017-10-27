@@ -2,9 +2,7 @@ package com.app.shippy.android;
 
 
 import android.content.Context;
-import android.location.Location;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 class TripRequestDetails {
@@ -18,15 +16,28 @@ class TripRequestDetails {
     private LocationObject dropoffLocation, pickupLocation; 
     private static Context context;
     private String version = "0.1";
-    private boolean isSearching = false;
+    private boolean sendingAPackage = false;
+    private boolean isTravellingByCar=false, isTravellingByTrain=false, isTravellingByPlane=false;
 
-    void setSearching(boolean searching) {
-        isSearching = searching;
+    void setTravellingByCar(boolean travellingByCar) {
+        isTravellingByCar = travellingByCar;
     }
 
-    boolean isSearching() {
+    void setTravellingByTrain(boolean travellingByTrain) {
+        isTravellingByTrain = travellingByTrain;
+    }
 
-        return isSearching;
+    void setTravellingByPlane(boolean travellingByPlane) {
+        isTravellingByPlane = travellingByPlane;
+    }
+
+    void setSearching(boolean searching) {
+        sendingAPackage = searching;
+    }
+
+    boolean isSendingAPackage() {
+
+        return sendingAPackage;
     }
 
     void setContext(Context context) {this.context = context;}
